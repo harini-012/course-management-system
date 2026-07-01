@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+     background:linear-gradient(135deg,#2E1065,#4C1D95,#6D28D9);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.container{
+    width:500px;
+    background:white;
+    padding:28px 35px;
+    border-radius:18px;
+    box-shadow:0 15px 35px rgba(0,0,0,.3);
+    border-top:6px solid #6D28D9;
+}
+
+h2{
+    text-align:center;
+    color:#0b5ed7;
+    margin-bottom:25px;
+}
+
+.input-box{
+    margin-bottom:18px;
+}
+
+.input-box label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:bold;
+}
+
+.input-box input,
+.input-box select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    font-size:15px;
+}
+
+button{
+width:100%;
+padding:15px;
+background:#6D28D9;
+color:white;
+border:none;
+border-radius:10px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+button:hover{
+background:#4C1D95;
+}
+
+.login{
+margin-top:10px;
+padding-top:10px;
+border-top:1px solid #ddd;
+text-align:center;
+}
+
+.login a{
+display:inline-block;
+margin-top:12px;
+padding:12px 25px;
+background:#7C3AED;
+color:white;
+text-decoration:none;
+border-radius:8px;
+transition:.3s;
+}
+
+.login a:hover{
+background:#4C1D95;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Student Registration</h2>
+
+<form>
+
+<div class="input-box">
+<label>Student Name</label>
+<input type="text" placeholder="Enter Full Name" required>
+</div>
+
+<div class="input-box">
+<label>Student ID</label>
+<input type="text" placeholder="Enter Student ID" required>
+</div>
+
+<div class="input-box">
+<label>Email Address</label>
+<input type="email" placeholder="Enter Email" required>
+</div>
+
+<div class="input-box">
+<label>Department</label>
+
+<select required>
+<option value="">Select Department</option>
+<option>Computer Science</option>
+<option>Information Technology</option>
+<option>Electronics & Communication</option>
+<option>Electrical & Electronics</option>
+<option>Mechanical Engineering</option>
+<option>Civil Engineering</option>
+</select>
+
+</div>
+
+<div class="input-box">
+<label>Password</label>
+<input type="password" placeholder="Create Password" required>
+</div>
+
+<div class="input-box">
+<label>Confirm Password</label>
+<input type="password" placeholder="Confirm Password" required>
+</div>
+
+<button type="submit">Register</button>
+
+</form>
+
+<div class="login">
+
+<p>Already have an account?</p>
+
+<a href="login.html">Login Here</a>
+
+</div>
+
+</div>
+
+</body>
+</html>
+```

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Login Portal</title>
+	<style>
+		*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#2E1065,#4C1D95,#6D28D9);
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+}
+
+.container{
+width:520px;
+background:white;
+padding:45px;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,.35);
+border-top:8px solid #6D28D9;
+}
+
+h2{
+text-align:center;
+color:#4C1D95;
+margin-bottom:30px;
+font-size:30px;
+}
+
+.tabs{
+display:flex;
+margin-bottom:25px;
+border-radius:10px;
+overflow:hidden;
+}
+
+.tabs button{
+width:50%;
+padding:15px;
+border:none;
+background:#e6e6e6;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+.tabs button.active{
+background:#6D28D9;
+color:white;
+}
+
+.role-text{
+text-align:center;
+font-size:18px;
+font-weight:bold;
+margin-bottom:25px;
+color:#555;
+}
+
+.input-box{
+margin-bottom:20px;
+}
+
+.input-box label{
+display:block;
+margin-bottom:8px;
+font-weight:bold;
+}
+
+.input-box input{
+width:100%;
+padding:14px;
+border:2px solid #ddd;
+border-radius:10px;
+font-size:15px;
+}
+
+.input-box input:focus{
+outline:none;
+border-color:#6D28D9;
+}
+
+.login-btn{
+width:100%;
+padding:15px;
+background:#6D28D9;
+color:white;
+border:none;
+border-radius:10px;
+font-size:17px;
+font-weight:bold;
+cursor:pointer;
+transition:.3s;
+}
+
+.login-btn:hover{
+background:#4C1D95;
+}
+
+.register{
+margin-top:25px;
+padding-top:20px;
+border-top:1px solid #ddd;
+text-align:center;
+}
+
+.register h3{
+color:#4C1D95;
+margin-bottom:10px;
+}
+
+.register p{
+margin-bottom:15px;
+}
+
+.register a{
+display:inline-block;
+padding:12px 25px;
+background:#7C3AED;
+color:white;
+text-decoration:none;
+border-radius:8px;
+transition:.3s;
+}
+
+.register a:hover{
+background:#4C1D95;
+}
+	</style>
+	</head>
+	<body>
+		<div class="container">
+		<h2>LOGIN PORTAL</h2>
+		<div class="tabs">
+		<button class="active" id="studentBtn" onclick="showStudent()">🎓 Student
+		</button>
+		<button id="adminBtn" onclick="showAdmin()">👨‍💼 Admin </button>
+		</div>
+		<p class="role-text" id="role">
+		Student Login
+		</p>
+		<form>
+		<div class="input-box">	
+		<label>Email</label>
+		<input type="email" placeholder="Enter Email"> </div> <div class="input-box"> 
+		<label>Password</label> <input type="password" placeholder="Enter Password"> 
+		</div> 
+		<button type="button" class="login-btn">Login</button>
+		</form>
+		<div class="register">
+
+    <h3 id="registerTitle">New Student?</h3>
+
+    <p id="registerText">
+        Don't have a student account?
+    </p>
+
+    <a href="student_register.html" id="registerLink">
+        Student Register
+    </a>
+
+</div>
+		</div>
+		<script>
+		function showStudent()
+		{
+		document.getElementById("role").innerHTML="Student Login";
+		document.getElementById("studentBtn").classList.add("active");
+		document.getElementById("adminBtn").classList.remove("active");
+		document.getElementById("registerTitle").innerHTML = "New Student?";
+    document.getElementById("registerText").innerHTML = "Don't have a student account?";
+    document.getElementById("registerLink").innerHTML = "Student Register";
+    document.getElementById("registerLink").href = "student_register.html";
+		}
+		function showAdmin()
+		{
+		document.getElementById("role").innerHTML="Administrator Login";
+		document.getElementById("adminBtn").classList.add("active");
+		document.getElementById("studentBtn").classList.remove("active");
+		  document.getElementById("registerTitle").innerHTML = "New Administrator?";
+    document.getElementById("registerText").innerHTML = "Don't have an administrator account?";
+    document.getElementById("registerLink").innerHTML = "Admin Register";
+    document.getElementById("registerLink").href = "admin_register.html";
+		}
+		</script>
+		</body>
+		</html>
+		
+		
+		

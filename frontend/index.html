@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<title>Student Course Management System</title>
+	<style>
+		*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#2E1065,#4C1D95,#6D28D9);
+}
+
+header{
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
+
+.logo{
+    color:white;
+    font-size:30px;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    gap:30px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-size:18px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#FFD43B;
+}
+
+.hero{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:80px 8%;
+    background:white;
+    margin:40px;
+    border-radius:20px;
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+}
+
+.hero-text{
+    width:55%;
+}
+
+.hero-text h1{
+    font-size:45px;
+    color:#4C1D95;
+    margin-bottom:20px;
+}
+
+.hero-text p{
+    font-size:18px;
+    line-height:32px;
+    color:#555;
+}
+
+.hero img{
+    width:380px;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:30px;
+    padding:15px 35px;
+    background:#6D28D9;
+    color:white;
+    text-decoration:none;
+    border-radius:10px;
+    font-size:18px;
+    transition:.3s;
+}
+
+.btn:hover{
+    background:#4C1D95;
+}
+
+.features{
+    padding:30px 8% 60px;
+}
+
+.features h2{
+    text-align:center;
+    color:white;
+    font-size:35px;
+    margin-bottom:40px;
+}
+
+.cards{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+}
+
+.card{
+    width:23%;
+    min-width:220px;
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    text-align:center;
+    margin-bottom:20px;
+    box-shadow:0 12px 25px rgba(0,0,0,.2);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+}
+
+.card h3{
+    color:#4C1D95;
+    margin-bottom:15px;
+}
+
+footer{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(8px);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+	</style>
+	</head>
+	<body>
+	<header>
+		<div class="logo">CourseMS</div>
+		<nav>
+		<a href="#">Home</a>
+		<a href="login.html">Login</a>
+		<a href="dashboard.html">Dashboard</a>
+		
+		</nav>
+	</header>
+	<section class="hero">
+	<div class="hero-text">
+	<h1>Student Course Management & Learning Progress Tracking System</h1>
+
+<p>
+A complete platform for students to register, enroll in courses,
+track learning progress and receive notifications. Administrators
+can efficiently manage students, courses and reports.
+</p>
+<a href="login.html" class="btn">Get Started</a>
+</div>
+<img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png">
+
+</section>
+
+<section class="features">
+
+<h2>Our Features</h2>
+
+<div class="cards">
+
+<div class="card">
+<h3>Student Registration</h3>
+<p>Create an account securely.</p>
+</div>
+
+<div class="card">
+<h3>Course Enrollment</h3>
+<p>Browse and enroll in available courses.</p>
+</div>
+
+<div class="card">
+<h3>Learning Progress</h3>
+<p>Track completed and pending modules.</p>
+</div>
+
+<div class="card">
+<h3>Admin Management</h3>
+<p>Manage courses, students and reports.</p>
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<p>© 2026 Student Course Management System</p>
+
+</footer>
+
+</body>
+</html>
