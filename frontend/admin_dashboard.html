@@ -1,0 +1,479 @@
+give admin for editing courses and adding courses from admin dashboard <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+      background:linear-gradient(135deg,#0F172A,#1E293B,#312E81);
+    min-height:100vh;
+}
+
+header{
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+.logo{
+    color:white;
+    font-size:30px;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    gap:25px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#FFD43B;
+}
+
+.container{
+    padding:35px 7%;
+}
+
+.banner{
+    background:white;
+    border-radius:20px;
+    padding:30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+    margin-bottom:30px;
+}
+
+.banner-text{
+    width:60%;
+}
+
+.banner-text h1{
+    color:#1E3A8A;
+    margin-bottom:15px;
+    font-size:34px;
+}
+
+.banner-text p{
+    color:#666;
+    line-height:28px;
+}
+
+.banner img{
+    width:260px;
+    border-radius:15px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    text-align:center;
+    box-shadow:0 8px 18px rgba(0,0,0,.2);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+.card h3{
+    color:#4C1D95;
+    margin-bottom:15px;
+}
+
+.number{
+    font-size:38px;
+    font-weight:bold;
+        color:#2563EB;
+
+}
+
+.main{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+}
+
+.section{
+    background:white;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 10px 20px rgba(0,0,0,.2);
+    margin-bottom:25px;
+}
+
+.section h2{
+    color:#1E3A8A;
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+ background:#2563EB;
+    color:white;
+    padding:12px;
+}
+
+table td{
+    padding:14px;
+    border-bottom:1px solid #ddd;
+}
+
+.feature-card{
+
+       background:#EFF6FF;
+    border-left:5px solid #2563EB;
+    padding:18px;
+    border-radius:12px;
+    margin-bottom:15px;
+
+}
+
+.feature-card h3{
+    color:#4C1D95;
+    margin-bottom:8px;
+}
+
+.feature-card p{
+    color:#666;
+    font-size:14px;
+}
+
+footer{
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+@media(max-width:900px){
+
+.banner{
+    flex-direction:column;
+    text-align:center;
+}
+
+.banner-text{
+    width:100%;
+}
+
+.banner img{
+    margin-top:25px;
+}
+
+.main{
+    grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">CourseMS Admin</div>
+
+<nav>
+
+<a href="index.html">Home</a>
+<a href="courses.html">Courses</a>
+
+
+</nav>
+
+</header>
+
+<div class="container">
+
+<div class="banner">
+
+<div class="banner-text">
+
+<h1>Administrator Dashboard</h1>
+
+<p>
+
+Manage courses, student enrollments, reports and academic activities
+through a centralized administration panel.
+
+</p>
+
+</div>
+
+
+
+</div>
+
+<div class="stats">
+
+<div class="card">
+
+<h3>Total Courses</h3>
+
+<div class="number">--</div>
+
+</div>
+
+<div class="card">
+
+<h3>Total Students</h3>
+
+<div class="number">--</div>
+
+</div>
+
+<div class="card">
+
+<h3>Total Enrollments</h3>
+
+<div class="number">--</div>
+
+</div>
+
+<div class="card">
+
+<h3>Course Completions</h3>
+
+<div class="number">--</div>
+
+</div>
+
+</div>
+
+<div class="main">
+
+<div>
+
+<div class="section">
+
+<h2>Course Management</h2>
+
+<table>
+
+<tr>
+
+<th>Course Name</th>
+
+<th>Instructor</th>
+
+<th>Status</th>
+
+</tr>
+
+<tr>
+
+<td colspan="3" style="text-align:center;color:gray;padding:40px;">
+
+Course details will appear here.
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+<div class="section">
+
+<h2>Student Enrollments</h2>
+
+<table>
+
+<tr>
+
+<th>Student</th>
+
+<th>Course</th>
+
+<th>Status</th>
+
+</tr>
+
+<tr>
+
+<td colspan="3" style="text-align:center;color:gray;padding:40px;">
+
+Enrollment information will appear here.
+
+</td>
+
+</tr>
+
+</table>
+
+</div>
+
+</div>
+<div class="section">
+
+<h2>Reports Overview</h2>
+
+<table>
+
+<tr>
+<th>Report</th>
+<th>Status</th>
+</tr>
+
+<tr>
+<td>Student Performance</td>
+<td>Available</td>
+</tr>
+
+<tr>
+<td>Course Completion</td>
+<td>Available</td>
+</tr>
+
+<tr>
+<td>Enrollment Summary</td>
+<td>Available</td>
+</tr>
+
+<tr>
+<td>Attendance Report</td>
+<td>Available</td>
+</tr>
+
+</table>
+
+</div>
+
+
+<div class="section">
+
+<h2>System Notifications</h2>
+
+<p style="color:gray;line-height:28px;text-align:center;padding:30px;">
+
+Administrative announcements, pending approvals,
+course updates and system notifications will appear here.
+
+</p>
+
+</div>
+
+<div>
+    <!-- Right Side -->
+
+<div class="section">
+
+<h2>Admin Tools</h2>
+
+<div class="feature-card">
+<button type="button"style="
+padding:15px 35px;
+background:#2563EB;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;" onclick="window.location.href='add_course.html'" style="text-decoration:none;color:inherit;">Add Course</button>
+
+</div>
+
+<div class="feature-card">
+<button type="button" style="
+padding:15px 35px;
+background:#2563EB;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;" onclick="window.location.href='edit_course.html'" style="text-decoration:none;color:inherit;">Edit /Delete  Courses</button>
+
+</div>
+
+
+
+
+<div class="feature-card">
+<button type="button" style="
+padding:15px 10px;
+background:#2563EB;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;" onclick="window.location.href='manage_enrollment.html'" style="text-decoration:none;color:inherit;">Manage Enrollments</button>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+<div class="section">
+
+<h2>Dashboard Overview</h2>
+
+<img src="https://picsum.photos/450/230"
+style="width:100%;border-radius:12px;">
+
+<p style="text-align:center;margin-top:18px;color:gray;">
+
+Analytics, charts and overall system insights will be displayed here after backend integration.
+
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>© 2026 Student Course Management System | Administrator Panel</p>
+
+</footer>
+
+</body>
+</html>

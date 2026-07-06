@@ -15,7 +15,8 @@
 }
 
 body{
-     background:linear-gradient(135deg,#2E1065,#4C1D95,#6D28D9);
+    background:linear-gradient(135deg,#0F172A,#1E293B,#312E81);
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
@@ -28,12 +29,12 @@ body{
     padding:28px 35px;
     border-radius:18px;
     box-shadow:0 15px 35px rgba(0,0,0,.3);
-    border-top:6px solid #6D28D9;
+     border-top:6px solid #2563EB;
 }
 
 h2{
     text-align:center;
-    color:#0b5ed7;
+      color:#1E3A8A;
     margin-bottom:25px;
 }
 
@@ -59,7 +60,7 @@ h2{
 button{
 width:100%;
 padding:15px;
-background:#6D28D9;
+background:#2563EB;
 color:white;
 border:none;
 border-radius:10px;
@@ -70,7 +71,7 @@ transition:.3s;
 }
 
 button:hover{
-background:#4C1D95;
+ background:#1D4ED8;
 }
 
 .login{
@@ -84,7 +85,7 @@ text-align:center;
 display:inline-block;
 margin-top:12px;
 padding:12px 25px;
-background:#7C3AED;
+background:#2563EB;
 color:white;
 text-decoration:none;
 border-radius:8px;
@@ -92,7 +93,36 @@ transition:.3s;
 }
 
 .login a:hover{
-background:#4C1D95;
+background:#1D4ED8;
+}
+/* Back Button */
+
+.back-btn{
+
+display:inline-block;
+
+margin-bottom:20px;
+
+padding:10px 18px;
+
+background:#475569;
+
+color:white;
+
+text-decoration:none;
+
+border-radius:8px;
+
+font-weight:bold;
+
+transition:.3s;
+
+}
+
+.back-btn:hover{
+
+background:#334155;
+
 }
 
 </style>
@@ -102,6 +132,9 @@ background:#4C1D95;
 <body>
 
 <div class="container">
+    <a href="index.html" class="back-btn">
+    ← Back to Home
+</a>
 
 <h2>Student Registration</h2>
 
@@ -151,7 +184,7 @@ background:#4C1D95;
 
 </form>
 
-<div class="login">
+<div class="login"> 
 
 <p>Already have an account?</p>
 
