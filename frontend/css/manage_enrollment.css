@@ -1,0 +1,233 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+
+background:linear-gradient(135deg,#0F172A,#1E293B,#312E81);
+min-height:100vh;
+
+}
+
+/*================ HEADER ================*/
+
+header{
+
+background:rgba(255,255,255,.12);
+
+backdrop-filter:blur(10px);
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+padding:18px 8%;
+
+box-shadow:0 4px 12px rgba(0,0,0,.25);
+
+}
+
+.logo{
+
+font-size:30px;
+font-weight:bold;
+color:white;
+
+}
+
+nav{
+
+display:flex;
+gap:22px;
+flex-wrap:wrap;
+
+}
+
+nav a{
+
+text-decoration:none;
+color:white;
+font-weight:bold;
+transition:.3s;
+
+}
+
+nav a:hover{
+
+color:#FFD43B;
+
+}
+
+/*================ CONTAINER ================*/
+
+.container{
+
+width:90%;
+max-width:1400px;
+margin:35px auto;
+
+}
+
+/*================ BANNER ================*/
+
+.banner{
+
+background:white;
+padding:35px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,.2);
+margin-bottom:30px;
+
+}
+
+.banner h1{
+
+font-size:38px;
+color:#1E3A8A;
+margin-bottom:15px;
+
+}
+
+.banner p{
+
+color:#555;
+font-size:17px;
+line-height:30px;
+
+}
+
+/*================ STATISTICS ================*/
+
+.stats{
+
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:30px;
+
+}
+
+.card{
+
+background:white;
+padding:25px;
+border-radius:18px;
+text-align:center;
+box-shadow:0 8px 20px rgba(0,0,0,.18);
+transition:.3s;
+
+}
+
+.card:hover{
+
+transform:translateY(-5px);
+
+}
+
+.card h3{
+
+color:#1E3A8A;
+margin-bottom:15px;
+
+}
+
+.number{
+
+font-size:38px;
+font-weight:bold;
+color:#2563EB;
+
+}
+
+/*================ SEARCH ================*/
+
+.search-box{
+
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.18);
+margin-bottom:30px;
+
+}
+
+.search-box input{
+
+width:100%;
+padding:15px;
+border:1px solid #CBD5E1;
+border-radius:10px;
+font-size:16px;
+outline:none;
+
+}
+
+.search-box input:focus{
+
+border-color:#2563EB;
+
+}
+
+/*================ SECTION ================*/
+
+.section{
+
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 8px 20px rgba(0,0,0,.18);
+margin-bottom:30px;
+
+}
+
+.section h2{
+
+color:#1E3A8A;
+margin-bottom:20px;
+
+}
+
+table{
+
+width:100%;
+border-collapse:collapse;
+
+}
+
+table th{
+
+background:#2563EB;
+color:white;
+padding:14px;
+
+}
+
+table td{
+
+padding:16px;
+text-align:center;
+border-bottom:1px solid #E5E7EB;
+
+}
+
+@media(max-width:900px){
+
+nav{
+
+justify-content:center;
+
+}
+
+}
+footer{
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(8px);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
