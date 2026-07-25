@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0">
 	<title>Login Portal</title>
 	<link rel="stylesheet" href="css/login.css">
+
 	</head>
 	<body>
 		<div class="container">
@@ -53,27 +54,8 @@
 
 </div>
 		</div>
-		<script>
-		function showStudent()
-		{
-		document.getElementById("role").innerHTML="Student Login";
-		document.getElementById("studentBtn").classList.add("active");
-		document.getElementById("adminBtn").classList.remove("active");
-		document.getElementById("registerTitle").innerHTML = "New Student?";
-    document.getElementById("registerText").innerHTML = "Don't have a student account?";
-    document.getElementById("registerLink").innerHTML = "Student Register";
-    document.getElementById("registerLink").href = "student_register.html";
-		}
-		function showAdmin()
-		{
-		document.getElementById("role").innerHTML="Administrator Login";
-		document.getElementById("adminBtn").classList.add("active");
-		document.getElementById("studentBtn").classList.remove("active");
-		  document.getElementById("registerTitle").innerHTML = "New Administrator?";
-    document.getElementById("registerText").innerHTML = "Don't have an administrator account?";
-    document.getElementById("registerLink").innerHTML = "Admin Register";
-    document.getElementById("registerLink").href = "admin_register.html";
-		}
+		<script src="js/login.js"></script>
+		
 		</script>
 		</body>
 		</html>

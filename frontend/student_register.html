@@ -17,27 +17,27 @@
 
 <h2>Student Registration</h2>
 
-<form>
+<form id="registerForm">
 
 <div class="input-box">
 <label>Student Name</label>
-<input type="text" placeholder="Enter Full Name" required>
+<input type="text" placeholder="Enter Full Name" id="studentName" required>
 </div>
 
 <div class="input-box">
 <label>Student ID</label>
-<input type="text" placeholder="Enter Student ID" required>
+<input type="text" placeholder="Enter Student ID" id="studentId" required>
 </div>
 
 <div class="input-box">
 <label>Email Address</label>
-<input type="email" placeholder="Enter Email" required>
+<input type="email" placeholder="Enter Email" id="studentEmail" required>
 </div>
 
 <div class="input-box">
 <label>Department</label>
 
-<select required>
+<select id="department" required>
 <option value="">Select Department</option>
 <option>Computer Science</option>
 <option>Information Technology</option>
@@ -51,15 +51,15 @@
 
 <div class="input-box">
 <label>Password</label>
-<input type="password" placeholder="Create Password" required>
+<input type="password" placeholder="Create Password" id="password" required>
 </div>
 
 <div class="input-box">
 <label>Confirm Password</label>
-<input type="password" placeholder="Confirm Password" required>
+<input type="password" placeholder="Confirm Password"id="confirmPassword" required>
 </div>
 
-<button type="submit">Register</button>
+<button type="submit" id="registerBtn">Register</button>
 
 </form>
 
@@ -72,7 +72,9 @@
 </div>
 
 </div>
-
+<script src="js/student_register.js"></script>
 </body>
 </html>
+
+
 ```

@@ -190,3 +190,61 @@ footer{
 }
 
 }
+.action-btn{
+    padding:15px 30px;
+    background:#2563EB;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.action-btn:hover{
+    background:#1D4ED8;
+    transform:translateY(-2px);
+}
+.logout-btn{
+    background:#DC2626;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#B91C1C;
+}
+.delete-btn{
+    background:#DC2626;
+    color:#fff;
+    border:none;
+    padding:10px 18px;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    margin-left:8px;
+    min-width:85px;
+}
+
+.delete-btn:hover{
+    background:#B91C1C;
+    transform:translateY(-2px);
+    box-shadow:0 6px 12px rgba(220,38,38,0.35);
+}
+
+.delete-btn:active{
+    transform:scale(0.96);
+}
+
+.delete-btn:focus{
+    outline:none;
+    box-shadow:0 0 0 3px rgba(220,38,38,0.25);
+}

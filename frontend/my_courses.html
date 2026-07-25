@@ -30,7 +30,9 @@ CourseMS
 
 <a href="my_courses.html">My Courses</a>
 
-
+<button id="logoutBtn" class="logout-btn">
+            Logout
+        </button>
 
 </nav>
 
@@ -210,29 +212,7 @@ id="overallProgressText">
 
 </div>
 
-<div class="info-box">
 
-<h4>Assignments Submitted</h4>
-
-<p id="assignmentCount">
-
-0
-
-</p>
-
-</div>
-
-<div class="info-box">
-
-<h4>Quizzes Completed</h4>
-
-<p id="quizCount">
-
-0
-
-</p>
-
-</div>
 
 </div>
 
@@ -240,50 +220,13 @@ id="overallProgressText">
 
 <!--================ COMPLETED COURSES =================-->
 
-<div class="section">
 
-<h2>Completed Courses</h2>
 
-<div id="completedCourses">
-
-<div class="empty">
-
-<h3>No Completed Courses</h3>
-
-<p>
-
-Complete your enrolled courses to unlock certificates and achievements.
-
-</p>
-
-</div>
-
-</div>
-
-</div>
 <!--================ CERTIFICATES =================-->
 
-<div class="section">
 
-<h2>Certificates</h2>
 
-<div id="certificateContainer">
 
-<div class="empty">
-
-<h3>No Certificates Yet</h3>
-
-<p>
-
-Certificates will be available after successfully completing a course.
-
-</p>
-
-</div>
-
-</div>
-
-</div>
 
 <!--================ RECENT ACTIVITY =================-->
 
@@ -323,273 +266,11 @@ submitted assignments and quiz attempts will appear here.
 </p>
 
 </footer>
-<script>
+<script src="js/my_courses.js"></script>
 
-//=====================================================
-// COURSE NAMES
-//=====================================================
 
-const courseNames={
 
-python:"Python Programming",
 
-java:"Java Programming",
-
-web:"Web Development",
-
-database:"Database Management",
-
-machinelearning:"Machine Learning",
-
-artificialintelligence:"Artificial Intelligence",
-
-cybersecurity:"Cyber Security",
-
-cloudcomputing:"Cloud Computing",
-
-mobiledevelopment:"Mobile App Development",
-
-devops:"DevOps"
-
-};
-
-
-//=====================================================
-// GET ENROLLED COURSES FROM LOCAL STORAGE
-//=====================================================
-
-const enrolledCourses=
-
-JSON.parse(localStorage.getItem("enrolledCourses")) || [];
-
-const container=document.getElementById("courseContainer");
-
-
-//=====================================================
-// DISPLAY ENROLLED COURSES
-//=====================================================
-
-if(enrolledCourses.length===0){
-
-container.innerHTML=`
-
-<div class="empty">
-
-<h3>No Courses Enrolled Yet</h3>
-
-<p>
-
-Browse courses and enroll to start learning.
-
-</p>
-
-<a href="courses.html" class="browse">
-
-Browse Courses
-
-</a>
-
-</div>
-
-`;
-
-document.getElementById("totalCourses").innerHTML="0";
-document.getElementById("enrolledCount").innerHTML="0";
-document.getElementById("progressCount").innerHTML="0";
-document.getElementById("completedCount").innerHTML="0";
-document.getElementById("certificateCount").innerHTML="0";
-
-}
-
-else{
-
-let html="";
-
-enrolledCourses.forEach(function(course){
-
-html+=`
-
-<div class="course-card">
-
-<div class="course-header">
-
-<h3>${courseNames[course]}</h3>
-
-<div class="status">
-
-Enrolled
-
-</div>
-
-</div>
-
-<div class="course-info">
-
-<div class="info-box">
-
-<h4>Status</h4>
-
-<p>Not Started</p>
-
-</div>
-
-<div class="info-box">
-
-<h4>Progress</h4>
-
-<p>0%</p>
-
-</div>
-
-<div class="info-box">
-
-<h4>Videos</h4>
-
-<p>Available</p>
-
-</div>
-
-<div class="info-box">
-
-<h4>Materials</h4>
-
-<p>Available</p>
-
-</div>
-
-</div>
-
-<div class="progress-title">
-
-Learning Progress
-
-</div>
-
-<div class="progress">
-
-<div class="progress-fill"
-
-style="width:0%;">
-
-</div>
-
-</div>
-
-<div class="progress-text">
-
-0% Completed
-
-</div>
-
-<div class="buttons">
-
-<a
-
-href="start_course.html?course=${course}"
-
-class="btn start">
-
-Start Course
-
-</a>
-
-<a
-
-href="course_details.html?course=${course}"
-
-class="btn details">
-
-View Details
-
-</a>
-
-</div>
-
-</div>
-
-`;
-
-});
-
-container.innerHTML=html;
-
-
-//=====================================================
-// UPDATE STATISTICS
-//=====================================================
-
-document.getElementById("totalCourses").innerHTML=
-
-enrolledCourses.length;
-
-document.getElementById("enrolledCount").innerHTML=
-
-enrolledCourses.length;
-
-document.getElementById("progressCount").innerHTML=
-
-enrolledCourses.length;
-
-document.getElementById("completedCount").innerHTML="0";
-
-document.getElementById("certificateCount").innerHTML="0";
-
-document.getElementById("overallProgress").style.width="0%";
-
-document.getElementById("overallProgressText").innerHTML="0% Completed";
-
-document.getElementById("lessonCount").innerHTML="0";
-
-document.getElementById("videoCount").innerHTML="0";
-
-document.getElementById("assignmentCount").innerHTML="0";
-
-document.getElementById("quizCount").innerHTML="0";
-
-
-//=====================================================
-// RECENT ACTIVITY
-//=====================================================
-
-document.getElementById("activityContainer").innerHTML=`
-
-<div class="course-card">
-
-<div class="course-header">
-
-<h3>Recent Activity</h3>
-
-<div class="status">
-
-Today
-
-</div>
-
-</div>
-
-<p style="font-size:17px;line-height:30px;color:#555;">
-
-You have enrolled in
-
-<b>${enrolledCourses.length}</b>
-
-course(s).
-
-Click
-
-<b>Start Course</b>
-
-to begin learning.
-
-</p>
-
-</div>
-
-`;
-
-}
-
-</script>
 
 
 

@@ -24,13 +24,15 @@ CourseMS
 
 <nav>
 
-<a href="index.html">Home</a>
+
 
 <a href="courses.html">Explore Courses</a>
 
 <a href="student_dashboard.html">Dashboard</a>
 <a href="my_courses.html">My Courses</a>
-
+<button id="logoutBtn" class="logout-btn">
+            Logout
+        </button>
 
 </nav>
 
@@ -142,97 +144,13 @@ Student Dashboard
 
 </footer>
 
-<script>
+<script src="js/enrollment_success.js"></script>
 
 //================ READ COURSE FROM URL =================//
 
-const params = new URLSearchParams(window.location.search);
-
-const course = params.get("course");
 
 
-//================ COURSE NAMES =================//
 
-const courseNames = {
-
-python:"Python Programming",
-
-java:"Java Programming",
-
-web:"Web Development",
-
-database:"Database Management",
-
-machinelearning:"Machine Learning",
-
-artificialintelligence:"Artificial Intelligence",
-
-cybersecurity:"Cyber Security",
-
-cloudcomputing:"Cloud Computing",
-
-mobiledevelopment:"Mobile App Development",
-
-devops:"DevOps"
-
-};
-
-
-//================ DISPLAY COURSE NAME =================//
-
-document.getElementById("courseName").textContent =
-courseNames[course] || "Selected Course";
-
-
-//================ TODAY'S DATE =================//
-
-const today = new Date();
-
-const options = {
-
-day:"numeric",
-
-month:"long",
-
-year:"numeric"
-
-};
-
-document.getElementById("enrollDate").textContent =
-today.toLocaleDateString("en-US", options);
-
-
-//================ SAVE ENROLLMENT =================//
-
-if(course){
-
-let enrolledCourses =
-JSON.parse(localStorage.getItem("enrolledCourses")) || [];
-
-// Avoid duplicate enrollment
-if(!enrolledCourses.includes(course)){
-
-enrolledCourses.push(course);
-
-localStorage.setItem(
-"enrolledCourses",
-JSON.stringify(enrolledCourses)
-);
-
-}
-
-}
-
-
-//================ MY COURSES BUTTON =================//
-
-function goToMyCourses(){
-
-window.location.href = "my_courses.html";
-
-}
-
-</script>
 
 </body>
 

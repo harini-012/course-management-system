@@ -19,27 +19,27 @@
 <h2>LOGIN PORTAL</h2>
     <h2>Administrator Registration</h2>
 
-    <form>
+    <form id="adminRegisterForm">
 
     <div class="input-box">
     <label>Administrator Name</label>
-    <input type="text" placeholder="Enter Full Name" required>
+    <input type="text" placeholder="Enter Full Name" id="adminName" required>
     </div>
 
     <div class="input-box">
     <label>Administrator ID</label>
-    <input type="text" placeholder="Enter Administrator ID" required>
+    <input type="text" placeholder="Enter Administrator ID"id="adminId" required>
     </div>
 
     <div class="input-box">
     <label>Email Address</label>
-    <input type="email" placeholder="Enter Email" required>
+    <input type="email" placeholder="Enter Email" id="adminEmail" required>
     </div>
 
     <div class="input-box">
     <label>Designation</label>
 
-    <select required>
+    <select id="designation" required>
     <option value="">Select Designation</option>
     <option>Principal</option>
     <option>Head of Department (HOD)</option>
@@ -52,15 +52,15 @@
 
     <div class="input-box">
     <label>Password</label>
-    <input type="password" placeholder="Create Password" required>
+    <input type="password" placeholder="Create Password" id="adminPassword" required>
     </div>
 
     <div class="input-box">
     <label>Confirm Password</label>
-    <input type="password" placeholder="Confirm Password" required>
+    <input type="password" placeholder="Confirm Password" id="adminConfirmPassword" required>
     </div>
 
-    <button type="submit">Register</button>
+    <button type="submit" id="adminBtn">Register</button>
 
     </form>
 
@@ -73,7 +73,7 @@
     </div>
 
     </div>
-
+    <script src="js/admin_register.js"></script>
     </body>
     </html>
     
