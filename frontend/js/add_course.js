@@ -58,7 +58,7 @@ const v5 = document.getElementById("v5");
 
 const l1 = document.getElementById("l1");
 const lab = document.getElementById("lab");
-const assignment = document.getElementById("assignment");
+
 const reference = document.getElementById("reference");
 const additional = document.getElementById("additional");
 
@@ -166,7 +166,7 @@ publishBtn.addEventListener("click", function () {
         materials: [
             l1.value.trim(),
             lab.value.trim(),
-            assignment.value.trim(),
+            
             reference.value.trim(),
             additional.value.trim()
         ],
@@ -257,7 +257,7 @@ draftBtn.addEventListener("click", function () {
         materials: [
             l1.value.trim(),
             lab.value.trim(),
-            assignment.value.trim(),
+            
             reference.value.trim(),
             additional.value.trim()
         ],
@@ -336,7 +336,7 @@ document.getElementById("resetBtn").addEventListener("click", function () {
 
     l1.value = "";
     lab.value = "";
-    assignment.value = "";
+   
     reference.value = "";
     additional.value = "";
 

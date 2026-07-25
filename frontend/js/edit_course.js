@@ -254,6 +254,8 @@ updateBtn.addEventListener("click", function () {
 
     courses[selectedCourseIndex] = {
 
+        key: courses[selectedCourseIndex].key,
+
         title: courseName.value.trim(),
         code: courseCode.value.trim(),
         instructor: instructor.value.trim(),

@@ -838,6 +838,74 @@ if(fullCourse){
 
 }
 
+//=====================================================
+// MERGE ADMIN-SAVED DATA (videos, materials, etc.)
+//=====================================================
+
+function extractYouTubeId(url) {
+
+    if (!url) return null;
+
+    const match = url.match(
+        /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
+    );
+
+    return match ? match[1] : null;
+
+}
+
+const adminCoursesForStart =
+    JSON.parse(localStorage.getItem("courses")) || [];
+
+const adminStartMatch = adminCoursesForStart.find(
+    c => c.title && c.title.toLowerCase() === course.title.toLowerCase()
+);
+
+if (adminStartMatch) {
+
+    course.overview = adminStartMatch.overview || course.overview;
+    course.image = adminStartMatch.image || course.image;
+    course.instructor = adminStartMatch.instructor || course.instructor;
+    course.duration = adminStartMatch.duration || course.duration;
+    course.level = adminStartMatch.level || course.level;
+
+    const adminVideos = (adminStartMatch.videos || [])
+        .filter(link => link && link.trim() !== "")
+        .map((link, i) => {
+
+            const videoId = extractYouTubeId(link);
+
+            return {
+                title: `Lesson ${i + 1}`,
+                thumbnail: videoId
+                    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+                    : (adminStartMatch.image || "https://picsum.photos/400/225"),
+                link: link
+            };
+
+        });
+
+    if (adminVideos.length) {
+        course.videos = adminVideos;
+    }
+
+    const adminMaterials = (adminStartMatch.materials || [])
+        .filter(link => link && link.trim() !== "")
+        .map((link, i) => ({
+            title: `Resource ${i + 1}`,
+            description: "Course material provided by the instructor.",
+            link: link
+        }));
+
+    if (adminMaterials.length) {
+        course.materials = adminMaterials;
+    }
+
+}
+
+
+course.videos = course.videos || [];
+course.materials = course.materials || [];
 
 //=====================================================
 // LOAD BASIC DETAILS

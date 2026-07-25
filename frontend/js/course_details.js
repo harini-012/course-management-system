@@ -1,4 +1,3 @@
-
 const student =
 JSON.parse(localStorage.getItem("loggedInStudent"));
 
@@ -1000,8 +999,69 @@ instructorInfo:
 const courseKey =
 localStorage.getItem("selectedCourseKey") || "python";
 
-const course =
-courseData[courseKey];
+const adminCourses =
+JSON.parse(localStorage.getItem("courses")) || [];
+
+function buildCourseFromAdmin(match, fallback) {
+
+    fallback = fallback || {};
+
+    return {
+        title: match.title || fallback.title,
+        image: match.image || fallback.image,
+        overview: match.overview || fallback.overview,
+        description: match.overview || fallback.description || "",
+        duration: match.duration || fallback.duration,
+        instructor: match.instructor || fallback.instructor,
+        level: match.level || fallback.level,
+        mode: fallback.mode || "Online",
+        modules: (match.syllabus || []).filter(Boolean).length
+            ? match.syllabus.filter(Boolean)
+            : (fallback.modules || []),
+        skills: fallback.skills || [],
+        outcomes: (match.outcomes || []).filter(Boolean).length
+            ? match.outcomes.filter(Boolean)
+            : (fallback.outcomes || []),
+        prerequisites: (match.prerequisites || []).filter(Boolean).length
+            ? match.prerequisites.filter(Boolean)
+            : (fallback.prerequisites || []),
+        instructorInfo: fallback.instructorInfo ||
+            (match.instructor ? match.instructor + " is the instructor for this course." : "")
+    };
+}
+
+let course;
+
+if (courseKey.indexOf("new:") === 0) {
+
+    // Brand-new course published by admin (no hardcoded entry exists)
+    const title = decodeURIComponent(courseKey.slice(4));
+    const match = adminCourses.find(c => c.title === title);
+
+    if (!match) {
+        alert("This course is no longer available.");
+        window.location.href = "courses.html";
+    }
+
+    course = buildCourseFromAdmin(match);
+
+} else {
+
+    const staticCourse = courseData[courseKey];
+    const match = adminCourses.find(c => c.key === courseKey);
+
+    if (!match && !staticCourse) {
+        alert("This course is no longer available.");
+        window.location.href = "courses.html";
+    } else if (!match) {
+        // This hardcoded course was deleted by the admin
+        alert("This course is no longer available.");
+        window.location.href = "courses.html";
+    } else {
+        course = buildCourseFromAdmin(match, staticCourse);
+    }
+
+}
 
 //================ HERO =================//
 

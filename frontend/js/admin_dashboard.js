@@ -7,66 +7,95 @@
 const defaultCourses = [
 
 {
+key: "python",
 title: "Python Programming",
 instructor: "John Smith",
 level: "Beginner"
 },
 
 {
+key: "java",
 title: "Java Programming",
 instructor: "David Wilson",
 level: "Intermediate"
 },
 
 {
+key: "web",
 title: "Web Development",
 instructor: "Sophia Johnson",
 level: "Beginner"
 },
 
 {
+key: "database",
 title: "Database Management",
 instructor: "Michael Brown",
 level: "Intermediate"
 },
 
 {
+key: "machinelearning",
 title: "Machine Learning",
 instructor: "Andrew Thomas",
 level: "Advanced"
 },
 
 {
+key: "artificialintelligence",
 title: "Artificial Intelligence",
 instructor: "Sarah Lee",
 level: "Advanced"
 },
 
 {
+key: "cybersecurity",
 title: "Cyber Security",
 instructor: "Robert King",
 level: "Intermediate"
 },
 
 {
+key: "cloudcomputing",
 title: "Cloud Computing",
 instructor: "Emily Davis",
 level: "Intermediate"
 },
 
 {
+key: "mobiledevelopment",
 title: "Mobile Development",
 instructor: "James Miller",
 level: "Beginner"
 },
 
 {
+key: "devops",
 title: "DevOps",
 instructor: "Daniel Scott",
 level: "Advanced"
 }
 
 ];
+
+// ===============================
+// KEY MIGRATION (for admins who already had courses saved
+// before this "key" field existed — matches them up by their
+// original default title so edits/deletes keep working)
+// ===============================
+
+const DEFAULT_KEY_TITLES = {
+    python: "Python Programming",
+    java: "Java Programming",
+    web: "Web Development",
+    database: "Database Management",
+    machinelearning: "Machine Learning",
+    artificialintelligence: "Artificial Intelligence",
+    cybersecurity: "Cyber Security",
+    cloudcomputing: "Cloud Computing",
+    mobiledevelopment: "Mobile Development",
+    devops: "DevOps"
+};
 
 // ===============================
 // LOAD COURSES
@@ -83,6 +112,34 @@ localStorage.setItem(
 "courses",
 JSON.stringify(courses)
 );
+
+}
+
+// Backfill "key" on any pre-existing saved courses that match a default title
+let coursesKeyMigrated = false;
+
+courses.forEach(c => {
+
+    if (!c.key) {
+
+        const foundKey = Object.keys(DEFAULT_KEY_TITLES).find(
+            k => DEFAULT_KEY_TITLES[k] === c.title
+        );
+
+        if (foundKey) {
+
+            c.key = foundKey;
+            coursesKeyMigrated = true;
+
+        }
+
+    }
+
+});
+
+if (coursesKeyMigrated) {
+
+    localStorage.setItem("courses", JSON.stringify(courses));
 
 }
 
