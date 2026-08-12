@@ -2,7 +2,20 @@
 // COURSE MANAGEMENT SYSTEM
 // login.js
 //==========================================
+import {
+    loginUser as authenticate,
+    logoutUser
+} from "./auth.js";
 
+import {
+    validateEmail,
+    validatePassword
+} from "./validation.js";
+
+import {
+    showMessage,
+    redirectTo
+} from "./ui.js";
 let currentRole = "student";
 
 //==========================================
@@ -83,116 +96,96 @@ function showAdmin() {
 function loginUser() {
 
     const email =
-        document.querySelector('input[type="email"]').value.trim();
+        document
+            .querySelector('input[type="email"]')
+            .value
+            .trim();
 
     const password =
-        document.querySelector('input[type="password"]').value.trim();
+        document
+            .querySelector('input[type="password"]')
+            .value
+            .trim();
 
-    //--------------------------------------
+
+    // ======================================
+    // VALIDATION
+    // ======================================
 
     if (email === "") {
 
-        alert("Please enter Email.");
+        showMessage("Please enter Email.");
 
         return;
     }
 
-    //--------------------------------------
 
     if (!validateEmail(email)) {
 
-        alert("Enter a valid Email Address.");
+        showMessage(
+            "Enter a valid Email Address."
+        );
 
         return;
     }
 
-    //--------------------------------------
 
     if (password === "") {
 
-        alert("Please enter Password.");
+        showMessage("Please enter Password.");
 
         return;
     }
 
-    //--------------------------------------
 
-    if (password.length < 6) {
+    if (!validatePassword(password)) {
 
-        alert("Password must contain at least 6 characters.");
+        showMessage(
+            "Password must contain at least 6 characters."
+        );
 
         return;
     }
 
-    //--------------------------------------
-    // STUDENT LOGIN
-    //--------------------------------------
+
+    // ======================================
+    // AUTHENTICATION
+    // ======================================
+
+    const result =
+        authenticate(
+            currentRole,
+            email,
+            password
+        );
+
+
+    if (!result.success) {
+
+        showMessage(result.message);
+
+        return;
+    }
+
+
+    // ======================================
+    // EXISTING NAVIGATION
+    // ======================================
+
+    showMessage(result.message);
+
 
     if (currentRole === "student") {
-        
-        const students =
-            JSON.parse(localStorage.getItem("students")) || [];
 
-        const student = students.find(user =>
-
-            user.email === email &&
-            user.password === password
-
+        redirectTo(
+            "student_dashboard.html"
         );
 
-        if (student) {
+    } else {
 
-            localStorage.setItem("loggedInStudent",
-                JSON.stringify(student));
-
-            alert("Student Login Successful.");
-
-            window.location.href =
-                "student_dashboard.html";
-
-        }
-
-        else {
-
-            alert("Invalid Student Email or Password.");
-
-        }
-
-    }
-
-    //--------------------------------------
-    // ADMIN LOGIN
-    //--------------------------------------
-
-    else {
-
-        const admins =
-            JSON.parse(localStorage.getItem("admins")) || [];
-
-        const admin = admins.find(user =>
-
-            user.email === email &&
-            user.password === password
-
+        redirectTo(
+            "admin_dashboard.html"
         );
-
-        if (admin) {
-
-            localStorage.setItem("loggedInAdmin",
-                JSON.stringify(admin));
-
-            alert("Administrator Login Successful.");
-
-            window.location.href =
-                "admin_dashboard.html";
-
-        }
-
-        else {
-
-            alert("Invalid Administrator Email or Password.");
-
-        }
 
     }
 
@@ -202,15 +195,6 @@ function loginUser() {
 // EMAIL VALIDATION
 //==========================================
 
-function validateEmail(email) {
-
-    const pattern =
-
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    return pattern.test(email);
-
-}
 
 //==========================================
 // ENTER KEY LOGIN
@@ -262,13 +246,19 @@ document.addEventListener("keypress", function (event) {
 
 function logout() {
 
-   
+    logoutUser(currentRole);
 
-    alert("Logged Out Successfully.");
+    showMessage(
+        "Logged Out Successfully."
+    );
 
-    window.location.href = "login.html";
+    redirectTo("login.html");
 
 }
+window.showStudent = showStudent;
+window.showAdmin = showAdmin;
+window.loginUser = loginUser;
+window.logout = logout;
 //==========================================
 // FUTURE BACKEND FLOW
 //==========================================
