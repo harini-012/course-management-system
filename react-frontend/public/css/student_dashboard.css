@@ -1,0 +1,296 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0F172A,#1E293B,#312E81);
+    min-height:100vh;
+}
+
+/*================ HEADER =================*/
+
+header{
+    background:rgba(255,255,255,.12);
+    backdrop-filter:blur(10px);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    box-shadow:0 4px 12px rgba(0,0,0,.25);
+}
+
+.logo{
+    font-size:28px;
+    color:white;
+    font-weight:bold;
+}
+
+nav{
+    display:flex;
+    gap:30px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    transition:.3s;
+}
+
+nav a:hover{
+    color:#FFD43B;
+}
+
+/*================ CONTAINER =================*/
+
+.container{
+    width:90%;
+    margin:35px auto;
+    display:flex;
+    gap:25px;
+    align-items:stretch;
+}
+
+/*================ PROFILE =================*/
+
+.profile{
+    flex:3;
+    background:#fff;
+    border-radius:18px;
+    padding:30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+.left-profile{
+    display:flex;
+    align-items:center;
+    gap:25px;
+}
+
+.left-profile img{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid #2563EB;
+}
+
+.left-profile h2{
+    color:#1E3A8A;
+    margin-bottom:18px;
+}
+
+/*================ STUDENT INFO =================*/
+
+.student-info{
+    margin-top:10px;
+}
+
+.student-info p{
+    display:flex;
+    margin-bottom:10px;
+    font-size:16px;
+    color:#374151;
+}
+
+.student-info b{
+    width:120px;
+    color:#1E3A8A;
+}
+
+.student-info span{
+    color:#111827;
+    font-weight:600;
+}
+
+/*================ RIGHT IMAGE =================*/
+
+.profile>img{
+    width:220px;
+    height:180px;
+    object-fit:cover;
+    border-radius:15px;
+}
+
+/*================ WELCOME CARD =================*/
+
+.container>div:last-child{
+    flex:1;
+    background:linear-gradient(135deg,#2563EB,#1D4ED8);
+    color:white;
+    border-radius:18px;
+    padding:30px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    text-align:center;
+    box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+.container>div:last-child h2{
+    margin-bottom:15px;
+}
+
+.container>div:last-child p{
+    line-height:28px;
+}
+
+/*================ STATS =================*/
+
+.stats{
+    width:90%;
+    margin:0 auto 30px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 8px 18px rgba(0,0,0,.2);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-6px);
+}
+
+.card h3{
+    color:#1E3A8A;
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.number{
+    font-size:38px;
+    color:#2563EB;
+    font-weight:bold;
+}
+
+/*================ MAIN =================*/
+
+.main{
+    width:90%;
+    margin:auto;
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+}
+
+/*================ SECTION =================*/
+
+.section{
+    background:white;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 8px 18px rgba(0,0,0,.2);
+    margin-bottom:25px;
+}
+
+.section h2{
+    color:#1E3A8A;
+    margin-bottom:20px;
+}
+
+/*================ TABLE =================*/
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th{
+    background:#2563EB;
+    color:white;
+    padding:15px;
+}
+
+table td{
+    padding:15px;
+    border-bottom:1px solid #E5E7EB;
+}
+
+table tr:hover{
+    background:#F8FAFC;
+}
+
+/*================ IMAGE =================*/
+
+.section img{
+    border-radius:12px;
+}
+
+/*================ QUICK OVERVIEW =================*/
+
+#quickOverview p{
+    margin-bottom:12px;
+    color:#374151;
+}
+
+#quickOverview b{
+    color:#1E3A8A;
+}
+
+/*================ FOOTER =================*/
+
+footer{
+    margin-top:40px;
+    padding:20px;
+    text-align:center;
+    color:white;
+    background:rgba(255,255,255,.08);
+    backdrop-filter:blur(8px);
+}
+
+/*================ RESPONSIVE =================*/
+
+@media(max-width:1000px){
+
+    .container{
+        flex-direction:column;
+    }
+
+    .profile{
+        flex-direction:column;
+        text-align:center;
+        gap:25px;
+    }
+
+    .left-profile{
+        flex-direction:column;
+    }
+
+    .student-info p{
+        justify-content:center;
+    }
+
+    .student-info b{
+        width:110px;
+    }
+
+    .main{
+        grid-template-columns:1fr;
+    }
+}
+.logout-btn{
+    background:#DC2626;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:.3s;
+}
+
+.logout-btn:hover{
+    background:#B91C1C;
+}
