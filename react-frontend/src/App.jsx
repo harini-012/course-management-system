@@ -1,6 +1,7 @@
 import {
     Routes,
-    Route
+    Route,
+    Navigate
 } from "react-router-dom";
 
 
@@ -62,7 +63,9 @@ function App() {
 
         <Routes>
 
-            {/* HOME */}
+            {/* =====================================
+                HOME
+            ====================================== */}
 
             <Route
                 path="/"
@@ -70,7 +73,9 @@ function App() {
             />
 
 
-            {/* LOGIN */}
+            {/* =====================================
+                LOGIN
+            ====================================== */}
 
             <Route
                 path="/login"
@@ -83,7 +88,9 @@ function App() {
             />
 
 
-            {/* REGISTER */}
+            {/* =====================================
+                STUDENT REGISTER
+            ====================================== */}
 
             <Route
                 path="/register"
@@ -96,6 +103,10 @@ function App() {
             />
 
 
+            {/* =====================================
+                ADMIN REGISTER
+            ====================================== */}
+
             <Route
                 path="/admin-register"
                 element={<AdminRegister />}
@@ -107,7 +118,9 @@ function App() {
             />
 
 
-            {/* PASSWORD */}
+            {/* =====================================
+                FORGOT PASSWORD
+            ====================================== */}
 
             <Route
                 path="/forgot-password"
@@ -120,6 +133,10 @@ function App() {
             />
 
 
+            {/* =====================================
+                RESET PASSWORD
+            ====================================== */}
+
             <Route
                 path="/reset-password"
                 element={<ResetPassword />}
@@ -131,7 +148,9 @@ function App() {
             />
 
 
-            {/* STUDENT DASHBOARD */}
+            {/* =====================================
+                STUDENT DASHBOARD
+            ====================================== */}
 
             <Route
                 path="/dashboard"
@@ -149,7 +168,9 @@ function App() {
             />
 
 
-            {/* ADMIN DASHBOARD */}
+            {/* =====================================
+                ADMIN DASHBOARD
+            ====================================== */}
 
             <Route
                 path="/admin-dashboard"
@@ -162,7 +183,9 @@ function App() {
             />
 
 
-            {/* COURSES */}
+            {/* =====================================
+                COURSES
+            ====================================== */}
 
             <Route
                 path="/courses"
@@ -175,7 +198,9 @@ function App() {
             />
 
 
-            {/* COURSE DETAILS */}
+            {/* =====================================
+                COURSE DETAILS
+            ====================================== */}
 
             <Route
                 path="/course-details"
@@ -187,14 +212,15 @@ function App() {
                 element={<CourseDetails />}
             />
 
-
             <Route
                 path="/courses/:courseKey"
                 element={<CourseDetails />}
             />
 
 
-            {/* MY COURSES */}
+            {/* =====================================
+                MY COURSES
+            ====================================== */}
 
             <Route
                 path="/my-courses"
@@ -207,7 +233,9 @@ function App() {
             />
 
 
-            {/* START COURSE */}
+            {/* =====================================
+                START COURSE
+            ====================================== */}
 
             <Route
                 path="/start-course"
@@ -220,7 +248,9 @@ function App() {
             />
 
 
-            {/* CERTIFICATE */}
+            {/* =====================================
+                CERTIFICATE
+            ====================================== */}
 
             <Route
                 path="/certificate"
@@ -233,7 +263,9 @@ function App() {
             />
 
 
-            {/* ENROLLMENT SUCCESS */}
+            {/* =====================================
+                ENROLLMENT SUCCESS
+            ====================================== */}
 
             <Route
                 path="/enrollment-success"
@@ -246,7 +278,9 @@ function App() {
             />
 
 
-            {/* ADMIN MANAGEMENT */}
+            {/* =====================================
+                MANAGE ENROLLMENT
+            ====================================== */}
 
             <Route
                 path="/manage-enrollment"
@@ -259,6 +293,10 @@ function App() {
             />
 
 
+            {/* =====================================
+                ADD COURSE
+            ====================================== */}
+
             <Route
                 path="/add-course"
                 element={<AddCourse />}
@@ -270,6 +308,10 @@ function App() {
             />
 
 
+            {/* =====================================
+                EDIT COURSE
+            ====================================== */}
+
             <Route
                 path="/edit-course"
                 element={<EditCourse />}
@@ -280,10 +322,23 @@ function App() {
                 element={<EditCourse />}
             />
 
+
+            {/* =====================================
+                UNKNOWN ROUTE
+            ====================================== */}
+
+            <Route
+                path="*"
+                element={
+                    <Navigate
+                        to="/"
+                        replace
+                    />
+                }
+            />
+
         </Routes>
-
     );
-
 }
 
 

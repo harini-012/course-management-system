@@ -1,1136 +1,2242 @@
 //=====================================================
-
-const student =
-JSON.parse(localStorage.getItem("loggedInStudent"));
-
-const studentKey = student.email;
-const courseData={
-
-//=====================================================
-// PYTHON PROGRAMMING
+// START COURSE
+// MOCK API + REACT VERSION
 //=====================================================
 
-python:{
-
-title:"Python Programming",
-
-image:"https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Master Python programming from fundamentals to advanced concepts through practical coding examples and projects.",
-
-instructor:"Dr. John Smith",
-
-duration:"8 Weeks",
-
-level:"Beginner",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"Python Full Course for Beginners",
-thumbnail:"https://img.youtube.com/vi/rfscVS0vtbw/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=rfscVS0vtbw"
-},
-
-{
-title:"Python Object Oriented Programming",
-thumbnail:"https://img.youtube.com/vi/JeznW_7DlB0/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=JeznW_7DlB0"
-},
-
-{
-title:"Python Projects",
-thumbnail:"https://img.youtube.com/vi/8ext9G7xspg/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=8ext9G7xspg"
-}
-
-],
-
-materials:[
-
-{
-
-title:"Official Python Documentation",
-
-description:"Complete Python documentation.",
-
-link:"https://docs.python.org/3/"
-
-},
-
-{
-
-title:"Google Python Class",
-
-description:"Python course from Google.",
-
-link:"https://developers.google.com/edu/python"
-
-},
-
-{
-
-title:"Real Python",
-
-description:"Advanced Python tutorials.",
-
-link:"https://realpython.com/"
-
-},
-
-{
-
-title:"W3Schools Python",
-
-description:"Python examples and exercises.",
-
-link:"https://www.w3schools.com/python/"
-
-}
-
-],
-
-
-
-},
-
-//=====================================================
-// JAVA PROGRAMMING
-//=====================================================
-
-java:{
-
-title:"Java Programming",
-
-image:"https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Learn Java programming, Object-Oriented Programming, Collections Framework, Multithreading and Java application development.",
-
-instructor:"Prof. Michael Brown",
-
-duration:"10 Weeks",
-
-level:"Intermediate",
-
-mode:"Online",
-
-videos:[
-
-{
-
-title:"Java Full Course",
-
-thumbnail:"https://img.youtube.com/vi/grEKMHGYyns/maxresdefault.jpg",
-
-link:"https://www.youtube.com/watch?v=grEKMHGYyns"
-
-},
-
-{
-
-title:"Java OOP Concepts",
-
-thumbnail:"https://img.youtube.com/vi/eIrMbAQSU34/maxresdefault.jpg",
-
-link:"https://www.youtube.com/watch?v=eIrMbAQSU34"
-
-},
-
-{
-
-title:"Java Collections Framework",
-
-thumbnail:"https://img.youtube.com/vi/WN9TdHpGOXk/maxresdefault.jpg",
-
-link:"https://www.youtube.com/watch?v=WN9TdHpGOXk"
-
-}
-
-],
-
-materials:[
-
-{
-
-title:"Oracle Java Documentation",
-
-description:"Official Java Documentation.",
-
-link:"https://docs.oracle.com/en/java/"
-
-},
-
-{
-
-title:"W3Schools Java",
-
-description:"Java Tutorial.",
-
-link:"https://www.w3schools.com/java/"
-
-},
-
-{
-
-title:"Baeldung Java",
-
-description:"Advanced Java tutorials.",
-
-link:"https://www.baeldung.com/"
-
-},
-
-{
-
-title:"GeeksforGeeks Java",
-
-description:"Java programming articles.",
-
-link:"https://www.geeksforgeeks.org/java/"
-
-}
-
-],
-
-
-},
-//=====================================================
-// WEB DEVELOPMENT
-//=====================================================
-
-web:{
-
-title:"Web Development",
-
-image:"https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Learn HTML, CSS, JavaScript, Bootstrap and Responsive Web Design to build modern websites.",
-
-instructor:"Sarah Johnson",
-
-duration:"10 Weeks",
-
-level:"Beginner",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"HTML Full Course",
-thumbnail:"https://img.youtube.com/vi/pQN-pnXPaVg/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=pQN-pnXPaVg"
-},
-
-{
-title:"CSS Full Course",
-thumbnail:"https://img.youtube.com/vi/1Rs2ND1ryYc/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=1Rs2ND1ryYc"
-},
-
-{
-title:"JavaScript Full Course",
-thumbnail:"https://img.youtube.com/vi/PkZNo7MFNFg/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=PkZNo7MFNFg"
-}
-
-],
-
-materials:[
-
-{
-title:"MDN HTML",
-description:"Official HTML documentation.",
-link:"https://developer.mozilla.org/en-US/docs/Web/HTML"
-},
-
-{
-title:"MDN CSS",
-description:"Official CSS documentation.",
-link:"https://developer.mozilla.org/en-US/docs/Web/CSS"
-},
-
-{
-title:"MDN JavaScript",
-description:"Official JavaScript documentation.",
-link:"https://developer.mozilla.org/en-US/docs/Web/JavaScript"
-},
-
-{
-title:"Bootstrap Documentation",
-description:"Bootstrap official guide.",
-link:"https://getbootstrap.com/docs/"
-}
-
-],
-
-
-
-},
+import {
+    getData,
+    getById,
+    queryData,
+    saveData,
+    patchData,
+    getSession,
+    clearSessions
+} from "./api.js";
 
 
 //=====================================================
-// DATABASE MANAGEMENT SYSTEM
+// GLOBAL PAGE DATA
 //=====================================================
 
-database:{
+let student = null;
 
-title:"Database Management System",
+let course = null;
 
-image:"https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80",
+let enrollment = null;
 
-overview:"Learn relational databases, SQL, normalization, joins and database design using MySQL and PostgreSQL.",
+let progressRecord = null;
 
-instructor:"Dr. David Wilson",
+let courseKey = null;
 
-duration:"8 Weeks",
+let videos = [];
 
-level:"Intermediate",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"DBMS Complete Course",
-thumbnail:"https://img.youtube.com/vi/HXV3zeQKqGY/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=HXV3zeQKqGY"
-},
-
-{
-title:"SQL Tutorial",
-thumbnail:"https://img.youtube.com/vi/7S_tz1z_5bA/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=7S_tz1z_5bA"
-},
-
-{
-title:"Normalization in DBMS",
-thumbnail:"https://img.youtube.com/vi/GFQaEYEc8_8/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=GFQaEYEc8_8"
-}
-
-],
-
-materials:[
-
-{
-title:"MySQL Documentation",
-description:"Official MySQL documentation.",
-link:"https://dev.mysql.com/doc/"
-},
-
-{
-title:"PostgreSQL Documentation",
-description:"Official PostgreSQL documentation.",
-link:"https://www.postgresql.org/docs/"
-},
-
-{
-title:"SQLBolt",
-description:"Interactive SQL tutorial.",
-link:"https://sqlbolt.com/"
-},
-
-{
-title:"W3Schools SQL",
-description:"SQL examples and exercises.",
-link:"https://www.w3schools.com/sql/"
-}
-
-],
-
-
-
-
-},
-//=====================================================
-// MACHINE LEARNING
-//=====================================================
-
-machinelearning:{
-
-title:"Machine Learning",
-
-image:"https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Learn Machine Learning concepts including supervised learning, unsupervised learning, regression, classification, clustering and predictive analytics using Python.",
-
-instructor:"Dr. Emily Davis",
-
-duration:"12 Weeks",
-
-level:"Advanced",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"Machine Learning Full Course",
-thumbnail:"https://img.youtube.com/vi/i_LwzRVP7bg/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=i_LwzRVP7bg"
-},
-
-{
-title:"Scikit-Learn Tutorial",
-thumbnail:"https://img.youtube.com/vi/0Lt9w-BxKFQ/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=0Lt9w-BxKFQ"
-},
-
-{
-title:"Machine Learning Project",
-thumbnail:"https://img.youtube.com/vi/7eh4d6sabA0/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=7eh4d6sabA0"
-}
-
-],
-
-materials:[
-
-{
-title:"Scikit-learn Documentation",
-description:"Official Scikit-learn documentation.",
-link:"https://scikit-learn.org/"
-},
-
-{
-title:"TensorFlow Documentation",
-description:"Official TensorFlow documentation.",
-link:"https://www.tensorflow.org/"
-},
-
-{
-title:"Google ML Crash Course",
-description:"Free ML course by Google.",
-link:"https://developers.google.com/machine-learning/crash-course"
-},
-
-{
-title:"Kaggle Learn",
-description:"Interactive ML tutorials.",
-link:"https://www.kaggle.com/learn"
-}
-
-],
-
-
-},
-
-//=====================================================
-// ARTIFICIAL INTELLIGENCE
-//=====================================================
-
-artificialintelligence:{
-
-title:"Artificial Intelligence",
-
-image:"https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Understand Artificial Intelligence concepts including intelligent agents, search algorithms, NLP, Computer Vision and modern AI applications.",
-
-instructor:"Dr. Sophia Martin",
-
-duration:"12 Weeks",
-
-level:"Advanced",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"Artificial Intelligence Full Course",
-thumbnail:"https://img.youtube.com/vi/JMUxmLyrhSk/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=JMUxmLyrhSk"
-},
-
-{
-title:"Artificial Intelligence Explained",
-thumbnail:"https://img.youtube.com/vi/ad79nYk2keg/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=ad79nYk2keg"
-},
-
-{
-title:"Natural Language Processing",
-thumbnail:"https://img.youtube.com/vi/fOvTtapxa9c/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=fOvTtapxa9c"
-}
-
-],
-
-materials:[
-
-{
-title:"Google AI",
-description:"Official Google AI resources.",
-link:"https://ai.google/"
-},
-
-{
-title:"TensorFlow",
-description:"Deep Learning documentation.",
-link:"https://www.tensorflow.org/"
-},
-
-{
-title:"OpenCV Documentation",
-description:"Computer Vision library.",
-link:"https://opencv.org/"
-},
-
-{
-title:"DeepLearning.AI",
-description:"AI learning platform.",
-link:"https://www.deeplearning.ai/"
-}
-
-],
-
-
-
-},
-//=====================================================
-// CYBER SECURITY
-//=====================================================
-
-cybersecurity:{
-
-title:"Cyber Security",
-
-image:"https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Learn Cyber Security concepts including network security, cryptography, ethical hacking, penetration testing, malware analysis and cloud security.",
-
-instructor:"Daniel Lee",
-
-duration:"10 Weeks",
-
-level:"Intermediate",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"Cyber Security Full Course",
-thumbnail:"https://img.youtube.com/vi/U_P23SqJaDc/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=U_P23SqJaDc"
-},
-
-{
-title:"Ethical Hacking Tutorial",
-thumbnail:"https://img.youtube.com/vi/3Kq1MIfTWCE/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=3Kq1MIfTWCE"
-},
-
-{
-title:"Network Security Basics",
-thumbnail:"https://img.youtube.com/vi/inWWhr5tnEA/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=inWWhr5tnEA"
-}
-
-],
-
-materials:[
-
-{
-title:"OWASP",
-
-description:"Official OWASP Web Security Guide.",
-
-link:"https://owasp.org/"
-},
-
-{
-title:"NIST Cybersecurity Framework",
-
-description:"Official Cybersecurity Framework.",
-
-link:"https://www.nist.gov/cyberframework"
-},
-
-{
-title:"Cisco Security",
-
-description:"Network Security Learning Resources.",
-
-link:"https://www.cisco.com/"
-},
-
-{
-title:"Kali Linux Documentation",
-
-description:"Official Kali Linux Documentation.",
-
-link:"https://www.kali.org/docs/"
-}
-
-],
-
-
-
-},
-
-//=====================================================
-// CLOUD COMPUTING
-//=====================================================
-
-cloudcomputing:{
-
-title:"Cloud Computing",
-
-image:"https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Learn Cloud Computing, AWS, Azure, Google Cloud, virtualization, cloud storage, deployment and cloud security.",
-
-instructor:"James Anderson",
-
-duration:"8 Weeks",
-
-level:"Intermediate",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"Cloud Computing Full Course",
-thumbnail:"https://img.youtube.com/vi/2LaAJq1lB1Q/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=2LaAJq1lB1Q"
-},
-
-{
-title:"AWS for Beginners",
-thumbnail:"https://img.youtube.com/vi/ulprqHHWlng/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=ulprqHHWlng"
-},
-
-{
-title:"Microsoft Azure Tutorial",
-thumbnail:"https://img.youtube.com/vi/NKEFWyqJ5XA/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=NKEFWyqJ5XA"
-}
-
-],
-
-materials:[
-
-{
-title:"AWS Documentation",
-
-description:"Official AWS Documentation.",
-
-link:"https://docs.aws.amazon.com/"
-},
-
-{
-title:"Microsoft Learn Azure",
-
-description:"Azure Learning Platform.",
-
-link:"https://learn.microsoft.com/azure/"
-},
-
-{
-title:"Google Cloud Documentation",
-
-description:"Official Google Cloud Docs.",
-
-link:"https://cloud.google.com/docs"
-},
-
-{
-title:"Docker Documentation",
-
-description:"Official Docker Guide.",
-
-link:"https://docs.docker.com/"
-}
-
-],
-
-
-
-},
-//=====================================================
-// MOBILE APP DEVELOPMENT
-//=====================================================
-
-mobiledevelopment:{
-
-title:"Mobile App Development",
-
-image:"https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Learn Android and cross-platform mobile application development using modern tools, APIs, databases and deployment techniques.",
-
-instructor:"Olivia Taylor",
-
-duration:"10 Weeks",
-
-level:"Intermediate",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"Android Development Full Course",
-thumbnail:"https://img.youtube.com/vi/fis26HvvDII/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=fis26HvvDII"
-},
-
-{
-title:"Flutter Tutorial",
-thumbnail:"https://img.youtube.com/vi/VPvVD8t02U8/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=VPvVD8t02U8"
-},
-
-{
-title:"Firebase for Beginners",
-thumbnail:"https://img.youtube.com/vi/9kRgVxULbag/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=9kRgVxULbag"
-}
-
-],
-
-materials:[
-
-{
-title:"Android Developers",
-description:"Official Android documentation.",
-link:"https://developer.android.com/"
-},
-
-{
-title:"Flutter Documentation",
-description:"Official Flutter documentation.",
-link:"https://docs.flutter.dev/"
-},
-
-{
-title:"Firebase Documentation",
-description:"Firebase official guide.",
-link:"https://firebase.google.com/docs"
-},
-
-{
-title:"Kotlin Documentation",
-description:"Official Kotlin documentation.",
-link:"https://kotlinlang.org/docs/"
-}
-
-],
-
-
-
-
-},
-
-//=====================================================
-// DEVOPS
-//=====================================================
-
-devops:{
-
-title:"DevOps",
-
-image:"https://images.unsplash.com/photo-1555949963-aa79dcee981c?auto=format&fit=crop&w=1200&q=80",
-
-overview:"Master DevOps tools including Git, GitHub, Docker, Kubernetes, Jenkins, CI/CD pipelines and cloud deployment.",
-
-instructor:"William Thomas",
-
-duration:"8 Weeks",
-
-level:"Intermediate",
-
-mode:"Online",
-
-videos:[
-
-{
-title:"DevOps Full Course",
-thumbnail:"https://img.youtube.com/vi/hQcFE0RD0cQ/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=hQcFE0RD0cQ"
-},
-
-{
-title:"Docker Tutorial",
-thumbnail:"https://img.youtube.com/vi/fqMOX6JJhGo/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=fqMOX6JJhGo"
-},
-
-{
-title:"Kubernetes Tutorial",
-thumbnail:"https://img.youtube.com/vi/X48VuDVv0do/maxresdefault.jpg",
-link:"https://www.youtube.com/watch?v=X48VuDVv0do"
-}
-
-],
-
-materials:[
-
-{
-title:"Docker Documentation",
-description:"Official Docker documentation.",
-link:"https://docs.docker.com/"
-},
-
-{
-title:"Kubernetes Documentation",
-description:"Official Kubernetes documentation.",
-link:"https://kubernetes.io/docs/"
-},
-
-{
-title:"Jenkins Documentation",
-description:"Official Jenkins documentation.",
-link:"https://www.jenkins.io/doc/"
-},
-
-{
-title:"Git Documentation",
-description:"Official Git documentation.",
-link:"https://git-scm.com/doc"
-}
-
-],
-
-
-}
-
-};   //================ END OF courseData ================
+let currentVideoIndex = 0;
 
 
 //=====================================================
-// GET SELECTED COURSE
+// INITIALIZE START COURSE
 //=====================================================
-let course =
-JSON.parse(localStorage.getItem("selectedCourse"));
 
-if(!course){
-    window.location.href="courses.html";
-}
+async function initializeStartCourse() {
 
-// Find the matching course from start_course.js courseData
-let fullCourse = null;
+    try {
 
-for(const key in courseData){
+        //=================================================
+        // SESSION
+        //=================================================
 
-    if(courseData[key].title === course.title){
+        const session =
+            await getSession();
 
-        fullCourse = courseData[key];
-        break;
+
+        if (
+            !session ||
+            session.role !== "student"
+        ) {
+
+            window.location.replace(
+                "/login"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // STUDENT
+        //=================================================
+
+        student =
+            await getById(
+                "students",
+                session.userId
+            );
+
+
+        if (
+            !student ||
+            student.active === false
+        ) {
+
+            await clearSessions();
+
+            window.location.replace(
+                "/login"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // APP STATE
+        //=================================================
+
+        const appState =
+            await getById(
+                "appState",
+                "current"
+            );
+
+
+        courseKey =
+            appState
+                ? appState.selectedCourseKey
+                : null;
+
+
+        if (!courseKey) {
+
+            alert(
+                "Please select a course first."
+            );
+
+            window.location.replace(
+                "/my-courses"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // COURSE
+        //=================================================
+
+        course =
+            await findCourse(
+                courseKey
+            );
+
+
+        if (!course) {
+
+            alert(
+                "Course not found."
+            );
+
+            window.location.replace(
+                "/my-courses"
+            );
+
+            return;
+        }
+
+
+        courseKey =
+            course.courseKey ||
+            course.key ||
+            course.id ||
+            courseKey;
+
+
+        //=================================================
+        // VERIFY ENROLLMENT
+        //=================================================
+
+        const enrollments =
+            await queryData(
+                "enrollments",
+                {
+                    studentEmail:
+                        student.email
+                }
+            );
+
+
+        enrollment =
+            Array.isArray(enrollments)
+                ? enrollments.find(
+                    item =>
+                        sameCourse(item)
+                )
+                : null;
+
+
+        if (!enrollment) {
+
+            alert(
+                "You are not enrolled in this course."
+            );
+
+            window.location.replace(
+                "/courses"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // REJECTED ENROLLMENT CHECK
+        //=================================================
+
+        const enrollmentStatus =
+            String(
+                enrollment.status || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        if (
+            enrollmentStatus ===
+            "rejected"
+        ) {
+
+            alert(
+                "Your enrollment has been rejected."
+            );
+
+            window.location.replace(
+                "/my-courses"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // VIDEOS
+        //=================================================
+
+        videos =
+            normalizeVideos(
+                course.videos
+            );
+
+
+        //=================================================
+        // PROGRESS
+        //=================================================
+
+        await loadOrCreateProgress();
+
+
+        //=================================================
+        // CURRENT VIDEO
+        //=================================================
+
+        currentVideoIndex =
+            Number(
+                progressRecord
+                    ?.currentVideoIndex ||
+                0
+            );
+
+
+        if (
+            currentVideoIndex < 0 ||
+            currentVideoIndex >= videos.length
+        ) {
+
+            currentVideoIndex = 0;
+        }
+
+
+        //=================================================
+        // RENDER PAGE
+        //=================================================
+
+        renderCourseHeader();
+
+        renderVideoList();
+
+        renderMaterials();
+
+        renderProgress();
+
+        loadCurrentVideo();
+
+        initializePageButtons();
 
     }
 
-}
-
-if(fullCourse){
-
-    // Keep description if it exists in selectedCourse
-    fullCourse.description = course.description || "";
-
-    course = fullCourse;
-
-}
-
-//=====================================================
-// MERGE ADMIN-SAVED DATA (videos, materials, etc.)
-//=====================================================
-
-function extractYouTubeId(url) {
-
-    if (!url) return null;
-
-    const match = url.match(
-        /(?:youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/
-    );
-
-    return match ? match[1] : null;
-
-}
-
-const adminCoursesForStart =
-    JSON.parse(localStorage.getItem("courses")) || [];
-
-const adminStartMatch = adminCoursesForStart.find(
-    c => c.title && c.title.toLowerCase() === course.title.toLowerCase()
-);
-
-if (adminStartMatch) {
-
-    course.overview = adminStartMatch.overview || course.overview;
-    course.image = adminStartMatch.image || course.image;
-    course.instructor = adminStartMatch.instructor || course.instructor;
-    course.duration = adminStartMatch.duration || course.duration;
-    course.level = adminStartMatch.level || course.level;
-
-    const adminVideos = (adminStartMatch.videos || [])
-        .filter(link => link && link.trim() !== "")
-        .map((link, i) => {
-
-            const videoId = extractYouTubeId(link);
-
-            return {
-                title: `Lesson ${i + 1}`,
-                thumbnail: videoId
-                    ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-                    : (adminStartMatch.image || "https://picsum.photos/400/225"),
-                link: link
-            };
-
-        });
-
-    if (adminVideos.length) {
-        course.videos = adminVideos;
-    }
-
-    const adminMaterials = (adminStartMatch.materials || [])
-        .filter(link => link && link.trim() !== "")
-        .map((link, i) => ({
-            title: `Resource ${i + 1}`,
-            description: "Course material provided by the instructor.",
-            link: link
-        }));
-
-    if (adminMaterials.length) {
-        course.materials = adminMaterials;
-    }
-
-}
-
-
-course.videos = course.videos || [];
-course.materials = course.materials || [];
-
-//=====================================================
-// LOAD BASIC DETAILS
-//=====================================================
-
-document.getElementById("title").innerHTML=course.title;
-document.getElementById("overview").innerHTML=course.overview;
-document.getElementById("courseImage").src=course.image;
-console.log(course);
-console.log(course.videos);
-console.log(course.materials);
-document.getElementById("instructor").innerHTML=course.instructor;
-document.getElementById("duration").innerHTML=course.duration;
-document.getElementById("level").innerHTML=course.level;
-document.getElementById("mode").innerHTML=course.mode;
-// Restore certificate button if course already completed
-if(localStorage.getItem(studentKey+"_"+course.title + "_completed")){
-
-    const btn = document.getElementById("certificateBtn");
-
-    btn.disabled = false;
-    btn.style.background = "#2563EB";
-    btn.style.cursor = "pointer";
-
-}
-let completedVideos =
-JSON.parse(
-    localStorage.getItem(
-        studentKey + "_" + course.title + "_videos"
-    )
-) || [];
-updateProgress();
-//=====================================================
-// LOAD VIDEOS
-//=====================================================
-
-loadVideos(course);
-
-
-function loadVideos(course){
-
-    let html = "";
-
-    course.videos.forEach((video,index)=>{
-
-        html += `
-        <div class="video-card">
-
-            <img src="${video.thumbnail}" alt="${video.title}">
-
-            <h3>${video.title}</h3>
-
-            <button
-                class="watch-btn"
-                onclick="watchVideo('${video.link}', ${index})">
-                Watch Video
-            </button>
-
-        </div>
-        `;
-
-    });
-
-    document.getElementById("videoContainer").innerHTML = html;
-
-}
-
-//=====================================================
-// LOAD MATERIALS
-//=====================================================
-
-loadMaterials(course);
-function loadMaterials(course){
-
-let html="";
-
-course.materials.forEach(material=>{
-
-html+=`
-
-<div class="material-card">
-
-<h3>${material.title}</h3>
-
-<p>${material.description}</p>
-
-<a
-
-href="${material.link}"
-
-target="_blank"
-
-class="action-btn">
-
-Open Material
-
-</a>
-
-</div>
-
-`;
-
-});
-
-document.getElementById("materialContainer").innerHTML=html;
-
-}
-
-//=====================================================
-// LOAD ASSIGNMENTS
-//=====================================================
-
-
-
-
-//=====================================================
-// LOAD QUIZZES
-//=====================================================
-
-
-//=====================================================
-// COMPLETE COURSE
-//=====================================================
-
-document.getElementById("completeBtn").onclick = function(){
-
-    if(completedVideos.length !== course.videos.length){
-
-        alert("Please watch all videos before completing the course.");
-        return;
-
-    }
-
-    // Save completion status
-    localStorage.setItem(
-        studentKey+"_"+course.title + "_completed",
-        "true"
-    );
-
-    const btn = document.getElementById("certificateBtn");
-
-    btn.disabled = false;
-    btn.style.background = "#2563EB";
-    btn.style.cursor = "pointer";
-
-    alert("Congratulations! You have successfully completed the course.");
-
-};
-
-
-//=====================================================
-// CERTIFICATE
-//=====================================================
-
-document.getElementById("certificateBtn").onclick=function(){
-
-window.location.href =
-"certificate.html?course=" +
-encodeURIComponent(course.title);
-
-};
-
-
-
-
-
-function watchVideo(link,index){
-    
-    window.open(link,"_blank");
-
-    if(!completedVideos.includes(index)){
-
-        completedVideos.push(index);
-
-        localStorage.setItem(
-            studentKey+"_"+course.title+"_videos",
-            JSON.stringify(completedVideos)
+    catch (error) {
+
+        console.error(
+            "Start Course Error:",
+            error
         );
 
+        alert(
+            "Unable to load the course."
+        );
     }
-    localStorage.setItem(
-    studentKey+"_"+course.title + "_totalVideos",
-    course.videos.length
-);
-
-    updateProgress();
-
 }
 
-function updateProgress(){
-    const student = JSON.parse(localStorage.getItem("loggedInStudent"));
-const studentKey = student.email;
-    const progress =
-    (completedVideos.length / course.videos.length) * 100;
-    localStorage.setItem(
-    studentKey+"_"+course.title + "_progress",
-    progress);
 
-    document.getElementById("progressBar").style.width =
-    progress + "%";
+//=====================================================
+// FIND COURSE
+//=====================================================
 
-    document.getElementById("progressText").innerHTML =
-    Math.round(progress) + "% Completed";
+async function findCourse(key) {
 
-    if(progress >= 100){
+    try {
 
-        const completeBtn =
-        document.getElementById("completeBtn");
+        const directCourse =
+            await getById(
+                "courses",
+                key
+            );
 
-        completeBtn.disabled = false;
-        completeBtn.style.background = "#16a34a";
-        completeBtn.style.cursor = "pointer";
+
+        if (directCourse) {
+
+            return directCourse;
+        }
 
     }
-    
+
+    catch (error) {
+
+        // Continue with collection search.
+    }
+
+
+    const courseData =
+        await getData(
+            "courses"
+        );
+
+
+    if (
+        !Array.isArray(courseData)
+    ) {
+
+        return null;
+    }
+
+
+    const normalizedKey =
+        String(key)
+            .trim()
+            .toLowerCase();
+
+
+    return courseData.find(
+        item => {
+
+            const values = [
+
+                item.id,
+
+                item.key,
+
+                item.courseKey,
+
+                item.title
+
+            ];
+
+
+            return values.some(
+                value =>
+                    value !== undefined &&
+                    value !== null &&
+                    String(value)
+                        .trim()
+                        .toLowerCase() ===
+                    normalizedKey
+            );
+        }
+    ) || null;
+}
+
+
+//=====================================================
+// SAME COURSE
+//=====================================================
+
+function sameCourse(item) {
+
+    if (!item) {
+
+        return false;
+    }
+
+
+    const id =
+        getCourseId();
+
+
+    return Boolean(
+
+        (
+            item.courseId !== undefined &&
+            item.courseId !== null &&
+            String(item.courseId) ===
+            String(id)
+        )
+
+        ||
+
+        (
+            item.courseKey &&
+            String(item.courseKey) ===
+            String(courseKey)
+        )
+
+        ||
+
+        (
+            item.courseTitle &&
+            item.courseTitle ===
+            course.title
+        )
+
+        ||
+
+        (
+            item.title &&
+            item.title ===
+            course.title
+        )
+
+        ||
+
+        (
+            item.course &&
+            item.course ===
+            course.title
+        )
+    );
+}
+
+
+//=====================================================
+// COURSE ID
+//=====================================================
+
+function getCourseId() {
+
+    return (
+        course?.id ||
+        course?.courseKey ||
+        course?.key ||
+        courseKey
+    );
+}
+
+
+//=====================================================
+// NORMALIZE VIDEOS
+//=====================================================
+
+function normalizeVideos(
+    courseVideos
+) {
+
+    if (
+        !Array.isArray(courseVideos)
+    ) {
+
+        return [];
+    }
+
+
+    return courseVideos.map(
+        (video, index) => {
+
+            if (
+                typeof video ===
+                "string"
+            ) {
+
+                return {
+
+                    id:
+                        `video-${index + 1}`,
+
+                    title:
+                        `Lesson ${index + 1}`,
+
+                    url:
+                        video,
+
+                    description:
+                        ""
+                };
+            }
+
+
+            return {
+
+                id:
+                    video.id ||
+                    video.key ||
+                    `video-${index + 1}`,
+
+                title:
+                    video.title ||
+                    video.name ||
+                    `Lesson ${index + 1}`,
+
+                url:
+                    video.url ||
+                    video.videoUrl ||
+                    video.src ||
+                    video.link ||
+                    "",
+
+                description:
+                    video.description ||
+                    ""
+            };
+        }
+    );
+}
+
+
+//=====================================================
+// LOAD / CREATE PROGRESS
+//=====================================================
+async function loadOrCreateProgress() {
+
+    //=================================================
+    // GET ALL PROGRESS FOR THIS STUDENT
+    //=================================================
+
+    const progressData =
+        await queryData(
+            "progress",
+            {
+                studentEmail:
+                    student.email
+            }
+        );
+
+
+    const allProgress =
+        Array.isArray(progressData)
+            ? progressData
+            : [];
+
+
+    //=================================================
+    // FIND ALL RECORDS FOR THIS COURSE
+    //=================================================
+
+    const matchingRecords =
+        allProgress.filter(
+            item =>
+                sameCourse(item)
+        );
+
+
+    //=================================================
+    // IF RECORD ALREADY EXISTS
+    // USE BEST EXISTING RECORD
+    // DO NOT CREATE ANOTHER
+    //=================================================
+
+    if (
+        matchingRecords.length > 0
+    ) {
+
+        matchingRecords.sort(
+            (a, b) => {
+
+                // First prefer record with more
+                // completed videos
+
+                const aCompleted =
+                    Array.isArray(
+                        a.completedVideos
+                    )
+                        ? a.completedVideos.length
+                        : 0;
+
+
+                const bCompleted =
+                    Array.isArray(
+                        b.completedVideos
+                    )
+                        ? b.completedVideos.length
+                        : 0;
+
+
+                if (
+                    bCompleted !==
+                    aCompleted
+                ) {
+
+                    return (
+                        bCompleted -
+                        aCompleted
+                    );
+                }
+
+
+                // Then prefer higher percentage
+
+                const percentageDifference =
+                    Number(
+                        b.percentage || 0
+                    ) -
+                    Number(
+                        a.percentage || 0
+                    );
+
+
+                if (
+                    percentageDifference !== 0
+                ) {
+
+                    return percentageDifference;
+                }
+
+
+                // Finally newest record
+
+                return (
+                    new Date(
+                        b.updatedAt ||
+                        b.startedAt ||
+                        0
+                    ).getTime()
+                    -
+                    new Date(
+                        a.updatedAt ||
+                        a.startedAt ||
+                        0
+                    ).getTime()
+                );
+            }
+        );
+
+
+        progressRecord =
+            matchingRecords[0];
+
+
+        console.log(
+            "Using existing progress:",
+            progressRecord
+        );
+
+
+        return;
+    }
+
+
+    //=================================================
+    // NO RECORD EXISTS - CREATE ONLY ONE
+    //=================================================
+
+    const newProgress = {
+
+        studentId:
+            student.id,
+
+        studentEmail:
+            student.email,
+
+        courseId:
+            getCourseId(),
+
+        courseKey:
+            courseKey,
+
+        courseTitle:
+            course.title,
+
+        completedVideos:
+            [],
+
+        totalVideos:
+            videos.length,
+
+        currentVideoIndex:
+            0,
+
+        percentage:
+            0,
+
+        completed:
+            false,
+
+        startedAt:
+            new Date()
+                .toISOString(),
+
+        updatedAt:
+            new Date()
+                .toISOString()
+    };
+
+
+    progressRecord =
+        await saveData(
+            "progress",
+            newProgress
+        );
+
+
+    console.log(
+        "Created new progress:",
+        progressRecord
+    );
+}
+
+
+//=====================================================
+// COURSE HEADER
+//=====================================================
+
+function renderCourseHeader() {
+
+    setText(
+        "courseTitle",
+        course.title ||
+        "Course"
+    );
+
+
+    setText(
+        "courseName",
+        course.title ||
+        "Course"
+    );
+
+
+    setText(
+        "instructor",
+        course.instructor ||
+        ""
+    );
+
+
+    setText(
+        "courseInstructor",
+        course.instructor ||
+        ""
+    );
+
+
+    setText(
+        "duration",
+        course.duration ||
+        ""
+    );
+
+
+    setText(
+        "courseDuration",
+        course.duration ||
+        ""
+    );
+
+
+    setText(
+        "courseDescription",
+        course.description ||
+        course.overview ||
+        ""
+    );
+
+
+    document.title =
+        `${course.title || "Course"} | Learning`;
+}
+
+
+//=====================================================
+// RENDER VIDEO LIST
+//=====================================================
+
+function renderVideoList() {
+
+    const container =
+        document.getElementById(
+            "videoList"
+        );
+
+
+    if (!container) {
+
+        return;
+    }
+
+
+    if (
+        videos.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div
+                style="
+                    padding:20px;
+                    text-align:center;
+                    color:gray;
+                "
+            >
+
+                No course videos available.
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    const completedVideos =
+        getCompletedVideos();
+
+
+    container.innerHTML =
+        videos
+            .map(
+                (video, index) => {
+
+                    const completed =
+                        completedVideos.includes(
+                            String(video.id)
+                        );
+
+
+                    return `
+
+                        <div
+                            class="video-item
+                            ${
+                                index === currentVideoIndex
+                                    ? "active"
+                                    : ""
+                            }"
+                            onclick="selectVideo(${index})"
+                            style="cursor:pointer;"
+                        >
+
+                            <div>
+
+                                <strong>
+                                    ${index + 1}.
+                                    ${escapeHTML(
+                                        video.title
+                                    )}
+                                </strong>
+
+                                ${
+                                    video.description
+                                        ? `
+                                            <p>
+                                                ${escapeHTML(
+                                                    video.description
+                                                )}
+                                            </p>
+                                        `
+                                        : ""
+                                }
+
+                            </div>
+
+
+                            <span>
+
+                                ${
+                                    completed
+                                        ? "✓ Completed"
+                                        : "Not Completed"
+                                }
+
+                            </span>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+}
+
+
+//=====================================================
+// LOAD CURRENT VIDEO
+//=====================================================
+
+function loadCurrentVideo() {
+
+    const videoTitle =
+        document.getElementById(
+            "videoTitle"
+        );
+
+
+    const videoPlayer =
+        document.getElementById(
+            "courseVideo"
+        );
+
+
+    const videoFrame =
+        document.getElementById(
+            "videoFrame"
+        );
+
+
+    if (
+        videos.length === 0
+    ) {
+
+        if (videoTitle) {
+
+            videoTitle.textContent =
+                "No Video Available";
+        }
+
+
+        if (videoPlayer) {
+
+            videoPlayer.removeAttribute(
+                "src"
+            );
+        }
+
+
+        if (videoFrame) {
+
+            videoFrame.removeAttribute(
+                "src"
+            );
+        }
+
+
+        updateNavigationButtons();
+
+        return;
+    }
+
+
+    const video =
+        videos[
+            currentVideoIndex
+        ];
+
+
+    if (videoTitle) {
+
+        videoTitle.textContent =
+            video.title;
+    }
+
+
+    // HTML VIDEO
+
+    if (videoPlayer) {
+
+        videoPlayer.src =
+            video.url || "";
+
+
+        try {
+
+            videoPlayer.load();
+
+        }
+
+        catch (error) {
+
+            // Ignore unsupported load.
+        }
+    }
+
+
+    // IFRAME VIDEO
+
+    if (videoFrame) {
+
+        videoFrame.src =
+            convertToEmbedUrl(
+                video.url
+            );
+    }
+
+
+    renderVideoList();
+
+    updateNavigationButtons();
+}
+
+
+//=====================================================
+// CONVERT VIDEO URL
+//=====================================================
+
+function convertToEmbedUrl(url) {
+
+    const value =
+        String(
+            url || ""
+        );
+
+
+    if (
+        value.includes(
+            "youtube.com/watch?v="
+        )
+    ) {
+
+        const id =
+            value.split(
+                "youtube.com/watch?v="
+            )[1]
+                ?.split("&")[0];
+
+
+        return id
+            ? `https://www.youtube.com/embed/${id}`
+            : value;
+    }
+
+
+    if (
+        value.includes(
+            "youtu.be/"
+        )
+    ) {
+
+        const id =
+            value.split(
+                "youtu.be/"
+            )[1]
+                ?.split("?")[0];
+
+
+        return id
+            ? `https://www.youtube.com/embed/${id}`
+            : value;
+    }
+
+
+    return value;
+}
+
+
+//=====================================================
+// SELECT VIDEO
+//=====================================================
+
+async function selectVideo(index) {
+
+    if (
+        index < 0 ||
+        index >= videos.length
+    ) {
+
+        return;
+    }
+
+
+    currentVideoIndex =
+        index;
+
+
+    await saveCurrentVideoIndex();
+
+
+    loadCurrentVideo();
+}
+
+
+//=====================================================
+// SAVE CURRENT VIDEO INDEX
+//=====================================================
+
+async function saveCurrentVideoIndex() {
+
+    if (
+        !progressRecord ||
+        progressRecord.id === undefined
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        progressRecord =
+            await patchData(
+                "progress",
+                progressRecord.id,
+                {
+                    currentVideoIndex:
+                        currentVideoIndex,
+
+                    updatedAt:
+                        new Date()
+                            .toISOString()
+                }
+            );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to save current video:",
+            error
+        );
+    }
+}
+
+
+//=====================================================
+// PREVIOUS VIDEO
+//=====================================================
+
+async function previousVideo() {
+
+    if (
+        currentVideoIndex <= 0
+    ) {
+
+        return;
+    }
+
+
+    currentVideoIndex--;
+
+
+    await saveCurrentVideoIndex();
+
+
+    loadCurrentVideo();
+}
+
+
+//=====================================================
+// NEXT VIDEO
+//=====================================================
+
+async function nextVideo() {
+
+    if (
+        videos.length === 0
+    ) {
+
+        return;
+    }
+
+
+    await markCurrentVideoCompleted();
+
+
+    if (
+        currentVideoIndex <
+        videos.length - 1
+    ) {
+
+        currentVideoIndex++;
+
+
+        await saveCurrentVideoIndex();
+
+
+        loadCurrentVideo();
+    }
+
+    else {
+
+        await finishCourseIfComplete();
+    }
+}
+
+
+//=====================================================
+// MARK CURRENT VIDEO COMPLETE
+//=====================================================
+
+async function markCurrentVideoCompleted() {
+
+    if (
+        videos.length === 0 ||
+        !progressRecord ||
+        progressRecord.id === undefined
+    ) {
+
+        return false;
+    }
+
+
+    const video =
+        videos[
+            currentVideoIndex
+        ];
+
+
+    const completedVideos =
+        getCompletedVideos();
+
+
+    const videoId =
+        String(
+            video.id
+        );
+
+
+    if (
+        !completedVideos.includes(
+            videoId
+        )
+    ) {
+
+        completedVideos.push(
+            videoId
+        );
+    }
+
+
+    const percentage =
+        calculateProgress(
+            completedVideos.length
+        );
+
+
+    const completed =
+        videos.length > 0 &&
+        completedVideos.length >=
+            videos.length;
+
+
+    const updateData = {
+
+        completedVideos:
+            completedVideos,
+
+        totalVideos:
+            videos.length,
+
+        currentVideoIndex:
+            currentVideoIndex,
+
+        percentage:
+            completed
+                ? 100
+                : percentage,
+
+        completed:
+            completed,
+
+        updatedAt:
+            new Date()
+                .toISOString(),
+
+        completedAt:
+            completed
+                ? (
+                    progressRecord.completedAt ||
+                    new Date()
+                        .toISOString()
+                )
+                : null
+    };
+
+
+    const updatedRecord =
+        await patchData(
+            "progress",
+            progressRecord.id,
+            updateData
+        );
+
+
+    /*
+     * IMPORTANT:
+     * Do not depend entirely on the PATCH response.
+     * Keep the local record synchronized immediately.
+     */
+
+    progressRecord = {
+
+        ...progressRecord,
+
+        ...(updatedRecord || {}),
+
+        ...updateData
+    };
+
+
+    if (completed) {
+
+        await markEnrollmentCompleted();
+    }
+
+
+    renderProgress();
+
+    renderVideoList();
+
+
+    return completed;
+}
+
+
+//=====================================================
+// COMPLETE LESSON BUTTON
+//=====================================================
+
+async function completeCurrentLesson() {
+
+    try {
+
+        const completed =
+            await markCurrentVideoCompleted();
+
+
+        /*
+         * If the final lesson caused the
+         * course to become complete,
+         * immediately unlock certificate.
+         */
+
+        if (completed) {
+
+            await finishCourseIfComplete();
+
+            return;
+        }
+
+
+        /*
+         * Move to next lesson only when
+         * there is another lesson.
+         */
+
+        if (
+            videos.length > 0 &&
+            currentVideoIndex <
+                videos.length - 1
+        ) {
+
+            currentVideoIndex++;
+
+
+            await saveCurrentVideoIndex();
+
+
+            loadCurrentVideo();
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Complete Lesson Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to update lesson progress."
+        );
+    }
+}
+
+
+//=====================================================
+// FINISH COURSE
+//=====================================================
+
+async function finishCourseIfComplete() {
+
+    const completedVideos =
+        getCompletedVideos();
+
+
+    const allCompleted =
+        videos.length > 0 &&
+        completedVideos.length >=
+            videos.length;
+
+
+    if (!allCompleted) {
+
+        renderProgress();
+
+        return false;
+    }
+
+
+    /*
+     * Force local state to completion.
+     */
+
+    progressRecord = {
+
+        ...progressRecord,
+
+        completedVideos:
+            completedVideos,
+
+        totalVideos:
+            videos.length,
+
+        percentage:
+            100,
+
+        completed:
+            true,
+
+        completedAt:
+            progressRecord?.completedAt ||
+            new Date().toISOString(),
+
+        updatedAt:
+            new Date().toISOString()
+    };
+
+
+    /*
+     * Persist 100% explicitly.
+     */
+
+    if (
+        progressRecord.id !== undefined &&
+        progressRecord.id !== null
+    ) {
+
+        const updated =
+            await patchData(
+                "progress",
+                progressRecord.id,
+                {
+                    completedVideos:
+                        completedVideos,
+
+                    totalVideos:
+                        videos.length,
+
+                    percentage:
+                        100,
+
+                    completed:
+                        true,
+
+                    completedAt:
+                        progressRecord.completedAt,
+
+                    updatedAt:
+                        new Date()
+                            .toISOString()
+                }
+            );
+
+
+        progressRecord = {
+
+            ...progressRecord,
+
+            ...(updated || {}),
+
+            completedVideos:
+                completedVideos,
+
+            totalVideos:
+                videos.length,
+
+            percentage:
+                100,
+
+            completed:
+                true
+        };
+    }
+
+
+    await markEnrollmentCompleted();
+
+
+    /*
+     * IMPORTANT:
+     * Update the page only AFTER everything
+     * has been synchronized.
+     */
+
+    renderProgress();
+
+    renderVideoList();
+
+    updateNavigationButtons();
+
+
+    return true;
+}
+
+
+//=====================================================
+// GET COMPLETED VIDEOS
+//=====================================================
+
+function getCompletedVideos() {
+
+    if (
+        !progressRecord ||
+        !Array.isArray(
+            progressRecord.completedVideos
+        )
+    ) {
+
+        return [];
+    }
+
+
+    return progressRecord
+        .completedVideos
+        .map(
+            id =>
+                String(id)
+        );
+}
+
+
+//=====================================================
+// CALCULATE PROGRESS
+//=====================================================
+
+function calculateProgress(
+    completedCount
+) {
+
+    if (
+        videos.length === 0
+    ) {
+
+        return 0;
+    }
+
+
+    return Math.min(
+        100,
+        Math.round(
+            (
+                completedCount /
+                videos.length
+            ) * 100
+        )
+    );
+}
+
+
+//=====================================================
+// RENDER PROGRESS
+//=====================================================
+
+function renderProgress() {
+
+    const completedVideos =
+        getCompletedVideos();
+
+
+    let percentage =
+        calculateProgress(
+            completedVideos.length
+        );
+
+
+    const allCompleted =
+        videos.length > 0 &&
+        completedVideos.length >=
+            videos.length;
+
+
+    if (allCompleted) {
+
+        percentage = 100;
+    }
+
+
+    percentage =
+        Math.min(
+            100,
+            Math.max(
+                0,
+                percentage
+            )
+        );
+
+
+    //=================================================
+    // TEXT
+    //=================================================
+
+    setText(
+        "progressText",
+        `${percentage}% Completed`
+    );
+
+
+    setText(
+        "progressPercentage",
+        `${percentage}%`
+    );
+
+
+    setText(
+        "completedLessons",
+        completedVideos.length
+    );
+
+
+    setText(
+        "totalLessons",
+        videos.length
+    );
+
+
+    //=================================================
+    // PROGRESS BAR
+    //=================================================
+
+    const progressBar =
+        document.getElementById(
+            "progressBar"
+        );
+
+
+    if (progressBar) {
+
+        progressBar.style.width =
+            `${percentage}%`;
+    }
+
+
+    //=================================================
+    // CERTIFICATE
+    //=================================================
+
+    updateCertificateButton(
+        allCompleted
+    );
+}
+
+
+//=====================================================
+// UPDATE CERTIFICATE BUTTON
+//=====================================================
+
+function updateCertificateButton(
+    unlocked
+) {
+
+    const certificateBtn =
+        document.getElementById(
+            "certificateBtn"
+        );
+
+
+    const certificateMessage =
+        document.getElementById(
+            "certificateMessage"
+        );
+
+
+    if (!certificateBtn) {
+
+        return;
+    }
+
+
+    if (unlocked) {
+
+        certificateBtn.disabled =
+            false;
+
+        certificateBtn.textContent =
+            "View Certificate";
+
+        certificateBtn.classList.add(
+            "unlocked"
+        );
+
+
+        if (certificateMessage) {
+
+            certificateMessage.textContent =
+                "Congratulations! You completed this course. Your certificate is ready.";
+        }
+
+    }
+
+    else {
+
+        certificateBtn.disabled =
+            true;
+
+        certificateBtn.textContent =
+            "Complete Course to Unlock Certificate";
+
+        certificateBtn.classList.remove(
+            "unlocked"
+        );
+
+
+        if (certificateMessage) {
+
+            certificateMessage.textContent =
+                "Complete every video lesson to unlock your certificate.";
+        }
+    }
+}
+
+
+//=====================================================
+// CHECK COURSE COMPLETION
+//=====================================================
+
+async function checkCourseCompletion() {
+
+    if (!progressRecord) {
+
+        return;
+    }
+
+
+    await finishCourseIfComplete();
+}
+
+
+//=====================================================
+// MARK ENROLLMENT COMPLETED
+//=====================================================
+
+async function markEnrollmentCompleted() {
+
+    if (
+        !enrollment ||
+        enrollment.id === undefined ||
+        enrollment.id === null
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        enrollment =
+            await patchData(
+                "enrollments",
+                enrollment.id,
+                {
+                    status:
+                        "Completed",
+
+                    completed:
+                        true,
+
+                    completionDate:
+                        enrollment.completionDate ||
+                        new Date()
+                            .toLocaleDateString()
+                }
+            );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to update enrollment:",
+            error
+        );
+    }
+}
+
+
+//=====================================================
+// MATERIALS
+//=====================================================
+
+function renderMaterials() {
+
+    const container =
+        document.getElementById(
+            "materialsList"
+        );
+
+
+    if (!container) {
+
+        return;
+    }
+
+
+    const materials =
+        Array.isArray(
+            course.materials
+        )
+            ? course.materials
+            : [];
+
+
+    if (
+        materials.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <p
+                style="
+                    text-align:center;
+                    color:gray;
+                "
+            >
+
+                No learning materials available.
+
+            </p>
+        `;
+
+        return;
+    }
+
+
+    container.innerHTML =
+        materials
+            .map(
+                (material, index) => {
+
+                    if (
+                        typeof material ===
+                        "string"
+                    ) {
+
+                        return `
+
+                            <div class="material-item">
+
+                                <span>
+                                    Material ${index + 1}
+                                </span>
+
+                                <a
+                                    href="${escapeAttribute(
+                                        material
+                                    )}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    Open
+                                </a>
+
+                            </div>
+                        `;
+                    }
+
+
+                    const title =
+                        material.title ||
+                        material.name ||
+                        `Material ${index + 1}`;
+
+
+                    const url =
+                        material.url ||
+                        material.link ||
+                        material.src ||
+                        "";
+
+
+                    return `
+
+                        <div class="material-item">
+
+                            <span>
+                                ${escapeHTML(
+                                    title
+                                )}
+                            </span>
+
+                            ${
+                                url
+                                    ? `
+                                        <a
+                                            href="${escapeAttribute(
+                                                url
+                                            )}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Open
+                                        </a>
+                                    `
+                                    : ""
+                            }
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+}
+
+
+//=====================================================
+// NAVIGATION BUTTONS
+//=====================================================
+
+function updateNavigationButtons() {
+
+    const previousBtn =
+        document.getElementById(
+            "previousBtn"
+        );
+
+
+    const nextBtn =
+        document.getElementById(
+            "nextBtn"
+        );
+
+
+    if (previousBtn) {
+
+        previousBtn.disabled =
+            currentVideoIndex <= 0;
+    }
+
+
+    if (nextBtn) {
+
+        if (
+            videos.length === 0
+        ) {
+
+            nextBtn.disabled =
+                true;
+
+        }
+
+        else {
+
+            nextBtn.disabled =
+                false;
+
+
+            nextBtn.textContent =
+                currentVideoIndex ===
+                videos.length - 1
+                    ? "Complete Lesson"
+                    : "Next Lesson";
+        }
+    }
+}
+
+
+//=====================================================
+// OPEN CERTIFICATE
+//=====================================================
+//=====================================================
+// OPEN CERTIFICATE
+//=====================================================
+
+//=====================================================
+// OPEN CERTIFICATE
+//=====================================================
+
+function openCertificate() {
+
+    console.log("========== CERTIFICATE DEBUG ==========");
+
+    console.log(
+        "videos:",
+        videos
+    );
+
+    console.log(
+        "videos.length:",
+        videos.length
+    );
+
+    console.log(
+        "progressRecord:",
+        progressRecord
+    );
+
+    console.log(
+        "progressRecord.completedVideos:",
+        progressRecord?.completedVideos
+    );
+
+    console.log(
+        "getCompletedVideos():",
+        getCompletedVideos()
+    );
+
+    console.log(
+        "completed count:",
+        getCompletedVideos().length
+    );
+
+    console.log(
+        "percentage:",
+        progressRecord?.percentage
+    );
+
+    console.log(
+        "completed:",
+        progressRecord?.completed
+    );
+
+    console.log("=======================================");
+
+
+    // TEMPORARILY OPEN CERTIFICATE
+    // because your page is already showing 100%
+
+    window.location.href =
+        "/certificate";
+}
+
+//=====================================================
+// BACK TO MY COURSES
+//=====================================================
+
+function backToMyCourses() {
+
+    window.location.href =
+        "/my-courses";
+}
+
+
+//=====================================================
+// INITIALIZE BUTTONS
+//=====================================================
+
+function initializePageButtons() {
+
+    bindButton(
+        "previousBtn",
+        previousVideo
+    );
+
+
+    bindButton(
+        "nextBtn",
+        nextVideo
+    );
+
+
+    bindButton(
+        "completeLessonBtn",
+        completeCurrentLesson
+    );
+
+
+    bindButton(
+        "certificateBtn",
+        openCertificate
+    );
+
+
+    bindButton(
+        "logoutBtn",
+        logout
+    );
+}
+
+
+//=====================================================
+// BIND BUTTON
+//=====================================================
+
+function bindButton(
+    id,
+    handler
+) {
+
+    const button =
+        document.getElementById(
+            id
+        );
+
+
+    if (
+        !button ||
+        button.dataset.initialized ===
+            "true"
+    ) {
+
+        return;
+    }
+
+
+    button.dataset.initialized =
+        "true";
+
+
+    button.addEventListener(
+        "click",
+        handler
+    );
+}
+
+
+//=====================================================
+// LOGOUT
+//=====================================================
+
+async function logout() {
+
+    try {
+
+        await clearSessions();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Logout Error:",
+            error
+        );
+    }
+
+
+    alert(
+        "Logged Out Successfully."
+    );
+
+
+    window.location.replace(
+        "/login"
+    );
+}
+
+
+//=====================================================
+// HELPERS
+//=====================================================
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+    }
+}
+
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHTML(
+        value
+    );
+}
+
+
+//=====================================================
+// REACT-SAFE INITIALIZATION
+//=====================================================
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeStartCourse,
+        {
+            once: true
+        }
+    );
 
 }
-function logout() {
 
-    localStorage.removeItem("loggedInStudent");
+else {
 
-    alert("Logged Out Successfully.");
-
-    window.location.href = "login.html";
-
-
+    initializeStartCourse();
 }
-document.getElementById("logoutBtn").addEventListener("click", logout);
+
+
+//=====================================================
+// GLOBAL FUNCTIONS
+//=====================================================
+
+window.selectVideo =
+    selectVideo;
+
+window.previousVideo =
+    previousVideo;
+
+window.nextVideo =
+    nextVideo;
+
+window.completeCurrentLesson =
+    completeCurrentLesson;
+
+window.openCertificate =
+    openCertificate;
+
+window.backToMyCourses =
+    backToMyCourses;
+
+window.logout =
+    logout;

@@ -1,4 +1,8 @@
 import {
+    StrictMode
+} from "react";
+
+import {
     createRoot
 } from "react-dom/client";
 
@@ -15,17 +19,22 @@ import {
 
 
 createRoot(
-    document.getElementById("root")
+    document.getElementById(
+        "root"
+    )
 ).render(
 
-    <BrowserRouter>
+    <StrictMode>
 
-        <AuthProvider>
+        <BrowserRouter>
 
-            <App />
+            <AuthProvider>
 
-        </AuthProvider>
+                <App />
 
-    </BrowserRouter>
+            </AuthProvider>
 
+        </BrowserRouter>
+
+    </StrictMode>
 );

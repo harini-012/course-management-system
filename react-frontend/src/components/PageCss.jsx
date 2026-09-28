@@ -7,61 +7,71 @@ function PageCss({
     href
 }) {
 
-    useEffect(() => {
+    useEffect(
+        () => {
 
-        const existing =
-            document.querySelector(
-                `link[data-page-css="${href}"]`
-            );
+            if (!href) {
 
-
-        if (existing) {
-            return;
-        }
+                return;
+            }
 
 
-        const link =
-            document.createElement(
-                "link"
-            );
-
-
-        link.rel =
-            "stylesheet";
-
-        link.href =
-            href;
-
-        link.dataset.pageCss =
-            href;
-
-
-        document.head.appendChild(
-            link
-        );
-
-
-        return () => {
-
-            const current =
+            const existing =
                 document.querySelector(
                     `link[data-page-css="${href}"]`
                 );
 
 
-            if (current) {
+            if (existing) {
 
-                current.remove();
-
+                return;
             }
 
-        };
 
-    }, [href]);
+            const link =
+                document.createElement(
+                    "link"
+                );
+
+
+            link.rel =
+                "stylesheet";
+
+
+            link.href =
+                href;
+
+
+            link.setAttribute(
+                "data-page-css",
+                href
+            );
+
+
+            document.head.appendChild(
+                link
+            );
+
+
+            return () => {
+
+                if (
+                    link.parentNode
+                ) {
+
+                    link.parentNode
+                        .removeChild(
+                            link
+                        );
+                }
+            };
+
+        },
+        [href]
+    );
 
 
     return null;
-
 }
 
 

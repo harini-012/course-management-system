@@ -1,5 +1,8 @@
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Navbar
+    from "./Navbar";
+
+import Footer
+    from "./Footer";
 
 
 function PageShell({
@@ -18,7 +21,6 @@ function PageShell({
 
         footerVariant =
             "admin";
-
     }
 
 
@@ -28,30 +30,51 @@ function PageShell({
 
         footerVariant =
             "learn";
-
     }
 
 
     return (
 
-        <>
+        <div
+            className="page-shell"
+            style={{
+                minHeight: "100vh",
+                display: "flex",
+                flexDirection: "column"
+            }}
+        >
 
             <Navbar
                 variant={variant}
             />
 
 
-            {children}
+            <div
+                className="page-shell-content"
+                style={{
+                    flex: "1 0 auto"
+                }}
+            >
+
+                {children}
+
+            </div>
 
 
-            <Footer
-                variant={footerVariant}
-            />
+            <div
+                style={{
+                    flexShrink: 0
+                }}
+            >
 
-        </>
+                <Footer
+                    variant={footerVariant}
+                />
 
+            </div>
+
+        </div>
     );
-
 }
 
 

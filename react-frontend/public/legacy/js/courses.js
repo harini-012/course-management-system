@@ -1,154 +1,279 @@
-// ===============================
-// Student Courses Script
-// ===============================
+//=====================================================
+// COURSES
+// MOCK API + REACT VERSION
+//=====================================================
 
-// Search Courses
-const searchInput = document.getElementById("searchCourse");
-
-if (searchInput) {
-
-    searchInput.addEventListener("keyup", function () {
-
-        const value = this.value.toLowerCase();
-
-        const cards = document.querySelectorAll(".card");
-
-        cards.forEach(card => {
-
-            const title =
-                card.querySelector("h3").textContent.toLowerCase();
-
-            if (title.includes(value)) {
-
-                card.style.display = "block";
-
-            } else {
-
-                card.style.display = "none";
-
-            }
-
-        });
-
-    });
-
-}
+import {
+    patchData,
+    clearSessions
+} from "./api.js";
 
 
-// ===============================
-// Open Course Details
-// ===============================
+//=====================================================
+// INITIALIZE COURSES PAGE
+//=====================================================
 
-document.querySelectorAll(".viewCourseBtn").forEach(button => {
+function initializeCoursesPage() {
 
-    button.addEventListener("click", function () {
+    //=================================================
+    // SEARCH
+    //=================================================
 
-        localStorage.setItem(
-            "selectedCourseKey",
-            this.dataset.course
+    const searchInput =
+        document.getElementById(
+            "searchCourse"
         );
 
-        window.location.href = "course_details.html";
 
-    });
+    if (
+        searchInput &&
+        searchInput.dataset.initialized !== "true"
+    ) {
 
-});
+        searchInput.dataset.initialized =
+            "true";
 
 
-// ===============================
-// Logout
-// ===============================
+        searchInput.addEventListener(
+            "keyup",
+            function () {
 
-function logout() {
+                const value =
+                    this.value
+                        .trim()
+                        .toLowerCase();
 
-    localStorage.removeItem("loggedInStudent");
 
-    alert("Logged Out Successfully.");
+                const cards =
+                    document.querySelectorAll(
+                        "#courseContainer .card"
+                    );
 
-    window.location.href = "login.html";
 
+                cards.forEach(
+                    card => {
+
+                        const heading =
+                            card.querySelector(
+                                "h3"
+                            );
+
+
+                        if (!heading) {
+
+                            return;
+                        }
+
+
+                        const title =
+                            heading.textContent
+                                .toLowerCase();
+
+
+                        card.style.display =
+                            title.includes(value)
+                                ? ""
+                                : "none";
+                    }
+                );
+            }
+        );
+    }
+
+
+    //=================================================
+    // LOGOUT
+    //=================================================
+
+    const logoutBtn =
+        document.getElementById(
+            "logoutBtn"
+        );
+
+
+    if (
+        logoutBtn &&
+        logoutBtn.dataset.initialized !== "true"
+    ) {
+
+        logoutBtn.dataset.initialized =
+            "true";
+
+
+        logoutBtn.addEventListener(
+            "click",
+            logout
+        );
+    }
 }
 
-const logoutBtn = document.getElementById("logoutBtn");
 
-if (logoutBtn) {
+//=====================================================
+// SELECT COURSE
+//=====================================================
 
-    logoutBtn.addEventListener("click", logout);
+async function selectCourse(
+    courseKey
+) {
 
+    try {
+
+        if (!courseKey) {
+
+            return false;
+        }
+
+
+        await patchData(
+            "appState",
+            "current",
+            {
+                selectedCourseKey:
+                    courseKey
+            }
+        );
+
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to select course:",
+            error
+        );
+
+
+        return false;
+    }
 }
 
-// ===============================
-// SYNC WITH ADMIN CHANGES
-// (updates edited courses, removes deleted ones,
-//  adds newly published ones — no HTML changes needed)
-// ===============================
 
-const STATIC_COURSE_KEYS = [
-    "python", "java", "web", "database", "machinelearning",
-    "artificialintelligence", "cybersecurity", "cloudcomputing",
-    "mobiledevelopment", "devops"
-];
+//=====================================================
+// LEGACY VIEW DETAILS SUPPORT
+//=====================================================
 
-function syncCoursesWithAdmin() {
+document.addEventListener(
+    "click",
+    async function (event) {
 
-    const adminCourses =
-        JSON.parse(localStorage.getItem("courses")) || [];
+        const button =
+            event.target.closest(
+                ".viewCourseBtn"
+            );
 
-    // 1. Update or remove the existing hardcoded cards
-    document.querySelectorAll(".viewCourseBtn").forEach(btn => {
 
-        const key = btn.dataset.course;
+        if (!button) {
 
-        if (!STATIC_COURSE_KEYS.includes(key)) return;
-
-        const match = adminCourses.find(c => c.key === key);
-        const card = btn.closest(".card");
-
-        if (!match) {
-            // Admin deleted this course
-            card.remove();
             return;
         }
 
-        if (match.title) card.querySelector("h3").textContent = match.title;
-        if (match.overview) card.querySelector("p").textContent = match.overview;
-        if (match.image) card.querySelector("img").src = match.image;
 
-    });
+        /*
+         * React CourseCard already handles <a>.
+         */
 
-    // 2. Add any brand-new courses the admin published
-    const container = document.getElementById("courseContainer");
+        if (
+            button.tagName
+                .toLowerCase() === "a"
+        ) {
 
-    adminCourses.forEach(c => {
+            return;
+        }
 
-        if (c.key) return; // already handled above
-        if (!c.title) return;
 
-        const dataKey = "new:" + encodeURIComponent(c.title);
+        event.preventDefault();
 
-        if (document.querySelector(`.viewCourseBtn[data-course="${dataKey}"]`)) return;
 
-        const card = document.createElement("div");
-        card.className = "card";
+        const courseKey =
+            button.dataset.course;
 
-        card.innerHTML = `
-            <img src="${c.image || 'https://cdn-icons-png.flaticon.com/512/2103/2103633.png'}" alt="${c.title}">
-            <h3>${c.title}</h3>
-            <p>${c.overview || ""}</p>
-            <button class="btn viewCourseBtn" data-course="${dataKey}">View Details</button>
-        `;
 
-        container.appendChild(card);
+        if (!courseKey) {
 
-        card.querySelector(".viewCourseBtn").addEventListener("click", function () {
+            return;
+        }
 
-            localStorage.setItem("selectedCourseKey", this.dataset.course);
-            window.location.href = "course_details.html";
 
-        });
+        const saved =
+            await selectCourse(
+                courseKey
+            );
 
-    });
+
+        if (saved) {
+
+            window.location.href =
+                "/course-details";
+        }
+    }
+);
+
+
+//=====================================================
+// LOGOUT
+//=====================================================
+
+async function logout() {
+
+    try {
+
+        await clearSessions();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Logout Error:",
+            error
+        );
+    }
+
+
+    alert(
+        "Logged Out Successfully."
+    );
+
+
+    window.location.replace(
+        "/login"
+    );
+}
+
+
+//=====================================================
+// REACT-SAFE INITIALIZATION
+//=====================================================
+
+if (
+    document.readyState === "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeCoursesPage,
+        {
+            once: true
+        }
+    );
 
 }
 
-syncCoursesWithAdmin();
+else {
+
+    initializeCoursesPage();
+}
+
+
+//=====================================================
+// GLOBAL FUNCTIONS
+//=====================================================
+
+window.selectCourse =
+    selectCourse;
+
+window.logout =
+    logout;

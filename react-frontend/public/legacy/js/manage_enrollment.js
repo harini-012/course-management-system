@@ -1,554 +1,1101 @@
-// =========================================
-// DOM ELEMENTS
-// =========================================
+//=====================================================
+// MANAGE ENROLLMENTS
+// MOCK API + REACT VERSION
+//=====================================================
 
-const enrollmentTable = document.getElementById("enrollmentTable");
+import {
+    getData,
+    getById,
+    patchData,
+    getSession,
+    clearSessions
+} from "./api.js";
 
-const searchEnrollment =
-document.getElementById("searchEnrollment");
 
-const statusFilter =
-document.getElementById("statusFilter");
+let enrollments = [];
+let currentAdmin = null;
 
-const selectedEnrollment =
-document.getElementById("selectedEnrollment");
 
-const approvedTable =
-document.getElementById("approvedTable");
+//=====================================================
+// INITIALIZE
+//=====================================================
 
-const activityContainer =
-document.getElementById("activityContainer");
+async function initializeManageEnrollment() {
 
-const totalRequests =
-document.getElementById("totalRequests");
+    try {
 
-const approvedRequests =
-document.getElementById("approvedRequests");
+        const validAdmin =
+            await verifyAdmin();
 
-const pendingRequests =
-document.getElementById("pendingRequests");
 
-const rejectedRequests =
-document.getElementById("rejectedRequests");
+        if (!validAdmin) {
+            return;
+        }
 
-const summaryTotal =
-document.getElementById("summaryTotal");
 
-const summaryApproved =
-document.getElementById("summaryApproved");
+        await loadEnrollments();
 
-const summaryPending =
-document.getElementById("summaryPending");
+        renderEnrollments();
 
-const summaryRejected =
-document.getElementById("summaryRejected");
+        initializeSearch();
 
-// =========================================
+        initializeFilter();
+
+        initializeLogoutButton();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Manage Enrollment Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to load enrollments."
+        );
+    }
+}
+
+
+//=====================================================
+// VERIFY ADMIN
+//=====================================================
+
+async function verifyAdmin() {
+
+    try {
+
+        const session =
+            await getSession();
+
+
+        if (
+            !session ||
+            session.role !== "admin"
+        ) {
+
+            window.location.replace(
+                "/login"
+            );
+
+            return false;
+        }
+
+
+        currentAdmin =
+            await getById(
+                "admins",
+                session.userId
+            );
+
+
+        if (
+            !currentAdmin ||
+            currentAdmin.active === false
+        ) {
+
+            await clearSessions();
+
+            window.location.replace(
+                "/login"
+            );
+
+            return false;
+        }
+
+
+        return true;
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Admin Verification Error:",
+            error
+        );
+
+
+        window.location.replace(
+            "/login"
+        );
+
+        return false;
+    }
+}
+
+
+//=====================================================
 // LOAD ENROLLMENTS
-// =========================================
+//=====================================================
 
-let enrollments =
-JSON.parse(localStorage.getItem("enrolledCourses")) || [];
+async function loadEnrollments() {
 
-let selectedIndex = -1;
+    const data =
+        await getData(
+            "enrollments"
+        );
 
-// =========================================
-// DISPLAY ENROLLMENTS
-// =========================================
 
-function displayEnrollments(data = enrollments) {
+    enrollments =
+        Array.isArray(data)
+            ? data
+            : [];
+}
 
-    enrollmentTable.innerHTML = "";
 
-    if (data.length === 0) {
+//=====================================================
+// RENDER ENROLLMENTS
+//=====================================================
 
-        enrollmentTable.innerHTML = `
+function renderEnrollments(
+    data = enrollments
+) {
 
-        <tr>
+    const table =
+        document.getElementById(
+            "enrollmentTable"
+        );
 
-            <td
-                colspan="5"
-                style="
-                    padding:60px;
-                    text-align:center;
-                    color:#666;
-                "
-            >
 
-                No Enrollment Requests Found
+    const container =
+        document.getElementById(
+            "enrollmentContainer"
+        );
 
-            </td>
 
-        </tr>
+    const target =
+        table || container;
 
+
+    if (!target) {
+
+        console.warn(
+            "Enrollment container not found."
+        );
+
+        return;
+    }
+
+
+    if (
+        !Array.isArray(data) ||
+        data.length === 0
+    ) {
+
+        target.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="6"
+                    style="
+                        text-align:center;
+                        padding:30px;
+                        color:gray;
+                    "
+                >
+                    No enrollments found.
+                </td>
+
+            </tr>
         `;
 
         updateStatistics();
 
         return;
-
     }
 
 
-    data.forEach(function(enrollment){
+    target.innerHTML =
+        data
+            .map(
+                enrollment => {
 
-        const originalIndex =
-            enrollments.indexOf(enrollment);
+                    const studentName =
+                        enrollment.studentName ||
+                        enrollment.student ||
+                        enrollment.studentEmail ||
+                        "Student";
 
-        enrollmentTable.innerHTML += `
 
-        <tr>
+                    const courseName =
+                        enrollment.title ||
+                        enrollment.course ||
+                        enrollment.courseTitle ||
+                        "Course";
 
-            <td>
-                ${enrollment.student || "Student"}
-            </td>
 
-            <td>
-                ${enrollment.title || enrollment.course || "Course"}
-            </td>
+                    const status =
+                        enrollment.status ||
+                        "Pending";
 
-            <td>
-                ${enrollment.enrollDate || "-"}
-            </td>
 
-            <td>
-                ${enrollment.status || "Pending"}
-            </td>
+                    const enrollmentDate =
+                        enrollment.enrollDate ||
+                        enrollment.enrollmentDate ||
+                        "-";
 
-            <td>
 
-                <button
-                    onclick="viewEnrollment(${originalIndex})"
-                >
-                    View
-                </button>
+                    const id =
+                        escapeAttribute(
+                            enrollment.id
+                        );
 
-            </td>
 
-        </tr>
+                    return `
 
-        `;
+                        <tr>
 
-    });
+                            <td>
+                                ${escapeHTML(
+                                    studentName
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    enrollment.studentEmail ||
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    courseName
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(
+                                    enrollmentDate
+                                )}
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="status ${getStatusClass(
+                                        status
+                                    )}"
+                                >
+                                    ${escapeHTML(
+                                        status
+                                    )}
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                ${
+                                    String(status)
+                                        .toLowerCase() ===
+                                    "pending"
+                                        ? `
+
+                                            <button
+                                                class="approve-btn"
+                                                onclick="approveEnrollment('${id}')"
+                                            >
+                                                Approve
+                                            </button>
+
+                                            <button
+                                                class="reject-btn"
+                                                onclick="rejectEnrollment('${id}')"
+                                            >
+                                                Reject
+                                            </button>
+                                        `
+                                        : `
+                                            <button
+                                                class="action-btn"
+                                                onclick="resetEnrollment('${id}')"
+                                            >
+                                                Set Pending
+                                            </button>
+                                        `
+                                }
+
+                            </td>
+
+                        </tr>
+                    `;
+                }
+            )
+            .join("");
+
 
     updateStatistics();
-
-}
-// =========================================
-// VIEW ENROLLMENT
-// =========================================
-
-function viewEnrollment(index){
-
-    selectedIndex = index;
-
-    let enrollment = enrollments[index];
-
-    selectedEnrollment.innerHTML = `
-
-    <h3 style="color:#1E3A8A;margin-bottom:20px;">
-
-    Enrollment Details
-
-    </h3>
-
-    <p><strong>Student Name :</strong> ${enrollment.student}</p>
-
-    <p><strong>Course Name :</strong> ${enrollment.title}</p>
-
-    <p><strong>Enrollment Date :</strong> ${enrollment.enrollDate}</p>
-
-   
-
-    <div
-    style="
-    margin-top:25px;
-    display:flex;
-    justify-content:center;
-    gap:15px;
-    flex-wrap:wrap;">
-
-    <button
-    onclick="approveEnrollment()"
-    style="
-    padding:12px 25px;
-    background:#16A34A;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;">
-
-    Approve
-
-    </button>
-
-    <button
-    onclick="rejectEnrollment()"
-    style="
-    padding:12px 25px;
-    background:#DC2626;
-    color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;">
-
-    Reject
-
-    </button>
-
-    </div>
-
-    `;
-
 }
 
-// =========================================
-// SEARCH ENROLLMENT
-// =========================================
 
-searchEnrollment.addEventListener("keyup", function(){
+//=====================================================
+// STATUS CLASS
+//=====================================================
 
-    let keyword = this.value.toLowerCase();
+function getStatusClass(
+    status
+) {
 
-    let filtered = enrollments.filter(function(item){
+    const value =
+        String(status || "")
+            .toLowerCase();
 
-        return (
 
-            item.student.toLowerCase().includes(keyword)
+    if (value === "approved") {
+        return "approved";
+    }
 
-            ||
 
-            item.title.toLowerCase().includes(keyword)
+    if (value === "rejected") {
+        return "rejected";
+    }
 
+
+    if (value === "completed") {
+        return "completed";
+    }
+
+
+    return "pending";
+}
+
+
+//=====================================================
+// APPROVE ENROLLMENT
+//=====================================================
+
+async function approveEnrollment(
+    enrollmentId
+) {
+
+    const enrollment =
+        findEnrollment(
+            enrollmentId
         );
 
-    });
 
-    displayEnrollments(filtered);
+    if (!enrollment) {
 
-});
-
-// =========================================
-// FILTER BY STATUS
-// =========================================
-
-statusFilter.addEventListener("change", function(){
-
-    let value = this.value;
-
-    if(value === "All"){
-
-        displayEnrollments();
+        alert(
+            "Enrollment not found."
+        );
 
         return;
+    }
+
+
+    if (
+        !confirm(
+            "Approve this enrollment?"
+        )
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const updated =
+            await patchData(
+                "enrollments",
+                enrollment.id,
+                {
+                    status:
+                        "Approved",
+
+                    approved:
+                        true,
+
+                    approvedDate:
+                        new Date()
+                            .toLocaleDateString(),
+
+                    approvedBy:
+                        currentAdmin
+                            ?.adminName ||
+                        currentAdmin
+                            ?.name ||
+                        currentAdmin
+                            ?.email ||
+                        "Administrator"
+                }
+            );
+
+
+        replaceEnrollment(
+            updated
+        );
+
+
+        renderCurrentFilter();
+
+
+        alert(
+            "Enrollment Approved Successfully."
+        );
 
     }
 
-    let filtered = enrollments.filter(function(item){
+    catch (error) {
 
-        return item.status === value;
+        console.error(
+            "Approve Enrollment Error:",
+            error
+        );
 
-    });
 
-    displayEnrollments(filtered);
-
-});
-// =========================================
-// APPROVE ENROLLMENT
-// =========================================
-
-function approveEnrollment() {
-
-    if (selectedIndex === -1) {
-
-        alert("Please select an enrollment request.");
-
-        return;
-
+        alert(
+            "Unable to approve enrollment."
+        );
     }
-
-    enrollments[selectedIndex].status = "Approved";
-
-    localStorage.setItem(
-        "enrolledCourses",
-        JSON.stringify(enrollments)
-    );
-
-    alert("Enrollment Approved Successfully!");
-
-    displayEnrollments();
-
-    viewEnrollment(selectedIndex);
-
-    updateStatistics();
-
-    loadApprovedEnrollments();
-
-    loadRecentActivity();
-
 }
 
-// =========================================
+
+//=====================================================
 // REJECT ENROLLMENT
-// =========================================
+//=====================================================
 
-function rejectEnrollment() {
+async function rejectEnrollment(
+    enrollmentId
+) {
 
-    if (selectedIndex === -1) {
+    const enrollment =
+        findEnrollment(
+            enrollmentId
+        );
 
-        alert("Please select an enrollment request.");
+
+    if (!enrollment) {
+
+        alert(
+            "Enrollment not found."
+        );
 
         return;
+    }
+
+
+    if (
+        !confirm(
+            "Reject this enrollment?"
+        )
+    ) {
+        return;
+    }
+
+
+    try {
+
+        const updated =
+            await patchData(
+                "enrollments",
+                enrollment.id,
+                {
+                    status:
+                        "Rejected",
+
+                    approved:
+                        false,
+
+                    rejectedDate:
+                        new Date()
+                            .toLocaleDateString(),
+
+                    rejectedBy:
+                        currentAdmin
+                            ?.adminName ||
+                        currentAdmin
+                            ?.name ||
+                        currentAdmin
+                            ?.email ||
+                        "Administrator"
+                }
+            );
+
+
+        replaceEnrollment(
+            updated
+        );
+
+
+        renderCurrentFilter();
+
+
+        alert(
+            "Enrollment Rejected."
+        );
 
     }
 
-    enrollments[selectedIndex].status = "Rejected";
+    catch (error) {
 
-    localStorage.setItem(
-        "enrolledCourses",
-        JSON.stringify(enrollments)
-    );
+        console.error(
+            "Reject Enrollment Error:",
+            error
+        );
 
-    alert("Enrollment Rejected Successfully!");
 
-    displayEnrollments();
-
-    viewEnrollment(selectedIndex);
-
-    updateStatistics();
-
-    loadApprovedEnrollments();
-
-    loadRecentActivity();
-
+        alert(
+            "Unable to reject enrollment."
+        );
+    }
 }
 
-// =========================================
-// UPDATE STATISTICS
-// =========================================
+
+//=====================================================
+// RESET TO PENDING
+//=====================================================
+
+async function resetEnrollment(
+    enrollmentId
+) {
+
+    const enrollment =
+        findEnrollment(
+            enrollmentId
+        );
+
+
+    if (!enrollment) {
+
+        alert(
+            "Enrollment not found."
+        );
+
+        return;
+    }
+
+
+    if (
+        String(
+            enrollment.status || ""
+        ).toLowerCase() ===
+        "completed"
+    ) {
+
+        alert(
+            "Completed enrollment cannot be changed to Pending."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const updated =
+            await patchData(
+                "enrollments",
+                enrollment.id,
+                {
+                    status:
+                        "Pending",
+
+                    approved:
+                        false
+                }
+            );
+
+
+        replaceEnrollment(
+            updated
+        );
+
+
+        renderCurrentFilter();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Reset Enrollment Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to update enrollment."
+        );
+    }
+}
+
+
+//=====================================================
+// FIND ENROLLMENT
+//=====================================================
+
+function findEnrollment(
+    enrollmentId
+) {
+
+    return enrollments.find(
+        enrollment =>
+            String(
+                enrollment.id
+            ) ===
+            String(
+                enrollmentId
+            )
+    ) || null;
+}
+
+
+//=====================================================
+// REPLACE LOCAL COPY
+//=====================================================
+
+function replaceEnrollment(
+    updated
+) {
+
+    if (!updated) {
+        return;
+    }
+
+
+    enrollments =
+        enrollments.map(
+            enrollment =>
+                String(
+                    enrollment.id
+                ) ===
+                String(
+                    updated.id
+                )
+                    ? updated
+                    : enrollment
+        );
+}
+
+
+//=====================================================
+// SEARCH
+//=====================================================
+
+function initializeSearch() {
+
+    const search =
+        document.getElementById(
+            "searchEnrollment"
+        )
+        ||
+        document.getElementById(
+            "searchInput"
+        );
+
+
+    if (
+        !search ||
+        search.dataset.initialized ===
+            "true"
+    ) {
+        return;
+    }
+
+
+    search.dataset.initialized =
+        "true";
+
+
+    search.addEventListener(
+        "input",
+        renderCurrentFilter
+    );
+}
+
+
+//=====================================================
+// FILTER
+//=====================================================
+
+function initializeFilter() {
+
+    const filter =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    if (
+        !filter ||
+        filter.dataset.initialized ===
+            "true"
+    ) {
+        return;
+    }
+
+
+    filter.dataset.initialized =
+        "true";
+
+
+    filter.addEventListener(
+        "change",
+        renderCurrentFilter
+    );
+}
+
+
+//=====================================================
+// APPLY SEARCH + FILTER
+//=====================================================
+
+function renderCurrentFilter() {
+
+    const search =
+        document.getElementById(
+            "searchEnrollment"
+        )
+        ||
+        document.getElementById(
+            "searchInput"
+        );
+
+
+    const filter =
+        document.getElementById(
+            "statusFilter"
+        );
+
+
+    const keyword =
+        String(
+            search?.value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const status =
+        String(
+            filter?.value || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const filtered =
+        enrollments.filter(
+            enrollment => {
+
+                const searchable =
+                    [
+                        enrollment.student,
+                        enrollment.studentName,
+                        enrollment.studentEmail,
+                        enrollment.title,
+                        enrollment.course,
+                        enrollment.courseTitle
+                    ]
+                        .filter(Boolean)
+                        .join(" ")
+                        .toLowerCase();
+
+
+                const matchesSearch =
+                    keyword === "" ||
+                    searchable.includes(
+                        keyword
+                    );
+
+
+                const currentStatus =
+                    String(
+                        enrollment.status ||
+                        "Pending"
+                    )
+                        .toLowerCase();
+
+
+                const matchesStatus =
+                    status === "" ||
+                    status === "all" ||
+                    currentStatus ===
+                        status;
+
+
+                return (
+                    matchesSearch &&
+                    matchesStatus
+                );
+            }
+        );
+
+
+    renderEnrollments(
+        filtered
+    );
+}
+
+
+//=====================================================
+// STATISTICS
+//=====================================================
 
 function updateStatistics() {
 
-    let total = enrollments.length;
+    const pending =
+        enrollments.filter(
+            item =>
+                String(
+                    item.status ||
+                    "Pending"
+                )
+                    .toLowerCase() ===
+                "pending"
+        ).length;
 
-    let approved = enrollments.filter(function(item){
 
-        return item.status === "Approved";
+    const approved =
+        enrollments.filter(
+            item =>
+                String(
+                    item.status || ""
+                )
+                    .toLowerCase() ===
+                "approved"
+        ).length;
 
-    }).length;
 
-    let pending = enrollments.filter(function(item){
+    const rejected =
+        enrollments.filter(
+            item =>
+                String(
+                    item.status || ""
+                )
+                    .toLowerCase() ===
+                "rejected"
+        ).length;
 
-        return item.status === "Pending";
 
-    }).length;
+    const completed =
+        enrollments.filter(
+            item =>
+                item.completed === true
+                ||
+                String(
+                    item.status || ""
+                )
+                    .toLowerCase() ===
+                "completed"
+        ).length;
 
-    let rejected = enrollments.filter(function(item){
 
-        return item.status === "Rejected";
+    setText(
+        "totalEnrollments",
+        enrollments.length
+    );
 
-    }).length;
 
-    totalRequests.textContent = total;
-    approvedRequests.textContent = approved;
-    pendingRequests.textContent = pending;
-    rejectedRequests.textContent = rejected;
+    setText(
+        "pendingCount",
+        pending
+    );
 
-    summaryTotal.textContent = total;
-    summaryApproved.textContent = approved;
-    summaryPending.textContent = pending;
-    summaryRejected.textContent = rejected;
 
+    setText(
+        "approvedCount",
+        approved
+    );
+
+
+    setText(
+        "rejectedCount",
+        rejected
+    );
+
+
+    setText(
+        "completedCount",
+        completed
+    );
 }
-// =========================================
-// LOAD APPROVED ENROLLMENTS
-// =========================================
 
-function loadApprovedEnrollments() {
 
-    approvedTable.innerHTML = "";
+//=====================================================
+// BACK TO ADMIN DASHBOARD
+//=====================================================
 
-    let approved = enrollments.filter(function(item){
+function backToDashboard() {
 
-        return item.status === "Approved";
+    window.location.href =
+        "/admin-dashboard";
+}
 
-    });
 
-    if (approved.length === 0) {
+//=====================================================
+// LOGOUT
+//=====================================================
 
-        approvedTable.innerHTML = `
+async function logout() {
 
-        <tr>
+    try {
 
-            <td colspan="4"
-            style="
-            padding:60px;
-            text-align:center;
-            color:#666;">
-
-            No Approved Enrollments
-
-            </td>
-
-        </tr>
-
-        `;
-
-        return;
+        await clearSessions();
 
     }
 
-    approved.forEach(function(item){
+    catch (error) {
 
-        approvedTable.innerHTML += `
-
-        <tr>
-
-            <td>${item.student}</td>
-
-            <td>${item.title || item.course || "Course"}</td>
-
-            <td>Administrator</td>
-
-            <td>${item.enrollDate}</td>
-
-        </tr>
-
-        `;
-
-    });
-
-}
-
-// =========================================
-// LOAD RECENT ACTIVITY
-// =========================================
-
-function loadRecentActivity() {
-
-    if (enrollments.length === 0) {
-
-        activityContainer.innerHTML = `
-
-        <h3 style="color:#1E3A8A;">
-
-        No Recent Activity
-
-        </h3>
-
-        <p>
-
-        Recent enrollment activities will appear here.
-
-        </p>
-
-        `;
-
-        return;
-
+        console.error(
+            "Logout Error:",
+            error
+        );
     }
 
-    let html = "<h3 style='color:#1E3A8A;margin-bottom:20px;'>Recent Activity</h3>";
 
-    enrollments
-    .slice(-5)
-    .reverse()
-    .forEach(function(item){
+    alert(
+        "Logged Out Successfully."
+    );
 
-        html += `
 
-        <p style="margin-bottom:15px;">
-
-        <strong>${item.student}</strong>
-
-        applied for
-
-        <strong>${item.title}</strong>
-
-        -
-
-        
-        </p>
-
-        `;
-
-    });
-
-    activityContainer.innerHTML = html;
-
-}
-
-// =========================================
-// REFRESH ENROLLMENTS
-// =========================================
-
-function refreshEnrollments() {
-
-    enrollments =
-
-    JSON.parse(
-
-    localStorage.getItem("enrolledCourses")
-
-    ) || [];
-
-    displayEnrollments();
-
-    updateStatistics();
-
-    loadApprovedEnrollments();
-
-    loadRecentActivity();
-
-}
-
-// =========================================
-// PAGE LOAD
-// =========================================
-
-// =========================================
-// PAGE LOAD
-// =========================================
-
-function initializeManageEnrollment() {
-
-    refreshEnrollments();
-
+    window.location.replace(
+        "/login"
+    );
 }
 
 
-// Run immediately because React has already
-// rendered the page before this script loads.
+//=====================================================
+// LOGOUT BUTTON
+//=====================================================
 
-if (document.readyState === "loading") {
+function initializeLogoutButton() {
+
+    const button =
+        document.getElementById(
+            "logoutBtn"
+        );
+
+
+    if (
+        !button ||
+        button.dataset.initialized ===
+            "true"
+    ) {
+        return;
+    }
+
+
+    button.dataset.initialized =
+        "true";
+
+
+    button.addEventListener(
+        "click",
+        logout
+    );
+}
+
+
+//=====================================================
+// HELPERS
+//=====================================================
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+    }
+}
+
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHTML(
+        value
+    );
+}
+
+
+//=====================================================
+// REACT-SAFE INITIALIZATION
+//=====================================================
+
+if (
+    document.readyState === "loading"
+) {
 
     document.addEventListener(
         "DOMContentLoaded",
-        initializeManageEnrollment
+        initializeManageEnrollment,
+        {
+            once: true
+        }
     );
 
-} else {
+}
+
+else {
 
     initializeManageEnrollment();
-
 }
 
-// =========================================
-// AUTO REFRESH
-// =========================================
 
-setInterval(function(){
+//=====================================================
+// GLOBAL FUNCTIONS
+//=====================================================
 
-    refreshEnrollments();
+window.approveEnrollment =
+    approveEnrollment;
 
-},30000);
-function logout() {
+window.rejectEnrollment =
+    rejectEnrollment;
 
-    localStorage.removeItem("loggedInAdmin");
+window.resetEnrollment =
+    resetEnrollment;
 
-    alert("Logged Out Successfully.");
+window.backToDashboard =
+    backToDashboard;
 
-    window.location.href = "login.html";
-
-}
-document.getElementById("logoutBtn").addEventListener("click", logout);
+window.logout =
+    logout;

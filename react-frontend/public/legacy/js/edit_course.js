@@ -1,470 +1,1228 @@
-// ===============================
-// DOM ELEMENTS
-// ===============================
+//=====================================================
+// EDIT COURSE
+// MOCK API + REACT VERSION
+//=====================================================
 
-const courseList = document.getElementById("courseList");
-const searchCourse = document.getElementById("searchCourse");
+import {
+    getData,
+    getById,
+    patchData,
+    getSession,
+    clearSessions
+} from "./api.js";
 
-const courseName = document.getElementById("courseName");
-const courseCode = document.getElementById("courseCode");
-const instructor = document.getElementById("instructor");
-const duration = document.getElementById("duration");
-const level = document.getElementById("level");
-const category = document.getElementById("category");
-const image = document.getElementById("image");
-const status = document.getElementById("status");
-const overview = document.getElementById("overview");
 
-const outcome1 = document.getElementById("outcome1");
-const outcome2 = document.getElementById("outcome2");
-const outcome3 = document.getElementById("outcome3");
-const outcome4 = document.getElementById("outcome4");
-const outcome5 = document.getElementById("outcome5");
+let currentAdmin = null;
 
-const pre1 = document.getElementById("pre1");
-const pre2 = document.getElementById("pre2");
-const pre3 = document.getElementById("pre3");
+let currentCourse = null;
 
-const module1 = document.getElementById("module1");
-const module2 = document.getElementById("module2");
-const module3 = document.getElementById("module3");
-const module4 = document.getElementById("module4");
-const module5 = document.getElementById("module5");
+let currentCourseId = null;
 
-const video1 = document.getElementById("video1");
-const video2 = document.getElementById("video2");
-const video3 = document.getElementById("video3");
-const video4 = document.getElementById("video4");
-const video5 = document.getElementById("video5");
 
-const notes = document.getElementById("notes");
-const lab = document.getElementById("lab");
-const assignment = document.getElementById("assignment");
-const reference = document.getElementById("reference");
-const resource = document.getElementById("resource");
+//=====================================================
+// INITIALIZE
+//=====================================================
 
-const previewImage = document.getElementById("previewImage");
+async function initializeEditCourse() {
 
-const updateBtn = document.getElementById("updateBtn");
-const deleteBtn = document.getElementById("deleteBtn");
-const resetBtn = document.getElementById("resetBtn");
+    try {
 
-// ===============================
-// LOCAL STORAGE
-// ===============================
+        const validAdmin =
+            await verifyAdmin();
 
-let courses =
-JSON.parse(localStorage.getItem("courses")) || [];
 
-let selectedCourseIndex = -1;
+        if (!validAdmin) {
+            return;
+        }
 
-// ===============================
-// DISPLAY ALL COURSES
-// ===============================
 
-function displayCourses(list = courses) {
+        //=================================================
+        // GET EDIT COURSE ID
+        //=================================================
 
-    courseList.innerHTML = "";
+        const appState =
+            await getById(
+                "appState",
+                "current"
+            );
 
-    if(list.length === 0){
 
-        courseList.innerHTML =
+        currentCourseId =
+            appState
+                ? appState.editCourseId
+                : null;
 
-        `
-        <p style="
-        text-align:center;
-        color:#777;
-        padding:30px;">
 
-        No Courses Available
+        if (!currentCourseId) {
 
-        </p>
-        `;
+            alert(
+                "No course selected for editing."
+            );
 
-        return;
-    }
 
-    list.forEach((course,index)=>{
+            window.location.replace(
+                "/admin-dashboard"
+            );
 
-        courseList.innerHTML +=
+            return;
+        }
 
-        `
-        <div class="course-card">
 
-            <div class="course-info">
+        //=================================================
+        // GET COURSE
+        //=================================================
 
-                <h3>${course.title}</h3>
+        currentCourse =
+            await findCourse(
+                currentCourseId
+            );
 
-                <p>
 
-                Instructor :
-                ${course.instructor}
+        if (!currentCourse) {
 
-                |
+            alert(
+                "Course not found."
+            );
 
-                Duration :
-                ${course.duration}
 
-                |
+            window.location.replace(
+                "/admin-dashboard"
+            );
 
-                Status :
-                ${course.status}
+            return;
+        }
 
-                </p>
 
-            </div>
+        currentCourseId =
+            currentCourse.id;
 
-            <button
-            class="edit-btn"
-            onclick="loadCourse(${index})">
 
-            Edit Course
+        //=================================================
+        // POPULATE FORM
+        //=================================================
 
-            </button>
+        populateCourseForm();
 
-        </div>
-        `;
 
-    });
+        //=================================================
+        // SUBMIT
+        //=================================================
 
-}
-// ===============================
-// LOAD SELECTED COURSE
-// ===============================
+        const form =
+            document.getElementById(
+                "editCourseForm"
+            )
+            ||
+            document.getElementById(
+                "courseForm"
+            );
 
-function loadCourse(index){
 
-    selectedCourseIndex = index;
+        if (!form) {
 
-    let course = courses[index];
+            console.error(
+                "Edit Course Form Not Found."
+            );
 
-    courseName.value = course.title || "";
-    courseCode.value = course.code || "";
-    instructor.value = course.instructor || "";
-    duration.value = course.duration || "";
-    level.value = course.level || "Beginner";
-    category.value = course.category || "Programming";
-    image.value = course.image || "";
-    status.value = course.status || "Active";
-    overview.value = course.overview || "";
+            return;
+        }
 
-    outcome1.value = course.outcomes?.[0] || "";
-    outcome2.value = course.outcomes?.[1] || "";
-    outcome3.value = course.outcomes?.[2] || "";
-    outcome4.value = course.outcomes?.[3] || "";
-    outcome5.value = course.outcomes?.[4] || "";
 
-    pre1.value = course.prerequisites?.[0] || "";
-    pre2.value = course.prerequisites?.[1] || "";
-    pre3.value = course.prerequisites?.[2] || "";
+        if (
+            form.dataset.initialized !==
+            "true"
+        ) {
 
-    module1.value = course.syllabus?.[0] || "";
-    module2.value = course.syllabus?.[1] || "";
-    module3.value = course.syllabus?.[2] || "";
-    module4.value = course.syllabus?.[3] || "";
-    module5.value = course.syllabus?.[4] || "";
+            form.dataset.initialized =
+                "true";
 
-    video1.value = course.videos?.[0] || "";
-    video2.value = course.videos?.[1] || "";
-    video3.value = course.videos?.[2] || "";
-    video4.value = course.videos?.[3] || "";
-    video5.value = course.videos?.[4] || "";
 
-    notes.value = course.materials?.[0] || "";
-    lab.value = course.materials?.[1] || "";
-    assignment.value = course.materials?.[2] || "";
-    reference.value = course.materials?.[3] || "";
-    resource.value = course.materials?.[4] || "";
+            form.addEventListener(
+                "submit",
+                updateCourse
+            );
+        }
 
-    if(course.image && course.image.trim() !== ""){
 
-        previewImage.src = course.image;
-
-    }
-    else{
-
-        previewImage.src = "https://picsum.photos/900/350";
+        initializeLogoutButton();
 
     }
 
-    window.scrollTo({
+    catch (error) {
 
-        top: 0,
-        behavior: "smooth"
+        console.error(
+            "Edit Course Initialization Error:",
+            error
+        );
 
-    });
 
+        alert(
+            "Unable to load course."
+        );
+    }
 }
 
-// ===============================
-// SEARCH COURSE
-// ===============================
 
-searchCourse.addEventListener("keyup", function(){
+//=====================================================
+// VERIFY ADMIN
+//=====================================================
 
-    let keyword = this.value.toLowerCase();
+async function verifyAdmin() {
 
-    let filteredCourses = courses.filter(function(course){
+    const session =
+        await getSession();
 
-        return course.title.toLowerCase().includes(keyword);
 
-    });
+    if (
+        !session ||
+        session.role !== "admin"
+    ) {
 
-    displayCourses(filteredCourses);
+        window.location.replace(
+            "/login"
+        );
 
-});
-
-// ===============================
-// LIVE IMAGE PREVIEW
-// ===============================
-
-image.addEventListener("input", function(){
-
-    if(image.value.trim() !== ""){
-
-        previewImage.src = image.value;
-
-    }
-    else{
-
-        previewImage.src = "https://picsum.photos/900/350";
-
+        return false;
     }
 
-});
 
-// ===============================
-// INITIAL LOAD
-// ===============================
+    currentAdmin =
+        await getById(
+            "admins",
+            session.userId
+        );
 
-displayCourses();
-// ===============================
+
+    if (
+        !currentAdmin ||
+        currentAdmin.active === false
+    ) {
+
+        await clearSessions();
+
+
+        window.location.replace(
+            "/login"
+        );
+
+        return false;
+    }
+
+
+    return true;
+}
+
+
+//=====================================================
+// FIND COURSE
+//=====================================================
+
+async function findCourse(
+    id
+) {
+
+    try {
+
+        const direct =
+            await getById(
+                "courses",
+                id
+            );
+
+
+        if (direct) {
+
+            return direct;
+        }
+
+    }
+
+    catch (error) {
+
+        // Continue with fallback.
+    }
+
+
+    const courses =
+        await getData(
+            "courses"
+        );
+
+
+    if (
+        !Array.isArray(courses)
+    ) {
+
+        return null;
+    }
+
+
+    const normalized =
+        String(id)
+            .toLowerCase();
+
+
+    return courses.find(
+        course =>
+
+            String(
+                course.id || ""
+            ).toLowerCase() ===
+            normalized
+
+            ||
+
+            String(
+                course.key || ""
+            ).toLowerCase() ===
+            normalized
+
+            ||
+
+            String(
+                course.courseKey || ""
+            ).toLowerCase() ===
+            normalized
+
+    ) || null;
+}
+
+
+//=====================================================
+// POPULATE FORM
+//=====================================================
+
+function populateCourseForm() {
+
+    setValue(
+        currentCourse.title || "",
+        "courseTitle",
+        "title"
+    );
+
+
+    setValue(
+        currentCourse.instructor || "",
+        "courseInstructor",
+        "instructor"
+    );
+
+
+    setValue(
+        currentCourse.duration || "",
+        "courseDuration",
+        "duration"
+    );
+
+
+    setValue(
+        currentCourse.level || "",
+        "courseLevel",
+        "level"
+    );
+
+
+    setValue(
+        currentCourse.mode || "Online",
+        "courseMode",
+        "mode"
+    );
+
+
+    setValue(
+        currentCourse.status || "Active",
+        "courseStatus",
+        "status"
+    );
+
+
+    setValue(
+        currentCourse.image || "",
+        "courseImage",
+        "image"
+    );
+
+
+    setValue(
+        currentCourse.overview || "",
+        "courseOverview",
+        "overview"
+    );
+
+
+    setValue(
+        currentCourse.description || "",
+        "courseDescription",
+        "description"
+    );
+
+
+    setValue(
+        currentCourse.instructorInfo ||
+        "",
+        "instructorInfo"
+    );
+
+
+    setValue(
+        arrayToText(
+            currentCourse.modules
+        ),
+        "courseModules",
+        "modules"
+    );
+
+
+    setValue(
+        arrayToText(
+            currentCourse.syllabus
+        ),
+        "courseSyllabus",
+        "syllabus"
+    );
+
+
+    setValue(
+        arrayToText(
+            currentCourse.skills
+        ),
+        "courseSkills",
+        "skills"
+    );
+
+
+    setValue(
+        arrayToText(
+            currentCourse.outcomes
+        ),
+        "courseOutcomes",
+        "outcomes"
+    );
+
+
+    setValue(
+        arrayToText(
+            currentCourse.prerequisites
+        ),
+        "coursePrerequisites",
+        "prerequisites"
+    );
+
+
+    setValue(
+        videosToText(
+            currentCourse.videos
+        ),
+        "courseVideos",
+        "videos"
+    );
+
+
+    setValue(
+        materialsToText(
+            currentCourse.materials
+        ),
+        "courseMaterials",
+        "materials"
+    );
+}
+
+
+//=====================================================
 // UPDATE COURSE
-// ===============================
+//=====================================================
 
-updateBtn.addEventListener("click", function () {
+async function updateCourse(
+    event
+) {
 
-    if (selectedCourseIndex === -1) {
+    event.preventDefault();
 
-        alert("Please select a course to update.");
 
-        return;
+    try {
+
+        if (
+            !currentCourse ||
+            currentCourseId === null ||
+            currentCourseId === undefined
+        ) {
+
+            alert(
+                "Course not found."
+            );
+
+            return;
+        }
+
+
+        const title =
+            getValue(
+                "courseTitle",
+                "title"
+            );
+
+
+        const instructor =
+            getValue(
+                "courseInstructor",
+                "instructor"
+            );
+
+
+        const duration =
+            getValue(
+                "courseDuration",
+                "duration"
+            );
+
+
+        const level =
+            getValue(
+                "courseLevel",
+                "level"
+            );
+
+
+        if (!title) {
+
+            alert(
+                "Please enter Course Title."
+            );
+
+            return;
+        }
+
+
+        if (!instructor) {
+
+            alert(
+                "Please enter Instructor Name."
+            );
+
+            return;
+        }
+
+
+        if (!duration) {
+
+            alert(
+                "Please enter Course Duration."
+            );
+
+            return;
+        }
+
+
+        if (!level) {
+
+            alert(
+                "Please select Course Level."
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // KEEP STABLE KEY
+        //=================================================
+
+        const stableKey =
+            currentCourse.courseKey ||
+            currentCourse.key ||
+            currentCourse.id;
+
+
+        const updatedData = {
+
+            title:
+                title,
+
+            instructor:
+                instructor,
+
+            duration:
+                duration,
+
+            level:
+                level,
+
+            mode:
+                getValue(
+                    "courseMode",
+                    "mode"
+                ) || "Online",
+
+            status:
+                getValue(
+                    "courseStatus",
+                    "status"
+                ) || "Active",
+
+            image:
+                getValue(
+                    "courseImage",
+                    "image"
+                ),
+
+            overview:
+                getValue(
+                    "courseOverview",
+                    "overview"
+                ),
+
+            description:
+                getValue(
+                    "courseDescription",
+                    "description"
+                ),
+
+            instructorInfo:
+                getValue(
+                    "instructorInfo"
+                ),
+
+            modules:
+                readList(
+                    "courseModules",
+                    "modules"
+                ),
+
+            syllabus:
+                readList(
+                    "courseSyllabus",
+                    "syllabus"
+                ),
+
+            skills:
+                readList(
+                    "courseSkills",
+                    "skills"
+                ),
+
+            outcomes:
+                readList(
+                    "courseOutcomes",
+                    "outcomes"
+                ),
+
+            prerequisites:
+                readList(
+                    "coursePrerequisites",
+                    "prerequisites"
+                ),
+
+            videos:
+                readVideos(),
+
+            materials:
+                readMaterials(),
+
+            key:
+                stableKey,
+
+            courseKey:
+                stableKey,
+
+            updatedBy:
+                currentAdmin
+                    ?.email ||
+                "",
+
+            updatedAt:
+                new Date()
+                    .toISOString()
+        };
+
+
+        currentCourse =
+            await patchData(
+                "courses",
+                currentCourseId,
+                updatedData
+            );
+
+
+        //=================================================
+        // CLEAR EDIT STATE
+        //=================================================
+
+        try {
+
+            await patchData(
+                "appState",
+                "current",
+                {
+                    editCourseId:
+                        null
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Unable to clear edit state:",
+                error
+            );
+        }
+
+
+        alert(
+            "Course Updated Successfully!"
+        );
+
+
+        window.location.replace(
+            "/admin-dashboard"
+        );
 
     }
 
-    courses[selectedCourseIndex] = {
+    catch (error) {
 
-        key: courses[selectedCourseIndex].key,
+        console.error(
+            "Update Course Error:",
+            error
+        );
 
-        title: courseName.value.trim(),
-        code: courseCode.value.trim(),
-        instructor: instructor.value.trim(),
-        duration: duration.value.trim(),
-        level: level.value,
-        category: category.value,
-        image: image.value.trim(),
-        status: status.value,
-        overview: overview.value.trim(),
 
-        outcomes: [
+        alert(
+            "Unable to update course."
+        );
+    }
+}
 
-            outcome1.value.trim(),
-            outcome2.value.trim(),
-            outcome3.value.trim(),
-            outcome4.value.trim(),
-            outcome5.value.trim()
 
-        ],
+//=====================================================
+// LIST TO TEXT
+//=====================================================
 
-        prerequisites: [
+function arrayToText(
+    data
+) {
 
-            pre1.value.trim(),
-            pre2.value.trim(),
-            pre3.value.trim()
+    if (
+        !Array.isArray(data)
+    ) {
+        return "";
+    }
 
-        ],
 
-        syllabus: [
+    return data
+        .map(
+            item => {
 
-            module1.value.trim(),
-            module2.value.trim(),
-            module3.value.trim(),
-            module4.value.trim(),
-            module5.value.trim()
+                if (
+                    typeof item ===
+                    "string"
+                ) {
 
-        ],
+                    return item;
+                }
 
-        videos: [
 
-            video1.value.trim(),
-            video2.value.trim(),
-            video3.value.trim(),
-            video4.value.trim(),
-            video5.value.trim()
+                return (
+                    item.title ||
+                    item.name ||
+                    item.module ||
+                    ""
+                );
+            }
+        )
+        .filter(Boolean)
+        .join("\n");
+}
 
-        ],
 
-        materials: [
+//=====================================================
+// VIDEOS TO TEXT
+//=====================================================
 
-            notes.value.trim(),
-            lab.value.trim(),
-            assignment.value.trim(),
-            reference.value.trim(),
-            resource.value.trim()
+function videosToText(
+    data
+) {
 
-        ],
+    if (
+        !Array.isArray(data)
+    ) {
+        return "";
+    }
 
-        completed: courses[selectedCourseIndex].completed || false
 
-    };
+    return data
+        .map(
+            video => {
 
-    localStorage.setItem(
+                if (
+                    typeof video ===
+                    "string"
+                ) {
 
-        "courses",
-        JSON.stringify(courses)
+                    return video;
+                }
 
-    );
 
-    alert("Course Updated Successfully!");
+                const title =
+                    video.title ||
+                    video.name ||
+                    "";
 
-    displayCourses();
 
-});
+                const url =
+                    video.url ||
+                    video.videoUrl ||
+                    video.src ||
+                    video.link ||
+                    "";
 
-// ===============================
-// DELETE COURSE
-// ===============================
 
-deleteBtn.addEventListener("click", function () {
+                if (
+                    title &&
+                    url
+                ) {
 
-    if (selectedCourseIndex === -1) {
+                    return `${title}|${url}`;
+                }
 
-        alert("Please select a course to delete.");
 
-        return;
+                return url || title;
+            }
+        )
+        .filter(Boolean)
+        .join("\n");
+}
+
+
+//=====================================================
+// MATERIALS TO TEXT
+//=====================================================
+
+function materialsToText(
+    data
+) {
+
+    if (
+        !Array.isArray(data)
+    ) {
+        return "";
+    }
+
+
+    return data
+        .map(
+            material => {
+
+                if (
+                    typeof material ===
+                    "string"
+                ) {
+
+                    return material;
+                }
+
+
+                const title =
+                    material.title ||
+                    material.name ||
+                    "";
+
+
+                const url =
+                    material.url ||
+                    material.link ||
+                    material.src ||
+                    "";
+
+
+                if (
+                    title &&
+                    url
+                ) {
+
+                    return `${title}|${url}`;
+                }
+
+
+                return url || title;
+            }
+        )
+        .filter(Boolean)
+        .join("\n");
+}
+
+
+//=====================================================
+// READ LIST
+//=====================================================
+
+function readList(
+    ...ids
+) {
+
+    const value =
+        getValue(
+            ...ids
+        );
+
+
+    if (!value) {
+        return [];
+    }
+
+
+    return value
+        .split(
+            /\n|,/
+        )
+        .map(
+            item =>
+                item.trim()
+        )
+        .filter(Boolean);
+}
+
+
+//=====================================================
+// READ VIDEOS
+//=====================================================
+
+function readVideos() {
+
+    const value =
+        getValue(
+            "courseVideos",
+            "videos"
+        );
+
+
+    if (!value) {
+        return [];
+    }
+
+
+    return value
+        .split("\n")
+        .map(
+            line =>
+                line.trim()
+        )
+        .filter(Boolean)
+        .map(
+            (line, index) => {
+
+                const separator =
+                    line.indexOf("|");
+
+
+                if (
+                    separator === -1
+                ) {
+
+                    return {
+
+                        id:
+                            `video-${index + 1}`,
+
+                        title:
+                            `Lesson ${index + 1}`,
+
+                        url:
+                            line
+                    };
+                }
+
+
+                return {
+
+                    id:
+                        `video-${index + 1}`,
+
+                    title:
+                        line
+                            .slice(
+                                0,
+                                separator
+                            )
+                            .trim()
+                        ||
+                        `Lesson ${index + 1}`,
+
+                    url:
+                        line
+                            .slice(
+                                separator + 1
+                            )
+                            .trim()
+                };
+            }
+        );
+}
+
+
+//=====================================================
+// READ MATERIALS
+//=====================================================
+
+function readMaterials() {
+
+    const value =
+        getValue(
+            "courseMaterials",
+            "materials"
+        );
+
+
+    if (!value) {
+        return [];
+    }
+
+
+    return value
+        .split("\n")
+        .map(
+            line =>
+                line.trim()
+        )
+        .filter(Boolean)
+        .map(
+            (line, index) => {
+
+                const separator =
+                    line.indexOf("|");
+
+
+                if (
+                    separator === -1
+                ) {
+
+                    return {
+
+                        title:
+                            `Material ${index + 1}`,
+
+                        url:
+                            line
+                    };
+                }
+
+
+                return {
+
+                    title:
+                        line
+                            .slice(
+                                0,
+                                separator
+                            )
+                            .trim()
+                        ||
+                        `Material ${index + 1}`,
+
+                    url:
+                        line
+                            .slice(
+                                separator + 1
+                            )
+                            .trim()
+                };
+            }
+        );
+}
+
+
+//=====================================================
+// GET VALUE
+//=====================================================
+
+function getValue(
+    ...ids
+) {
+
+    for (
+        const id of ids
+    ) {
+
+        const element =
+            document.getElementById(
+                id
+            );
+
+
+        if (element) {
+
+            return String(
+                element.value || ""
+            ).trim();
+        }
+    }
+
+
+    return "";
+}
+
+
+//=====================================================
+// SET VALUE
+//=====================================================
+
+function setValue(
+    value,
+    ...ids
+) {
+
+    for (
+        const id of ids
+    ) {
+
+        const element =
+            document.getElementById(
+                id
+            );
+
+
+        if (element) {
+
+            element.value =
+                value ?? "";
+
+            return;
+        }
+    }
+}
+
+
+//=====================================================
+// CANCEL EDIT
+//=====================================================
+
+async function cancelEdit() {
+
+    try {
+
+        await patchData(
+            "appState",
+            "current",
+            {
+                editCourseId:
+                    null
+            }
+        );
 
     }
 
-    let confirmDelete = confirm(
+    catch (error) {
 
-        "Are you sure you want to delete this course?"
+        console.error(
+            "Unable to clear edit state:",
+            error
+        );
+    }
 
-    );
 
-    if (!confirmDelete) {
+    window.location.href =
+        "/admin-dashboard";
+}
 
-        return;
+
+//=====================================================
+// LOGOUT
+//=====================================================
+
+async function logout() {
+
+    try {
+
+        await clearSessions();
 
     }
 
-    courses.splice(selectedCourseIndex, 1);
+    catch (error) {
 
-    localStorage.setItem(
+        console.error(
+            "Logout Error:",
+            error
+        );
+    }
 
-        "courses",
-        JSON.stringify(courses)
 
+    alert(
+        "Logged Out Successfully."
     );
 
-    alert("Course Deleted Successfully!");
 
-    selectedCourseIndex = -1;
+    window.location.replace(
+        "/login"
+    );
+}
 
-    displayCourses();
 
-});
-// ===============================
-// RESET FORM
-// ===============================
+//=====================================================
+// LOGOUT BUTTON
+//=====================================================
 
-resetBtn.addEventListener("click", function () {
+function initializeLogoutButton() {
 
-    courseName.value = "";
-    courseCode.value = "";
-    instructor.value = "";
-    duration.value = "";
+    const button =
+        document.getElementById(
+            "logoutBtn"
+        );
 
-    level.selectedIndex = 0;
-    category.selectedIndex = 0;
-    status.selectedIndex = 0;
 
-    image.value = "";
-    overview.value = "";
+    if (
+        !button ||
+        button.dataset.initialized ===
+            "true"
+    ) {
+        return;
+    }
 
-    outcome1.value = "";
-    outcome2.value = "";
-    outcome3.value = "";
-    outcome4.value = "";
-    outcome5.value = "";
 
-    pre1.value = "";
-    pre2.value = "";
-    pre3.value = "";
+    button.dataset.initialized =
+        "true";
 
-    module1.value = "";
-    module2.value = "";
-    module3.value = "";
-    module4.value = "";
-    module5.value = "";
 
-    video1.value = "";
-    video2.value = "";
-    video3.value = "";
-    video4.value = "";
-    video5.value = "";
+    button.addEventListener(
+        "click",
+        logout
+    );
+}
 
-    notes.value = "";
-    lab.value = "";
-    assignment.value = "";
-    reference.value = "";
-    resource.value = "";
 
-    previewImage.src = "https://picsum.photos/900/350";
+//=====================================================
+// REACT-SAFE INITIALIZATION
+//=====================================================
 
-    selectedCourseIndex = -1;
+if (
+    document.readyState === "loading"
+) {
 
-});
-
-// ===============================
-// REFRESH COURSE LIST
-// ===============================
-
-function refreshCourses() {
-
-    courses = JSON.parse(localStorage.getItem("courses")) || [];
-
-    displayCourses();
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeEditCourse,
+        {
+            once: true
+        }
+    );
 
 }
 
-// ===============================
-// PAGE INITIALIZATION
-// ===============================
+else {
 
-window.onload = function () {
-
-    refreshCourses();
-
-    previewImage.src = "https://picsum.photos/900/350";
-
-};
-
-// ===============================
-// AUTO REFRESH (OPTIONAL)
-// ===============================
-
-setInterval(function () {
-
-    refreshCourses();
-
-}, 30000);
-function logout() {
-
-    localStorage.removeItem("loggedInAdmin");
-
-    alert("Logged Out Successfully.");
-
-    window.location.href = "login.html";
-
+    initializeEditCourse();
 }
-document.getElementById("logoutBtn").addEventListener("click", logout);
+
+
+//=====================================================
+// GLOBAL FUNCTIONS
+//=====================================================
+
+window.updateCourse =
+    updateCourse;
+
+window.cancelEdit =
+    cancelEdit;
+
+window.logout =
+    logout;

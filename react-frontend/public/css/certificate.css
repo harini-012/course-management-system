@@ -1,119 +1,257 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-body{
-    background:linear-gradient(135deg,#0F172A,#1E293B,#312E81);
-    min-height:100vh;
+body {
+    min-height: 100vh;
+    background: #f1f5f9;
 }
 
-/*================ HEADER ================*/
-
-header{
-background:#1E3A8A;
-color:white;
-padding:18px 8%;
-display:flex;
-justify-content:space-between;
-align-items:center;
-box-shadow:0 5px 15px rgba(0,0,0,.2);
+header {
+    background: #1e3a8a;
+    color: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.logo{
-font-size:30px;
-font-weight:bold;
+.logo {
+    font-size: 27px;
+    font-weight: 800;
 }
 
-nav{
-display:flex;
-align-items:center;
-gap:25px;
-flex-wrap:wrap;
+nav {
+    display: flex;
+    align-items: center;
+    gap: 22px;
 }
 
-nav a{
-color:white;
-text-decoration:none;
-font-size:15px;
+nav a {
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
 }
 
-.logout-btn{
-background:#ef4444;
-color:white;
-border:none;
-padding:8px 18px;
-border-radius:8px;
-cursor:pointer;
-font-size:14px;
+.logout-btn {
+    background: #dc2626;
+    color: white;
+    border: 0;
+    border-radius: 8px;
+    padding: 10px 18px;
+    cursor: pointer;
 }
 
-/*================ CERTIFICATE ================*/
-
-.certificate-section{
-padding:50px 5%;
-display:flex;
-flex-direction:column;
-align-items:center;
-gap:30px;
+.certificate-page {
+    width: min(1050px, 94%);
+    margin: 45px auto;
 }
 
-.certificate-wrap{
-max-width:1000px;
-width:100%;
-box-shadow:0 20px 50px rgba(0,0,0,.4);
-border-radius:10px;
-overflow:hidden;
+.certificate {
+    background: white;
+    padding: 14px;
+    box-shadow: 0 15px 40px rgba(15, 23, 42, 0.18);
 }
 
-#certificateCanvas{
-width:100%;
-height:auto;
-display:block;
+.certificate-border {
+    min-height: 650px;
+    border: 5px solid #1e3a8a;
+    outline: 2px solid #d4af37;
+    outline-offset: -14px;
+    padding: 55px 70px;
+    text-align: center;
 }
 
-.certificate-actions{
-display:flex;
-gap:15px;
-flex-wrap:wrap;
-justify-content:center;
+.certificate-brand {
+    color: #1e3a8a;
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 25px;
 }
 
-.btn{
-padding:12px 28px;
-border:none;
-border-radius:8px;
-font-size:15px;
-cursor:pointer;
-font-weight:600;
+.certificate-small-title {
+    color: #b8860b;
+    font-size: 13px;
+    letter-spacing: 4px;
+    font-weight: 800;
+    margin-bottom: 10px;
 }
 
-.download-btn{
-background:#16a34a;
-color:white;
+.certificate h1 {
+    color: #1e3a8a;
+    font-family: Georgia, serif;
+    font-size: 52px;
+    margin-bottom: 28px;
 }
 
-.print-btn{
-background:#2563EB;
-color:white;
+.presented {
+    color: #64748b;
+    font-size: 17px;
+    margin-bottom: 12px;
 }
 
-.back-btn{
-background:#e2e8f0;
-color:#1E293B;
+.certificate-student {
+    font-family: Georgia, serif;
+    font-size: 38px;
+    font-style: italic;
+    color: #0f172a;
+    margin: 15px 0 8px;
 }
 
-footer{
-text-align:center;
-color:#cbd5e1;
-padding:20px;
-font-size:14px;
+.student-line {
+    width: 60%;
+    height: 2px;
+    background: #d4af37;
+    margin: 0 auto 25px;
 }
 
-@media print{
-    header, .certificate-actions, footer{
-        display:none;
+.certificate-course {
+    color: #2563eb;
+    font-size: 27px;
+    margin: 15px 0 35px;
+}
+
+.certificate-info {
+    display: flex;
+    justify-content: center;
+    gap: 90px;
+    margin: 35px 0;
+}
+
+.certificate-info div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.certificate-info span {
+    color: #64748b;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.certificate-info strong {
+    color: #0f172a;
+}
+
+.certificate-footer {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 40px;
+    align-items: end;
+    margin-top: 55px;
+}
+
+.signature {
+    border-top: 1px solid #94a3b8;
+    padding-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.signature span {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.certificate-seal {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    margin: auto;
+    background: #1e3a8a;
+    color: white;
+    border: 5px double #d4af37;
+    font-size: 30px;
+}
+
+.certificate-actions {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.certificate-actions button {
+    border: 0;
+    border-radius: 8px;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.download-btn {
+    background: #16a34a;
+    color: white;
+}
+
+.print-btn {
+    background: #2563eb;
+    color: white;
+}
+
+.back-btn {
+    background: #e2e8f0;
+    color: #334155;
+}
+
+@media print {
+    header,
+    footer,
+    .certificate-actions {
+        display: none !important;
     }
+
+    body {
+        background: white;
+    }
+
+    .certificate-page {
+        width: 100%;
+        margin: 0;
+    }
+
+    .certificate {
+        box-shadow: none;
+    }
+}
+
+@media (max-width: 700px) {
+    .certificate-border {
+        padding: 40px 25px;
+    }
+
+    .certificate-info {
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .certificate-footer {
+        grid-template-columns: 1fr;
+    }
+
+    .certificate-student {
+        font-size: 29px;
+    }
+}
+footer {
+    margin-top: 45px;
+
+    background: #1e3a8a;
+
+    color: #dbeafe;
+
+    text-align: center;
+
+    padding: 22px;
+
+    font-size: 13px;
 }

@@ -1,35 +1,33 @@
-import {
-    useEffect,
-    useRef
-} from "react";
+import { useEffect } from "react";
 
 
-function LegacyScript({
-    src,
-    module = false
+export default function LegacyScript({
+    src
 }) {
-
-    const executed =
-        useRef(false);
-
 
     useEffect(() => {
 
-        /*
-         * React StrictMode runs effects twice
-         * in development.
-         *
-         * This prevents the same legacy
-         * script from being executed twice
-         * during the same mount.
-         */
-
-        if (executed.current) {
+        if (!src) {
             return;
         }
 
 
-        executed.current = true;
+        /*
+         * IMPORTANT
+         *
+         * React Router does not reload the browser when
+         * navigating between pages.
+         *
+         * ES module scripts with the same URL may already
+         * be evaluated/cached.
+         *
+         * Adding a unique query value makes the page's
+         * legacy module execute every time the React page
+         * is mounted.
+         */
+
+        const uniqueSrc =
+            `${src}?pageLoad=${Date.now()}`;
 
 
         const script =
@@ -39,62 +37,38 @@ function LegacyScript({
 
 
         script.src =
-            src;
+            uniqueSrc;
 
 
         script.type =
-            module
-                ? "module"
-                : "text/javascript";
+            "module";
 
 
         script.async =
             false;
 
 
-        script.onload =
-            function () {
-
-                /*
-                 * Old JavaScript files use
-                 * DOMContentLoaded.
-                 *
-                 * React has already rendered
-                 * the DOM, so we manually trigger
-                 * the event after loading the
-                 * old script.
-                 */
-
-                document.dispatchEvent(
-                    new Event(
-                        "DOMContentLoaded"
-                    )
-                );
+        script.setAttribute(
+            "data-legacy-script",
+            src
+        );
 
 
-                /*
-                 * Some existing files use
-                 * window.addEventListener("load")
-                 * or window.onload.
-                 */
+        script.onload = () => {
 
-                window.dispatchEvent(
-                    new Event("load")
-                );
-
-            };
+            console.log(
+                `Loaded: ${src}`
+            );
+        };
 
 
-        script.onerror =
-            function (error) {
+        script.onerror = error => {
 
-                console.error(
-                    "Unable to load legacy script:",
-                    src,
-                    error
-                );
-
-            };
+            console.error(
+                `Unable to load legacy script: ${src}`,
+                error
+            );
+        };
 
 
         document.body.appendChild(
@@ -102,19 +76,45 @@ function LegacyScript({
         );
 
 
-        /*
-         * We intentionally do not remove
-         * the script here because React
-         * StrictMode performs a temporary
-         * cleanup during development.
-         */
+        return () => {
 
-    }, [src, module]);
+            if (
+                script &&
+                script.parentNode
+            ) {
+
+                script.parentNode.removeChild(
+                    script
+                );
+            }
+
+
+            /*
+             * Remove old page-specific global handlers.
+             * The next page script will recreate the
+             * handlers that it needs.
+             */
+
+            const remainingScripts =
+                document.querySelectorAll(
+                    `script[data-legacy-script="${src}"]`
+                );
+
+
+            remainingScripts.forEach(
+                oldScript => {
+
+                    if (
+                        oldScript !== script
+                    ) {
+                        oldScript.remove();
+                    }
+                }
+            );
+        };
+
+    }, [src]);
 
 
     return null;
-
 }
-
-
-export default LegacyScript;

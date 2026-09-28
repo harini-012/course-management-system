@@ -1,11 +1,201 @@
-import PageShell from "../components/PageShell";
-import PageCss from "../components/PageCss";
-import LegacyScript from "../components/LegacyScript";
+import {
+    useEffect,
+    useMemo,
+    useState
+} from "react";
 
-import CourseCard from "../components/CourseCard";
+import PageShell
+    from "../components/PageShell";
+
+import PageCss
+    from "../components/PageCss";
+
+import CourseCard
+    from "../components/CourseCard";
 
 
-function Courses() {
+const API_URL =
+    "http://localhost:5000";
+
+
+export default function Courses() {
+
+    const [
+        courses,
+        setCourses
+    ] = useState([]);
+
+
+    const [
+        loading,
+        setLoading
+    ] = useState(true);
+
+
+    const [
+        error,
+        setError
+    ] = useState("");
+
+
+    const [
+        search,
+        setSearch
+    ] = useState("");
+
+
+    //=================================================
+    // LOAD COURSES
+    //=================================================
+
+    useEffect(
+        () => {
+
+            let cancelled =
+                false;
+
+
+            async function loadCourses() {
+
+                try {
+
+                    setLoading(
+                        true
+                    );
+
+
+                    setError(
+                        ""
+                    );
+
+
+                    const response =
+                        await fetch(
+                            `${API_URL}/courses`
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to load courses."
+                        );
+                    }
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!cancelled) {
+
+                        setCourses(
+                            Array.isArray(data)
+                                ? data
+                                : []
+                        );
+                    }
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Course Loading Error:",
+                        error
+                    );
+
+
+                    if (!cancelled) {
+
+                        setCourses(
+                            []
+                        );
+
+
+                        setError(
+                            "Unable to load courses. Please try again."
+                        );
+                    }
+
+                }
+
+                finally {
+
+                    if (!cancelled) {
+
+                        setLoading(
+                            false
+                        );
+                    }
+                }
+            }
+
+
+            loadCourses();
+
+
+            return () => {
+
+                cancelled =
+                    true;
+            };
+
+        },
+        []
+    );
+
+
+    //=================================================
+    // SEARCH
+    //=================================================
+
+    const filteredCourses =
+        useMemo(
+            () => {
+
+                const value =
+                    search
+                        .trim()
+                        .toLowerCase();
+
+
+                if (!value) {
+
+                    return courses;
+                }
+
+
+                return courses.filter(
+                    course => {
+
+                        const searchableText =
+                            [
+                                course.title,
+                                course.overview,
+                                course.description,
+                                course.instructor,
+                                course.level,
+                                course.mode
+                            ]
+                                .filter(Boolean)
+                                .join(" ")
+                                .toLowerCase();
+
+
+                        return searchableText.includes(
+                            value
+                        );
+                    }
+                );
+
+            },
+            [
+                courses,
+                search
+            ]
+        );
+
 
     return (
 
@@ -29,6 +219,13 @@ function Courses() {
                         type="text"
                         id="searchCourse"
                         placeholder="Search Courses..."
+                        value={search}
+                        onChange={
+                            event =>
+                                setSearch(
+                                    event.target.value
+                                )
+                        }
                     />
 
 
@@ -42,94 +239,79 @@ function Courses() {
                         id="courseContainer"
                     >
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/5968/5968350.png"
-                            alt="Python"
-                            title="Python Programming"
-                            description="Learn Python from beginner to advanced level."
-                            courseKey="python"
-                        />
+                        {loading && (
+
+                            <p>
+                                Loading Courses...
+                            </p>
+
+                        )}
 
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/1006/1006363.png"
-                            alt="Web Development"
-                            title="Web Development"
-                            description="Create modern websites using HTML, CSS and JavaScript."
-                            courseKey="web"
-                        />
+                        {!loading &&
+                            error && (
+
+                            <p>
+                                {error}
+                            </p>
+
+                        )}
 
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/226/226777.png"
-                            alt="Java Programming"
-                            title="Java Programming"
-                            description="Master Java and object-oriented programming."
-                            courseKey="java"
-                        />
+                        {!loading &&
+                            !error &&
+                            filteredCourses.length === 0 && (
+
+                            <p>
+                                No Courses Available.
+                            </p>
+
+                        )}
 
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/4248/4248443.png"
-                            alt="Database Management"
-                            title="Database Management"
-                            description="Learn SQL and MySQL database concepts."
-                            courseKey="database"
-                        />
+                        {!loading &&
+                            !error &&
+                            filteredCourses.map(
+                                course => {
+
+                                    const courseKey =
+                                        course.courseKey ||
+                                        course.key ||
+                                        course.id;
 
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/2103/2103633.png"
-                            alt="Machine Learning"
-                            title="Machine Learning"
-                            description="Introduction to AI and predictive models."
-                            courseKey="machinelearning"
-                        />
+                                    return (
 
+                                        <CourseCard
+                                            key={courseKey}
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/3064/3064197.png"
-                            alt="Cyber Security"
-                            title="Cyber Security"
-                            description="Protect systems against cyber threats."
-                            courseKey="cybersecurity"
-                        />
+                                            image={
+                                                course.image ||
+                                                "https://cdn-icons-png.flaticon.com/512/2103/2103633.png"
+                                            }
 
+                                            alt={
+                                                course.title
+                                            }
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/4712/4712027.png"
-                            alt="Artificial Intelligence"
-                            title="Artificial Intelligence"
-                            description="Learn the fundamentals of intelligent systems and AI applications."
-                            courseKey="artificialintelligence"
-                        />
+                                            title={
+                                                course.title
+                                            }
 
+                                            description={
+                                                course.overview ||
+                                                course.description ||
+                                                ""
+                                            }
 
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/4144/4144513.png"
-                            alt="Cloud Computing"
-                            title="Cloud Computing"
-                            description="Learn cloud technologies and deploy scalable applications."
-                            courseKey="cloudcomputing"
-                        />
+                                            courseKey={
+                                                courseKey
+                                            }
+                                        />
 
-
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/888/888879.png"
-                            alt="Mobile App Development"
-                            title="Mobile App Development"
-                            description="Build Android applications with modern user interfaces."
-                            courseKey="mobiledevelopment"
-                        />
-
-
-                        <CourseCard
-                            image="https://cdn-icons-png.flaticon.com/512/2721/2721297.png"
-                            alt="DevOps"
-                            title="DevOps"
-                            description="Master modern software deployment and automation tools."
-                            courseKey="devops"
-                        />
+                                    );
+                                }
+                            )}
 
                     </div>
 
@@ -137,16 +319,6 @@ function Courses() {
 
             </PageShell>
 
-
-            <LegacyScript
-                src="/legacy/js/courses.js"
-            />
-
         </>
-
     );
-
 }
-
-
-export default Courses;

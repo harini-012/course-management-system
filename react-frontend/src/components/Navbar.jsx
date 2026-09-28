@@ -1,11 +1,69 @@
 import {
-    NavLink
+    NavLink,
+    useNavigate
 } from "react-router-dom";
+
+import {
+    useAuth
+} from "../auth/AuthContext";
 
 
 function Navbar({
     variant = "student"
 }) {
+
+    const navigate =
+        useNavigate();
+
+
+    const {
+        logout
+    } =
+        useAuth();
+
+
+    const isAdmin =
+        variant === "admin" ||
+        variant === "adminnone";
+
+
+    async function handleLogout() {
+
+        try {
+
+            await logout(
+                isAdmin
+                    ? "admin"
+                    : "student"
+            );
+
+
+            navigate(
+                "/login",
+                {
+                    replace: true
+                }
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Logout Error:",
+                error
+            );
+
+
+            navigate(
+                "/login",
+                {
+                    replace: true
+                }
+            );
+        }
+    }
+
 
     return (
 
@@ -13,7 +71,7 @@ function Navbar({
 
             <div className="logo">
 
-                {variant.startsWith("admin")
+                {isAdmin
                     ? "CourseMS Admin"
                     : "CourseMS"}
 
@@ -22,68 +80,51 @@ function Navbar({
 
             <nav>
 
-                {/* HOME */}
+                {/* ================= HOME ================= */}
 
                 {variant === "home" && (
 
                     <>
 
-                        <NavLink
-                            to="/"
-                            reloadDocument
-                        >
+                        <NavLink to="/">
                             Home
                         </NavLink>
 
 
-                        <NavLink
-                            to="/login"
-                            reloadDocument
-                        >
+                        <NavLink to="/login">
                             Login
                         </NavLink>
-
-
-                        <button
-                            id="logoutBtn"
-                            className="logout-btn"
-                            style={{
-                                display: "none"
-                            }}
-                        >
-                            Logout
-                        </button>
 
                     </>
 
                 )}
 
 
-                {/* STUDENT */}
+                {/* ================= STUDENT ================= */}
 
                 {variant === "student" && (
 
                     <>
 
-                        <NavLink
-                            to="/courses"
-                            reloadDocument
-                        >
+                        <NavLink to="/student-dashboard">
+                            Dashboard
+                        </NavLink>
+
+
+                        <NavLink to="/courses">
                             Explore Courses
                         </NavLink>
 
 
-                        <NavLink
-                            to="/my-courses"
-                            reloadDocument
-                        >
+                        <NavLink to="/my-courses">
                             My Courses
                         </NavLink>
 
 
                         <button
-                            id="logoutBtn"
+                            type="button"
                             className="logout-btn"
+                            onClick={handleLogout}
                         >
                             Logout
                         </button>
@@ -93,39 +134,31 @@ function Navbar({
                 )}
 
 
-                {/* STUDENT WITH DASHBOARD */}
+                {/* ================= STUDENT FULL ================= */}
 
                 {variant === "student3" && (
 
                     <>
 
-                        <NavLink
-                            to="/dashboard"
-                            reloadDocument
-                        >
+                        <NavLink to="/student-dashboard">
                             Dashboard
                         </NavLink>
 
 
-                        <NavLink
-                            to="/courses"
-                            reloadDocument
-                        >
+                        <NavLink to="/courses">
                             Explore Courses
                         </NavLink>
 
 
-                        <NavLink
-                            to="/my-courses"
-                            reloadDocument
-                        >
+                        <NavLink to="/my-courses">
                             My Courses
                         </NavLink>
 
 
                         <button
-                            id="logoutBtn"
+                            type="button"
                             className="logout-btn"
+                            onClick={handleLogout}
                         >
                             Logout
                         </button>
@@ -135,31 +168,31 @@ function Navbar({
                 )}
 
 
-                {/* CERTIFICATE */}
+                {/* ================= CERTIFICATE ================= */}
 
                 {variant === "cert" && (
 
                     <>
 
-                        <NavLink
-                            to="/dashboard"
-                            reloadDocument
-                        >
+                        <NavLink to="/student-dashboard">
                             Dashboard
                         </NavLink>
 
 
-                        <NavLink
-                            to="/my-courses"
-                            reloadDocument
-                        >
+                        <NavLink to="/courses">
+                            Explore Courses
+                        </NavLink>
+
+
+                        <NavLink to="/my-courses">
                             My Courses
                         </NavLink>
 
 
                         <button
-                            id="logoutBtn"
+                            type="button"
                             className="logout-btn"
+                            onClick={handleLogout}
                         >
                             Logout
                         </button>
@@ -169,39 +202,31 @@ function Navbar({
                 )}
 
 
-                {/* ENROLLMENT SUCCESS */}
+                {/* ================= ENROLLMENT ================= */}
 
                 {variant === "enrollment" && (
 
                     <>
 
-                        <NavLink
-                            to="/courses"
-                            reloadDocument
-                        >
-                            Explore Courses
-                        </NavLink>
-
-
-                        <NavLink
-                            to="/dashboard"
-                            reloadDocument
-                        >
+                        <NavLink to="/student-dashboard">
                             Dashboard
                         </NavLink>
 
 
-                        <NavLink
-                            to="/my-courses"
-                            reloadDocument
-                        >
+                        <NavLink to="/courses">
+                            Explore Courses
+                        </NavLink>
+
+
+                        <NavLink to="/my-courses">
                             My Courses
                         </NavLink>
 
 
                         <button
-                            id="logoutBtn"
+                            type="button"
                             className="logout-btn"
+                            onClick={handleLogout}
                         >
                             Logout
                         </button>
@@ -211,23 +236,31 @@ function Navbar({
                 )}
 
 
-                {/* ADMIN */}
+                {/* ================= ADMIN PAGES ================= */}
 
                 {variant === "admin" && (
 
                     <>
 
-                        <NavLink
-                            to="/admin-dashboard"
-                            reloadDocument
-                        >
+                        <NavLink to="/admin-dashboard">
                             Dashboard
                         </NavLink>
 
 
+                        <NavLink to="/add-course">
+                            Add Course
+                        </NavLink>
+
+
+                        <NavLink to="/manage-enrollment">
+                            Enrollments
+                        </NavLink>
+
+
                         <button
-                            id="logoutBtn"
+                            type="button"
                             className="logout-btn"
+                            onClick={handleLogout}
                         >
                             Logout
                         </button>
@@ -237,25 +270,43 @@ function Navbar({
                 )}
 
 
-                {/* ADMIN DASHBOARD */}
+                {/* ================= ADMIN DASHBOARD ================= */}
 
                 {variant === "adminnone" && (
 
-                    <button
-                        id="logoutBtn"
-                        className="logout-btn"
-                    >
-                        Logout
-                    </button>
+                    <>
+
+                        <NavLink to="/admin-dashboard">
+                            Dashboard
+                        </NavLink>
+
+
+                        <NavLink to="/add-course">
+                            Add Course
+                        </NavLink>
+
+
+                        <NavLink to="/manage-enrollment">
+                            Enrollments
+                        </NavLink>
+
+
+                        <button
+                            type="button"
+                            className="logout-btn"
+                            onClick={handleLogout}
+                        >
+                            Logout
+                        </button>
+
+                    </>
 
                 )}
 
             </nav>
 
         </header>
-
     );
-
 }
 
 

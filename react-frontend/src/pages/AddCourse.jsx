@@ -1,265 +1,621 @@
+import { useNavigate } from "react-router-dom";
+
 import PageShell from "../components/PageShell";
 import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
 
 export default function AddCourse() {
+
+    const navigate = useNavigate();
+
     return (
         <>
             <PageCss href="/css/add_course.css" />
+
             <PageShell variant="admin">
-            <div className="container">
-                <div className="banner">
-                    <h1>Add New Course</h1>
-                    <p>
-                        Create a new course by entering all the required information.
-The course will be available for students after publishing.
-                    </p>
-                </div>
-                {/* ================= COURSE INFORMATION ================= */}
-                <div className="form-box">
-                    <h2>Course Information</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Course Name</label>
-                            <input type="text" placeholder="Enter Course Name" id="courseName" />
+
+                <main className="add-course-page">
+
+                    <section className="add-course-hero">
+
+                        <div>
+                            <span className="page-tag">
+                                ADMIN • COURSE MANAGEMENT
+                            </span>
+
+                            <h1>Add New Course</h1>
+
+                            <p>
+                                Create a course, add modules,
+                                syllabus, skills, video lessons
+                                and study materials.
+                            </p>
                         </div>
-                        <div className="input-box">
-                            <label>Course Code</label>
-                            <input type="text" placeholder="Example: CS101" id="courseCode" />
+
+                        <button
+                            type="button"
+                            className="back-dashboard-btn"
+                            onClick={() =>
+                                navigate("/admin-dashboard")
+                            }
+                        >
+                            ← Back to Dashboard
+                        </button>
+
+                    </section>
+
+
+                    <div
+                        id="message"
+                        className="form-message"
+                        style={{ display: "none" }}
+                    ></div>
+
+
+                    <form
+                        id="courseForm"
+                        className="course-form"
+                    >
+
+                        {/* BASIC DETAILS */}
+
+                        <section className="course-form-section">
+
+                            <div className="section-title">
+
+                                <span>01</span>
+
+                                <div>
+                                    <h2>Basic Information</h2>
+                                    <p>
+                                        Enter the main details of
+                                        the course.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div className="form-grid">
+
+                                <div className="input-box">
+                                    <label>Course Title *</label>
+
+                                    <input
+                                        id="courseTitle"
+                                        type="text"
+                                        placeholder="Python Programming"
+                                        required
+                                    />
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Course Key</label>
+
+                                    <input
+                                        id="courseKey"
+                                        type="text"
+                                        placeholder="python"
+                                    />
+
+                                    <small>
+                                        Leave empty to generate automatically.
+                                    </small>
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Instructor *</label>
+
+                                    <input
+                                        id="instructor"
+                                        type="text"
+                                        placeholder="Instructor name"
+                                        required
+                                    />
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Duration *</label>
+
+                                    <input
+                                        id="duration"
+                                        type="text"
+                                        placeholder="8 Weeks"
+                                        required
+                                    />
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Level *</label>
+
+                                    <select
+                                        id="level"
+                                        defaultValue=""
+                                        required
+                                    >
+                                        <option value="">
+                                            Select level
+                                        </option>
+
+                                        <option value="Beginner">
+                                            Beginner
+                                        </option>
+
+                                        <option value="Intermediate">
+                                            Intermediate
+                                        </option>
+
+                                        <option value="Advanced">
+                                            Advanced
+                                        </option>
+                                    </select>
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Mode</label>
+
+                                    <select
+                                        id="mode"
+                                        defaultValue="Online"
+                                    >
+                                        <option value="Online">
+                                            Online
+                                        </option>
+
+                                        <option value="Offline">
+                                            Offline
+                                        </option>
+
+                                        <option value="Hybrid">
+                                            Hybrid
+                                        </option>
+                                    </select>
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Status</label>
+
+                                    <select
+                                        id="status"
+                                        defaultValue="Active"
+                                    >
+                                        <option value="Active">
+                                            Active
+                                        </option>
+
+                                        <option value="Inactive">
+                                            Inactive
+                                        </option>
+                                    </select>
+                                </div>
+
+
+                                <div className="input-box">
+                                    <label>Course Image URL</label>
+
+                                    <input
+                                        id="courseImage"
+                                        type="url"
+                                        placeholder="https://example.com/image.jpg"
+                                    />
+                                </div>
+
+                            </div>
+
+                        </section>
+
+
+                        {/* DESCRIPTION */}
+
+                        <section className="course-form-section">
+
+                            <div className="section-title">
+
+                                <span>02</span>
+
+                                <div>
+                                    <h2>Course Description</h2>
+                                    <p>
+                                        Explain what students will learn.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <div className="input-box full-input">
+
+                                <label>Short Overview</label>
+
+                                <textarea
+                                    id="overview"
+                                    placeholder="Short introduction to the course"
+                                ></textarea>
+
+                            </div>
+
+
+                            <div className="input-box full-input">
+
+                                <label>Full Description</label>
+
+                                <textarea
+                                    id="description"
+                                    placeholder="Complete course description"
+                                ></textarea>
+
+                            </div>
+
+                        </section>
+
+
+                        {/* MODULES */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="03"
+                                title="Course Modules"
+                                description="Add each course module separately."
+                            />
+
+                            <div
+                                id="moduleContainer"
+                                className="dynamic-container"
+                            >
+                                <DynamicInput
+                                    className="moduleInput"
+                                    placeholder="Example: Python Fundamentals"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                id="addModuleBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Module
+                            </button>
+
+                        </section>
+
+
+                        {/* SYLLABUS */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="04"
+                                title="Course Syllabus"
+                                description="Add syllabus topics separately."
+                            />
+
+                            <div
+                                id="syllabusContainer"
+                                className="dynamic-container"
+                            >
+                                <DynamicInput
+                                    className="syllabusInput"
+                                    placeholder="Example: Variables and Data Types"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                id="addSyllabusBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Syllabus Topic
+                            </button>
+
+                        </section>
+
+
+                        {/* SKILLS */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="05"
+                                title="Skills"
+                                description="What skills will students gain?"
+                            />
+
+                            <div
+                                id="skillContainer"
+                                className="dynamic-container"
+                            >
+                                <DynamicInput
+                                    className="skillInput"
+                                    placeholder="Example: Python Programming"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                id="addSkillBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Skill
+                            </button>
+
+                        </section>
+
+
+                        {/* OUTCOMES */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="06"
+                                title="Learning Outcomes"
+                                description="Add expected learning outcomes."
+                            />
+
+                            <div
+                                id="outcomeContainer"
+                                className="dynamic-container"
+                            >
+                                <DynamicInput
+                                    className="outcomeInput"
+                                    placeholder="Example: Build Python applications"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                id="addOutcomeBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Outcome
+                            </button>
+
+                        </section>
+
+
+                        {/* PREREQUISITES */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="07"
+                                title="Prerequisites"
+                                description="Add requirements for this course."
+                            />
+
+                            <div
+                                id="prerequisiteContainer"
+                                className="dynamic-container"
+                            >
+                                <DynamicInput
+                                    className="prerequisiteInput"
+                                    placeholder="Example: Basic computer knowledge"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                id="addPrerequisiteBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Prerequisite
+                            </button>
+
+                        </section>
+
+
+                        {/* INSTRUCTOR */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="08"
+                                title="Instructor Information"
+                                description="Add instructor profile information."
+                            />
+
+                            <div className="input-box full-input">
+
+                                <textarea
+                                    id="instructorInfo"
+                                    placeholder="Instructor experience and profile"
+                                ></textarea>
+
+                            </div>
+
+                        </section>
+
+
+                        {/* VIDEOS */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="09"
+                                title="Video Lessons"
+                                description="Give every lesson a name and video URL."
+                            />
+
+
+                            <div
+                                id="videoContainer"
+                                className="video-fields"
+                            >
+
+                                <div className="video-field-row">
+
+                                    <div className="input-box">
+                                        <label>Lesson Name</label>
+
+                                        <input
+                                            type="text"
+                                            className="videoTitleInput"
+                                            placeholder="Introduction to Python"
+                                        />
+                                    </div>
+
+
+                                    <div className="input-box">
+                                        <label>Video URL</label>
+
+                                        <input
+                                            type="url"
+                                            className="videoUrlInput"
+                                            placeholder="https://www.youtube.com/watch?v=..."
+                                        />
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="addVideoBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Video Lesson
+                            </button>
+
+                        </section>
+
+
+                        {/* MATERIALS */}
+
+                        <section className="course-form-section">
+
+                            <DynamicHeading
+                                number="10"
+                                title="Study Materials"
+                                description="Add the material name and URL separately."
+                            />
+
+
+                            <div
+                                id="materialContainer"
+                                className="video-fields"
+                            >
+
+                                <div className="material-field-row">
+
+                                    <div className="input-box">
+                                        <label>Material Name</label>
+
+                                        <input
+                                            type="text"
+                                            className="materialTitleInput"
+                                            placeholder="Python Notes"
+                                        />
+                                    </div>
+
+
+                                    <div className="input-box">
+                                        <label>Material URL</label>
+
+                                        <input
+                                            type="url"
+                                            className="materialUrlInput"
+                                            placeholder="https://..."
+                                        />
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <button
+                                type="button"
+                                id="addMaterialBtn"
+                                className="add-item-btn"
+                            >
+                                + Add Study Material
+                            </button>
+
+                        </section>
+
+
+                        {/* SAVE */}
+
+                        <div className="form-actions">
+
+                            <button
+                                id="saveCourseBtn"
+                                type="submit"
+                                className="save-course-btn"
+                            >
+                                Add Course
+                            </button>
+
+
+                            <button
+                                type="button"
+                                className="cancel-course-btn"
+                                onClick={() =>
+                                    navigate("/admin-dashboard")
+                                }
+                            >
+                                Cancel
+                            </button>
+
                         </div>
-                        <div className="input-box">
-                            <label>Instructor Name</label>
-                            <input type="text" placeholder="Enter Instructor Name" id="instructor" />
-                        </div>
-                        <div className="input-box">
-                            <label>Duration</label>
-                            <input type="text" placeholder="Example: 8 Weeks" id="duration" />
-                        </div>
-                        <div className="input-box">
-                            <label>Course Level</label>
-                            <select id="level">
-                                <option>Select Level</option>
-                                <option>Beginner</option>
-                                <option>Intermediate</option>
-                                <option>Advanced</option>
-                            </select>
-                        </div>
-                        <div className="input-box">
-                            <label>Category</label>
-                            <select id="category">
-                                <option>Select Category</option>
-                                <option>Programming</option>
-                                <option>Web Development</option>
-                                <option>Database</option>
-                                <option>Artificial Intelligence</option>
-                                <option>Machine Learning</option>
-                                <option>Cloud Computing</option>
-                                <option>Cyber Security</option>
-                                <option>Mobile App Development</option>
-                                <option>DevOps</option>
-                            </select>
-                        </div>
-                        <div className="input-box">
-                            <label>Course Image URL</label>
-                            <input type="text" placeholder="Paste Image URL" id="image" />
-                        </div>
-                        <div className="input-box">
-                            <label>Status</label>
-                            <select id="status">
-                                <option>Active</option>
-                                <option>Draft</option>
-                                <option>Inactive</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                {/* ================= COURSE DESCRIPTION ================= */}
-                <div className="form-box">
-                    <h2>Course Description</h2>
-                    <div className="input-box">
-                        <label>Course Overview</label>
-                        <textarea placeholder="Enter a detailed overview of the course, its objectives, learning approach and expected outcomes." id="overview"></textarea>
-                    </div>
-                </div>
-                {/* ================= LEARNING OUTCOMES ================= */}
-                <div className="form-box">
-                    <h2>Learning Outcomes</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Outcome 1</label>
-                            <input type="text" placeholder="Example: Understand programming fundamentals" id="outcome" />
-                        </div>
-                        <div className="input-box">
-                            <label>Outcome 2</label>
-                            <input type="text" placeholder="Example: Build real-world applications" id="outcome2" />
-                        </div>
-                        <div className="input-box">
-                            <label>Outcome 3</label>
-                            <input type="text" placeholder="Example: Develop problem-solving skills" id="outcome3" />
-                        </div>
-                        <div className="input-box">
-                            <label>Outcome 4</label>
-                            <input type="text" placeholder="Example: Work with industry tools" id="outcome4" />
-                        </div>
-                        <div className="input-box">
-                            <label>Outcome 5</label>
-                            <input type="text" placeholder="Example: Prepare for certification" id="outcome5" />
-                        </div>
-                    </div>
-                </div>
-                {/* ================= PREREQUISITES ================= */}
-                <div className="form-box">
-                    <h2>Course Prerequisites</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Prerequisite 1</label>
-                            <input type="text" placeholder="Example: Basic Computer Knowledge" id="prerequistite1" />
-                        </div>
-                        <div className="input-box">
-                            <label>Prerequisite 2</label>
-                            <input type="text" placeholder="Example: Internet Access" id="prerequisite2" />
-                        </div>
-                        <div className="input-box">
-                            <label>Prerequisite 3</label>
-                            <input type="text" placeholder="Example: No prior programming experience required" id="prerequisite3" />
-                        </div>
-                    </div>
-                </div>
-                {/* ================= COURSE SYLLABUS ================= */}
-                <div className="form-box">
-                    <h2>Course Syllabus</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Module 1</label>
-                            <input type="text" placeholder="Introduction and Course Overview" id="module1" />
-                        </div>
-                        <div className="input-box">
-                            <label>Module 2</label>
-                            <input type="text" placeholder="Core Concepts" id="module2" />
-                        </div>
-                        <div className="input-box">
-                            <label>Module 3</label>
-                            <input type="text" placeholder="Practical Sessions" id="module3" />
-                        </div>
-                        <div className="input-box">
-                            <label>Module 4</label>
-                            <input type="text" placeholder="Mini Project" id="module4" />
-                        </div>
-                        <div className="input-box">
-                            <label>Module 5</label>
-                            <input type="text" placeholder="Assessment and Certification" id="module5" />
-                        </div>
-                    </div>
-                </div>
-                {/* ================= VIDEO LESSONS ================= */}
-                <div className="form-box">
-                    <h2>Video Lessons</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Video Lesson 1</label>
-                            <input type="url" placeholder="https://www.youtube.com/watch?v=..." id="v1" />
-                        </div>
-                        <div className="input-box">
-                            <label>Video Lesson 2</label>
-                            <input type="url" placeholder="https://www.youtube.com/watch?v=..." id="v2" />
-                        </div>
-                        <div className="input-box">
-                            <label>Video Lesson 3</label>
-                            <input type="url" placeholder="https://www.youtube.com/watch?v=..." id="v3" />
-                        </div>
-                        <div className="input-box">
-                            <label>Video Lesson 4</label>
-                            <input type="url" placeholder="https://www.youtube.com/watch?v=..." id="v4" />
-                        </div>
-                        <div className="input-box">
-                            <label>Video Lesson 5</label>
-                            <input type="url" placeholder="https://www.youtube.com/watch?v=..." id="v5" />
-                        </div>
-                    </div>
-                </div>
-                {/* ================= COURSE MATERIALS ================= */}
-                <div className="form-box">
-                    <h2>Course Materials</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Lecture Notes (PDF)</label>
-                            <input type="text" placeholder="Python Notes.pdf" id="l1" />
-                        </div>
-                        <div className="input-box">
-                            <label>Lab Manual</label>
-                            <input type="text" placeholder="Python Lab Manual.pdf" id="lab" />
-                        </div>
-                        <div className="input-box">
-                            <label>Reference Book</label>
-                            <input type="text" placeholder="Programming Reference.pdf" id="reference" />
-                        </div>
-                        <div className="input-box">
-                            <label>Additional Resources</label>
-                            <input type="text" placeholder="GitHub / Documentation / Website" id="additional" />
-                        </div>
-                    </div>
-                </div>
-                {/* ================= COURSE SETTINGS ================= */}
-                <div className="form-box">
-                    <h2>Course Settings</h2>
-                    <div className="form-grid">
-                        <div className="input-box">
-                            <label>Maximum Students</label>
-                            <input type="number" placeholder="100" id="maxstudents" />
-                        </div>
-                        <div className="input-box">
-                            <label>Course Language</label>
-                            <select id="courselanguage">
-                                <option>English</option>
-                                <option>Tamil</option>
-                                <option>Hindi</option>
-                            </select>
-                        </div>
-                        <div className="input-box">
-                            <label>Certificate Available</label>
-                            <select id="certificateavailability">
-                                <option>Yes</option>
-                                <option>No</option>
-                            </select>
-                        </div>
-                        <div className="input-box">
-                            <label>Enrollment Type</label>
-                            <select id="enrollmenttype">
-                                <option>Open</option>
-                                <option>Approval Required</option>
-                            </select>
-                        </div>
-                        <div className="input-box">
-                            <label>Course Start Date</label>
-                            <input type="date" id="sd" />
-                        </div>
-                        <div className="input-box">
-                            <label>Course End Date</label>
-                            <input type="date" id="ed" />
-                        </div>
-                    </div>
-                </div>
-                {/* ================= COURSE PREVIEW ================= */}
-                <div className="form-box">
-                    <h2>Course Preview</h2>
-                    <div style={{textAlign: "center"}}>
-                        <img src="https://picsum.photos/900/350" id="previewImage" style={{width: "100%", maxWidth: "900px", borderRadius: "15px", boxShadow: "0 8px 20px rgba(0,0,0,.2)"}} />
-                        <p style={{marginTop: "15px", color: "#666"}}>The selected course image will appear here after backend integration.</p>
-                    </div>
-                </div>
-                {/* ================= ACTION BUTTONS ================= */}
-                <div className="form-box">
-                    <div style={{display: "flex", justifyContent: "center", gap: "20px", flexWrap: "wrap"}}>
-                        <button id="publishBtn" style={{padding: "15px 35px", background: "#2563EB", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", fontWeight: "bold", cursor: "pointer"}}>Publish Course</button>
-                        <button id="draftBtn" style={{padding: "15px 35px", background: "#F59E0B", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", fontWeight: "bold", cursor: "pointer"}}>Save Draft</button>
-                        <button type="reset" id="resetBtn" style={{padding: "15px 35px", background: "#64748B", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", fontWeight: "bold", cursor: "pointer"}}>Reset</button>
-                        <button onClick={() => window.eval("window.location.href='admin_dashboard.html'")} style={{padding: "15px 35px", background: "#DC2626", color: "white", border: "none", borderRadius: "10px", fontSize: "16px", fontWeight: "bold", cursor: "pointer"}}>Back</button>
-                    </div>
-                </div>
-            </div>
-            {/* ================= FOOTER ================= */}
+
+                    </form>
+
+                </main>
+
             </PageShell>
+
+
             <LegacyScript src="/legacy/js/add_course.js" />
+
         </>
+    );
+}
+
+
+function DynamicHeading({
+    number,
+    title,
+    description
+}) {
+
+    return (
+        <div className="section-title">
+
+            <span>{number}</span>
+
+            <div>
+                <h2>{title}</h2>
+                <p>{description}</p>
+            </div>
+
+        </div>
+    );
+}
+
+
+function DynamicInput({
+    className,
+    placeholder
+}) {
+
+    return (
+        <div className="dynamic-row">
+
+            <input
+                type="text"
+                className={className}
+                placeholder={placeholder}
+            />
+
+        </div>
     );
 }

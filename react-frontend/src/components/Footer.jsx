@@ -2,63 +2,113 @@ function Footer({
     variant = "standard"
 }) {
 
-    if (variant === "admin") {
+    // =============================================
+    // ADMIN FOOTER
+    // =============================================
+
+    if (
+        variant === "admin"
+    ) {
 
         return (
 
             <footer
                 style={{
+                    width: "100%",
                     marginTop: "40px",
-                    padding: "25px",
+                    padding: "22px 25px",
                     textAlign: "center",
-                    color: "white",
-                    background:
-                        "rgba(255,255,255,.08)",
-                    backdropFilter:
-                        "blur(8px)"
+                    color: "#ffffff",
+                    background: "#1e3a8a",
+                    borderTop: "1px solid #1d4ed8",
+                    boxShadow:
+                        "0 -2px 10px rgba(15, 23, 42, 0.08)"
                 }}
             >
 
-                <p>
+                <p
+                    style={{
+                        margin: 0,
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        fontWeight: "500"
+                    }}
+                >
                     © 2026 Student Course Management System | Administrator Panel
                 </p>
 
             </footer>
-
         );
-
     }
 
 
-    if (variant === "learn") {
+    // =============================================
+    // START COURSE / LEARNING FOOTER
+    // =============================================
+
+    if (
+        variant === "learn"
+    ) {
 
         return (
 
-            <footer>
+            <footer
+                style={{
+                    width: "100%",
+                    marginTop: "0",
+                    padding: "22px 25px",
+                    textAlign: "center",
+                    background: "#1e3a8a",
+                    color: "#ffffff"
+                }}
+            >
 
-                <p>
+                <p
+                    style={{
+                        margin: 0,
+                        color: "#ffffff",
+                        fontSize: "14px",
+                        fontWeight: "500"
+                    }}
+                >
                     © 2026 Student Course Management System | Learn • Practice • Grow
                 </p>
 
             </footer>
-
         );
-
     }
 
 
+    // =============================================
+    // STANDARD STUDENT FOOTER
+    // =============================================
+
     return (
 
-        <footer>
+        <footer
+            style={{
+                width: "100%",
+                marginTop: "40px",
+                padding: "22px 25px",
+                textAlign: "center",
+                background: "#1e3a8a",
+                color: "#ffffff"
+            }}
+        >
 
-            <p>
+            <p
+                style={{
+                    margin: 0,
+                    color: "#ffffff",
+                    fontSize: "14px",
+                    fontWeight: "500"
+                }}
+            >
                 © 2026 Student Course Management System
             </p>
 
         </footer>
-
     );
-
 }
 
 

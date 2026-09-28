@@ -1,172 +1,650 @@
+/* =========================================================
+   LOGIN PAGE - SPLIT SCREEN (LEFT: WELCOME PANEL, RIGHT: LOGIN)
+   CSS only - no HTML changes needed
+========================================================= */
 
-		*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-body{
-	    background:linear-gradient(135deg,#0F172A,#1E293B,#312E81);
-
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-
+html,
+body {
+    width: 100%;
+    min-height: 100%;
 }
 
-.container{
-width:520px;
-background:white;
-padding:45px;
-border-radius:20px;
-box-shadow:0 20px 40px rgba(0,0,0,.35);
-border-top:8px solid #6D28D9;
+body {
+    min-height: 100vh;
+    display: block;
+    padding: 0;
+    color: #0f172a;
+    background: #f4f8ff;
 }
 
-h2{
-    color:#1E3A8A;
-    font-size:32px;
+
+/* =========================================================
+   LEFT PANEL  (drawn with pseudo-elements)
+========================================================= */
+
+/* panel background + main heading */
+body::before {
+    content: "Welcome\A Back!";
+    white-space: pre;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 100vh;
+    z-index: 0;
+
+    display: flex;
+    align-items: flex-start;
+    padding: calc(50vh - 95px) 60px 0;
+
+    color: #ffffff;
+    font-size: 52px;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: 0.5px;
+
+    background:
+        radial-gradient(circle at 15% 12%, rgba(96, 165, 250, 0.35), transparent 42%),
+        radial-gradient(circle at 90% 88%, rgba(59, 130, 246, 0.35), transparent 45%),
+        repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.035) 0,
+            rgba(255, 255, 255, 0.035) 2px,
+            transparent 2px,
+            transparent 26px
+        ),
+        linear-gradient(145deg, #1e3a8a 0%, #1d4ed8 55%, #2563eb 100%);
 }
 
-.tabs{
-display:flex;
-margin-bottom:25px;
-border-radius:10px;
-overflow:hidden;
+/* sub text under the heading */
+body::after {
+    content: "Sign in to continue to your student or admin account.";
+
+    position: fixed;
+    top: calc(50vh + 50px);
+    left: 60px;
+    width: calc(50% - 120px);
+    z-index: 0;
+
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 17px;
+    line-height: 1.6;
+
+    /* short accent line above the sub text */
+    padding-top: 22px;
+    border-top: 4px solid #93c5fd;
+    border-image: linear-gradient(90deg, #93c5fd 0 60px, transparent 60px) 1;
 }
 
-.tabs button{
-width:50%;
-padding:15px;
-border:none;
-background:#e6e6e6;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-}
 
-.tabs button.active{
-    background:#2563EB;
-}
+/* =========================================================
+   RIGHT SIDE  (login area)
+========================================================= */
 
-.role-text{
-text-align:center;
-font-size:18px;
-font-weight:bold;
-margin-bottom:25px;
-color:#555;
-}
+.container {
+    width: 50% !important;
+    max-width: none !important;
+    margin-left: 50% !important;
+    min-height: 100vh;
 
-.input-box{
-margin-bottom:20px;
-}
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
-.input-box label{
-display:block;
-margin-bottom:8px;
-font-weight:bold;
-}
+    padding: 70px 40px 40px;
 
-.input-box input{
-width:100%;
-padding:14px;
-border:2px solid #ddd;
-border-radius:10px;
-font-size:15px;
-}
+    background: #f8fbff;
+    border: none;
+    border-radius: 0;
+    box-shadow: -10px 0 30px rgba(15, 42, 92, 0.08);
 
-.input-box input:focus{
-outline:none;
-border-color:#6D28D9;
-}
-
-.login-btn{
-width:100%;
-padding:15px;
-  background:#2563EB;
-color:white;
-border:none;
-border-radius:10px;
-font-size:17px;
-font-weight:bold;
-cursor:pointer;
-transition:.3s;
-}
-
-.login-btn:hover{
-background:#1D4ED8;
-}
-
-.register{
-margin-top:25px;
-padding-top:20px;
-border-top:1px solid #ddd;
-text-align:center;
-}
-
-.register h3{
-color:#4C1D95;
-margin-bottom:10px;
-}
-
-.register p{
-margin-bottom:15px;
-}
-
-.register a{
-display:inline-block;
-padding:12px 25px;
- background:#2563EB;
-color:white;
-text-decoration:none;
-border-radius:8px;
-transition:.3s;
-}
-
-.register a:hover{
- background:#1D4ED8;
-}
-/* Back Button */
-
-.back-btn{
-
-display:inline-block;
-
-margin-bottom:20px;
-
-padding:10px 18px;
-
-background:#475569;
-
-color:white;
-
-text-decoration:none;
-
-border-radius:8px;
-
-font-weight:bold;
-
-transition:.3s;
-
-}
-
-.back-btn:hover{
-
-background:#334155;
-
-}
-.tabs {
     position: relative;
-    z-index: 9999;
+    z-index: 1;
+    overflow: visible;
+}
+
+/* full-width top accent bar */
+.container::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    z-index: 5;
+
+    background: linear-gradient(
+        90deg,
+        #1e3a8a,
+        #2563eb,
+        #3b82f6
+    );
+}
+
+/* small note at bottom of left panel */
+.container::after {
+    content: "\1F512  Secure student & admin access";
+
+    position: fixed;
+    left: 60px;
+    bottom: 36px;
+    z-index: 2;
+
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* form column */
+.container > h2,
+.container > .tabs,
+.container > .role-text,
+.container > form,
+.container > .register,
+.container > .error,
+.container > .error-message,
+.container > .success,
+.container > .success-message {
+    width: 100%;
+    max-width: 460px;
+}
+
+
+/* =========================================================
+   BACK BUTTON
+========================================================= */
+
+.back-btn {
+    position: absolute;
+    top: 28px;
+    left: 40px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 9px 16px;
+
+    background: #ffffff;
+    color: #1e40af;
+
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 6px rgba(30, 64, 175, 0.08);
+
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #dbeafe;
+    border-color: #93c5fd;
+}
+
+
+/* =========================================================
+   TITLE
+========================================================= */
+
+.container h2 {
+    color: #1e3a8a;
+
+    font-size: 34px;
+    font-weight: 800;
+
+    text-align: center;
+    white-space: nowrap;
+
+    letter-spacing: 0.6px;
+}
+
+.container h2::after {
+    content: "";
+    display: block;
+
+    width: 60px;
+    height: 4px;
+
+    margin: 12px auto 0;
+
+    border-radius: 4px;
+
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+}
+
+.container > h2 {
+    margin-bottom: 26px;
+}
+
+
+/* =========================================================
+   STUDENT / ADMIN TABS
+========================================================= */
+
+.tabs {
+    display: flex;
+
+    background: #eaf2ff;
+
+    border: 1px solid #bfdbfe;
+    border-radius: 12px;
+
+    padding: 5px;
+
+    margin-bottom: 14px;
+
+    position: relative;
+    z-index: 10;
 }
 
 .tabs button {
-    position: relative;
-    z-index: 10000;
-    pointer-events: auto;
+    flex: 1;
+
+    min-height: 48px;
+
+    padding: 10px 15px;
+
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+
+    background: transparent;
+
+    border: none;
+    border-radius: 8px;
+
+    color: #475569;
+
+    font-size: 15px;
+    font-weight: 700;
+
     cursor: pointer;
+
+    position: relative;
+    z-index: 11;
+
+    pointer-events: auto;
+
+    transition: all 0.2s ease;
+}
+
+.tabs button:hover {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.tabs button.active {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.22);
+}
+
+
+/* =========================================================
+   ROLE TEXT
+========================================================= */
+
+.role-text {
+    background: #eff6ff;
+
+    color: #1e40af;
+
+    border: 1px solid #dbeafe;
+    border-left: 4px solid #2563eb;
+
+    border-radius: 8px;
+
+    padding: 11px 16px;
+
+    margin-bottom: 18px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-box {
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+.input-box label {
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #1e293b;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.input-box input {
+    width: 100%;
+    height: 50px;
+
+    padding: 0 16px;
+
+    background: #ffffff;
+
+    color: #0f172a;
+
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+
+    outline: none;
+
+    font-size: 15px;
+
+    box-shadow: 0 1px 2px rgba(30, 64, 175, 0.05);
+
+    transition: 0.2s;
+}
+
+.input-box input::placeholder {
+    color: #94a3b8;
+}
+
+.input-box input:hover {
+    border-color: #60a5fa;
+}
+
+.input-box input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+========================================================= */
+
+.forgot,
+.forgot-password {
+    width: 100%;
+
+    display: flex;
+    justify-content: flex-end;
+
+    margin-top: -4px;
+    margin-bottom: 18px;
+
+    text-align: right;
+}
+
+.forgot a,
+.forgot-password a {
+    color: #2563eb;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.forgot a:hover,
+.forgot-password a:hover {
+    color: #1e40af;
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.login-btn {
+    width: 100%;
+    height: 52px;
+
+    background: linear-gradient(135deg, #2563eb, #1e3a8a);
+
+    color: #ffffff;
+
+    border: none;
+    border-radius: 10px;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25);
+
+    transition: 0.2s;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #1d4ed8, #172554);
+    transform: translateY(-1px);
+    box-shadow: 0 9px 20px rgba(37, 99, 235, 0.3);
+}
+
+
+/* =========================================================
+   REGISTER SECTION
+========================================================= */
+
+.register {
+    margin-top: 22px;
+
+    padding: 16px 20px;
+
+    background: #ffffff;
+
+    border: 1px solid #dbeafe;
+    border-radius: 12px;
+
+    text-align: center;
+}
+
+.register h3 {
+    color: #1e3a8a;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    margin-bottom: 3px;
+}
+
+.register p {
+    color: #64748b;
+
+    font-size: 13px;
+
+    margin-bottom: 10px;
+}
+
+.register a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 200px;
+
+    padding: 10px 22px;
+
+    background: #ffffff;
+
+    color: #2563eb;
+
+    border: 1px solid #60a5fa;
+    border-radius: 8px;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    transition: 0.2s;
+}
+
+.register a:hover {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #2563eb;
+}
+
+
+/* =========================================================
+   ERROR / SUCCESS
+========================================================= */
+
+.error,
+.error-message {
+    padding: 11px 14px;
+    margin-bottom: 14px;
+
+    background: #fef2f2;
+    color: #b91c1c;
+
+    border: 1px solid #fecaca;
+    border-left: 4px solid #dc2626;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+.success,
+.success-message {
+    padding: 11px 14px;
+    margin-bottom: 14px;
+
+    background: #f0fdf4;
+    color: #15803d;
+
+    border: 1px solid #bbf7d0;
+    border-left: 4px solid #16a34a;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   SHORT SCREENS
+========================================================= */
+
+@media (max-height: 820px) {
+
+    .container {
+        padding-top: 64px;
+        padding-bottom: 24px;
+    }
+
+    .container > h2 {
+        margin-bottom: 18px;
+    }
+
+    .input-box {
+        margin-bottom: 12px;
+    }
+}
+
+
+/* =========================================================
+   TABLET / SMALL LAPTOP - narrower panels
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    body::before {
+        font-size: 40px;
+        padding-left: 40px;
+        padding-right: 40px;
+    }
+
+    body::after {
+        left: 40px;
+        width: calc(50% - 80px);
+        font-size: 15px;
+    }
+
+    .container::after {
+        left: 40px;
+    }
+
+    .container {
+        padding-left: 28px;
+        padding-right: 28px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE / TABLET PORTRAIT - left panel hidden, form full width
+========================================================= */
+
+@media (max-width: 900px) {
+
+    body {
+        background: linear-gradient(135deg, #eaf3ff 0%, #dbeafe 55%, #c7ddfb 100%);
+    }
+
+    body::before,
+    body::after,
+    .container::after {
+        display: none;
+    }
+
+    .container {
+        width: 100% !important;
+        margin-left: 0 !important;
+        background: transparent;
+        box-shadow: none;
+        justify-content: flex-start;
+        padding: 70px 18px 30px;
+    }
+
+    .back-btn {
+        top: 18px;
+        left: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+
+    .container h2 {
+        font-size: 28px;
+        white-space: normal;
+    }
+
+    .tabs button {
+        font-size: 14px;
+        padding: 9px 7px;
+    }
+
+    .register a {
+        width: 100%;
+    }
 }

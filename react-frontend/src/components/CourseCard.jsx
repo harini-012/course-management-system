@@ -11,6 +11,14 @@ function CourseCard({
     courseKey
 }) {
 
+    const safeCourseKey =
+        courseKey
+            ? encodeURIComponent(
+                courseKey
+            )
+            : "";
+
+
     return (
 
         <div className="card">
@@ -19,7 +27,11 @@ function CourseCard({
 
                 <img
                     src={image}
-                    alt={alt || title}
+                    alt={
+                        alt ||
+                        title ||
+                        "Course"
+                    }
                 />
 
             )}
@@ -35,27 +47,30 @@ function CourseCard({
             </p>
 
 
-            <Link
-                className="btn viewCourseBtn"
-                to="/course-details"
-                reloadDocument
-                data-course={courseKey}
-                onClick={() => {
+            {safeCourseKey ? (
 
-                    localStorage.setItem(
-                        "selectedCourseKey",
-                        courseKey
-                    );
+                <Link
+                    className="btn viewCourseBtn"
+                    to={`/courses/${safeCourseKey}`}
+                    data-course={courseKey}
+                >
+                    View Details
+                </Link>
 
-                }}
-            >
-                View Details
-            </Link>
+            ) : (
+
+                <button
+                    type="button"
+                    className="btn viewCourseBtn"
+                    disabled
+                >
+                    View Details
+                </button>
+
+            )}
 
         </div>
-
     );
-
 }
 
 

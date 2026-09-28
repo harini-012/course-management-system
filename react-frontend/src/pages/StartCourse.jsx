@@ -3,95 +3,293 @@ import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
 
 export default function StartCourse() {
+
     return (
         <>
             <PageCss href="/css/start_course.css" />
+
             <PageShell variant="student3">
-            <div className="container">
-                {/* ================ HERO ================= */}
-                <div className="hero">
-                    <div className="hero-text">
-                        <h1 id="title">Course Name</h1>
-                        <p id="overview">Course Overview</p>
-                    </div>
-                    <div className="hero-image">
-                        <img id="courseImage" src="" alt="Course Image" />
-                    </div>
-                </div>
-                {/* ================ COURSE INFORMATION ================= */}
-                <div className="info-grid">
-                    <div className="info-card">
-                        <h3>Instructor</h3>
-                        <p id="instructor"></p>
-                    </div>
-                    <div className="info-card">
-                        <h3>Duration</h3>
-                        <p id="duration"></p>
-                    </div>
-                    <div className="info-card">
-                        <h3>Level</h3>
-                        <p id="level"></p>
-                    </div>
-                    <div className="info-card">
-                        <h3>Mode</h3>
-                        <p id="mode"></p>
-                    </div>
-                </div>
-                {/* ================ PROGRESS ================= */}
-                <div className="progress-section">
-                    <h2>Your Learning Progress</h2>
-                    <div className="progress-bar">
-                        <div className="progress" id="progressBar"></div>
-                    </div>
-                    <div className="progress-text" id="progressText">0% Completed</div>
-                    <button className="start-btn">Continue Learning</button>
-                </div>
-                {/* ================ VIDEO LESSONS ================= */}
-                <div className="section">
-                    <h2>🎥 Video Lessons</h2>
-                    <p style={{color: "#555", lineHeight: "28px"}}>
-                        Watch the lessons in order. Each course loads its own YouTube videos
-automatically based on the selected course.
-                    </p>
-                    <div id="videoContainer" className="grid">{/* Videos loaded by JavaScript */}</div>
-                </div>
-                {/* ================ STUDY MATERIALS ================= */}
-                <div className="section">
-                    <h2>📚 Study Materials</h2>
-                    <p style={{color: "#555", lineHeight: "28px"}}>
-                        These learning resources are official documentation and trusted
-learning websites related to your selected course.
-                    </p>
-                    <div id="materialContainer" className="grid">{/* Materials loaded by JavaScript */}</div>
-                </div>
-                {/* ================ ASSIGNMENTS ================= */}
-                {/* ================ QUIZZES ================= */}
-                {/* ================ COURSE COMPLETION ================= */}
-                <div className="section">
-                    <h2>🏆 Complete Course</h2>
-                    <p style={{color: "#555", lineHeight: "28px"}}>
-                        After completing all lessons, assignments and quizzes,
-click the button below to finish this course.
-                    </p>
-                    <div style={{textAlign: "center", marginTop: "30px"}}>
-                        <button id="completeBtn" style={{padding: "16px 40px", background: "#16A34A", color: "white", border: "none", borderRadius: "10px", fontSize: "18px", fontWeight: "bold", cursor: "pointer"}}>Complete Course</button>
-                    </div>
-                </div>
-                {/* ================ CERTIFICATE ================= */}
-                <div className="section">
-                    <h2>🎓 Course Certificate</h2>
-                    <p style={{color: "#555", lineHeight: "28px"}}>
-                        Once the course is completed,
-your completion certificate becomes available.
-                    </p>
-                    <div style={{textAlign: "center", marginTop: "30px"}}>
-                        <button id="certificateBtn" disabled="" style={{padding: "16px 40px", background: "#94A3B8", color: "white", border: "none", borderRadius: "10px", fontSize: "18px", fontWeight: "bold", cursor: "not-allowed"}}>View Certificate</button>
-                    </div>
-                </div>
-            </div>
-            {/* ================ FOOTER ================= */}
+
+                <main className="learning-page">
+
+                    {/* =====================================================
+                        COURSE HEADER
+                    ===================================================== */}
+
+                    <section className="course-learning-header">
+
+                        <span className="learning-tag">
+                            MY LEARNING
+                        </span>
+
+                        <h1 id="courseTitle">
+                            Course
+                        </h1>
+
+                        <p id="courseDescription">
+                            Start learning and complete each lesson.
+                        </p>
+
+
+                        <div className="course-meta">
+
+                            <div>
+                                <span>Instructor</span>
+
+                                <strong id="instructor">
+                                    -
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Duration</span>
+
+                                <strong id="duration">
+                                    -
+                                </strong>
+                            </div>
+
+
+                            <div>
+                                <span>Course</span>
+
+                                <strong id="courseName">
+                                    -
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    {/* =====================================================
+                        PROGRESS
+                    ===================================================== */}
+
+                    <section className="learning-card progress-card">
+
+                        <div className="learning-card-title">
+
+                            <div>
+
+                                <span className="small-label">
+                                    COURSE PROGRESS
+                                </span>
+
+                                <h2>
+                                    Your Progress
+                                </h2>
+
+                            </div>
+
+
+                            <strong id="progressText">
+                                0% Completed
+                            </strong>
+
+                        </div>
+
+
+                        <div className="progress-track">
+
+                            <div
+                                id="progressBar"
+                                className="progress-fill"
+                            ></div>
+
+                        </div>
+
+                    </section>
+
+
+                    {/* =====================================================
+                        VIDEO LESSONS
+                    ===================================================== */}
+
+                    <section className="learning-card">
+
+                        <div className="learning-card-title">
+
+                            <div>
+
+                                <span className="small-label">
+                                    VIDEO LESSONS
+                                </span>
+
+                                <h2>
+                                    Course Lessons
+                                </h2>
+
+                            </div>
+
+                        </div>
+
+
+                        <div className="lesson-layout">
+
+                            {/* LESSON LIST */}
+
+                            <div className="lesson-sidebar">
+
+                                <div id="videoList">
+                                    Loading lessons...
+                                </div>
+
+                            </div>
+
+
+                            {/* VIDEO PLAYER */}
+
+                            <div className="video-player-area">
+
+                                <span className="small-label">
+                                    NOW PLAYING
+                                </span>
+
+                                <h2 id="videoTitle">
+                                    Select a lesson
+                                </h2>
+
+
+                                {/* YOUTUBE / EMBED VIDEO */}
+
+                                <iframe
+                                    id="videoFrame"
+                                    title="Course Video"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                ></iframe>
+
+
+                                {/* NORMAL VIDEO */}
+
+                                <video
+                                    id="courseVideo"
+                                    controls
+                                ></video>
+
+
+                                {/* VIDEO CONTROLS */}
+
+                                <div className="video-controls">
+
+                                    <button
+                                        id="previousBtn"
+                                        type="button"
+                                        className="secondary-learning-btn"
+                                    >
+                                        ← Previous
+                                    </button>
+
+
+                                    <button
+                                        id="completeLessonBtn"
+                                        type="button"
+                                        className="complete-lesson-btn"
+                                    >
+                                        ✓ Mark Lesson Complete
+                                    </button>
+
+
+                                    <button
+                                        id="nextBtn"
+                                        type="button"
+                                        className="primary-learning-btn"
+                                    >
+                                        Next →
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    {/* =====================================================
+                        STUDY MATERIALS
+                    ===================================================== */}
+
+                    <section className="learning-card">
+
+                        <div className="learning-card-title">
+
+                            <div>
+
+                                <span className="small-label">
+                                    RESOURCES
+                                </span>
+
+                                <h2>
+                                    Study Materials
+                                </h2>
+
+                                <p>
+                                    Open the learning resources
+                                    provided by your instructor.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="materialsList"
+                            className="materials-list"
+                        >
+                            Loading study materials...
+                        </div>
+
+                    </section>
+
+
+                    {/* =====================================================
+                        CERTIFICATE
+                    ===================================================== */}
+
+                    <section className="learning-card certificate-unlock">
+
+                        <div>
+
+                            <span className="small-label">
+                                COURSE COMPLETION
+                            </span>
+
+                            <h2>
+                                Certificate
+                            </h2>
+
+                            <p id="certificateMessage">
+                                Complete every video lesson to
+                                unlock your certificate.
+                            </p>
+
+                        </div>
+
+
+                        <button
+                            id="certificateBtn"
+                            type="button"
+                            className="certificate-btn"
+                            disabled
+                        >
+                            Complete Course to Unlock Certificate
+                        </button>
+
+                    </section>
+
+                </main>
+
             </PageShell>
+
+
             <LegacyScript src="/legacy/js/start_course.js" />
+
         </>
     );
 }

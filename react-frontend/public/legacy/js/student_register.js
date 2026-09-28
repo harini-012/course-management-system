@@ -1,13 +1,13 @@
+import {
+    queryData,
+    saveData
+} from "./api.js";
+
+
 //=====================================================
 // STUDENT REGISTRATION
-// student_register.js
 //=====================================================
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    initializeRegistration();
-
-});
 
 //=====================================================
 // INITIALIZE PAGE
@@ -15,275 +15,523 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initializeRegistration() {
 
-    const form = document.getElementById("registerForm");
+    const form =
+        document.getElementById(
+            "registerForm"
+        );
+
 
     if (!form) {
-        console.error("Registration form not found.");
+
+        console.error(
+            "Registration form not found."
+        );
+
         return;
+
     }
 
-    form.addEventListener("submit", registerStudent);
+
+    /*
+     * Prevent duplicate event binding if React
+     * loads the script again.
+     */
+
+    if (
+        form.dataset.registrationInitialized ===
+        "true"
+    ) {
+
+        return;
+
+    }
+
+
+    form.dataset.registrationInitialized =
+        "true";
+
+
+    form.addEventListener(
+        "submit",
+        registerStudent
+    );
 
 }
+
 
 //=====================================================
 // REGISTER STUDENT
 //=====================================================
 
-function registerStudent(event) {
+async function registerStudent(
+    event
+) {
 
     event.preventDefault();
 
-    //--------------------------------------------
-    // GET VALUES
-    //--------------------------------------------
 
     const studentName =
-        document.getElementById("studentName").value.trim();
+        document
+            .getElementById(
+                "studentName"
+            )
+            .value
+            .trim();
+
 
     const studentId =
-        document.getElementById("studentId").value.trim();
+        document
+            .getElementById(
+                "studentId"
+            )
+            .value
+            .trim();
+
 
     const studentEmail =
-        document.getElementById("studentEmail").value.trim();
+        document
+            .getElementById(
+                "studentEmail"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
 
     const department =
-        document.getElementById("department").value;
+        document
+            .getElementById(
+                "department"
+            )
+            .value;
+
 
     const password =
-        document.getElementById("password").value;
+        document
+            .getElementById(
+                "password"
+            )
+            .value;
+
 
     const confirmPassword =
-        document.getElementById("confirmPassword").value;
+        document
+            .getElementById(
+                "confirmPassword"
+            )
+            .value;
 
-    //--------------------------------------------
-    // VALIDATION
-    //--------------------------------------------
+
+    //=================================================
+    // STUDENT NAME
+    //=================================================
 
     if (studentName === "") {
 
-        alert("Please enter Student Name.");
+        alert(
+            "Please enter Student Name."
+        );
 
-        document.getElementById("studentName").focus();
+
+        document
+            .getElementById(
+                "studentName"
+            )
+            .focus();
+
 
         return;
 
     }
+
 
     if (studentName.length < 3) {
 
-        alert("Student Name should contain at least 3 characters.");
+        alert(
+            "Student Name should contain at least 3 characters."
+        );
 
-        document.getElementById("studentName").focus();
+
+        document
+            .getElementById(
+                "studentName"
+            )
+            .focus();
+
 
         return;
 
     }
+
+
+    //=================================================
+    // STUDENT ID
+    //=================================================
 
     if (studentId === "") {
 
-        alert("Please enter Student ID.");
+        alert(
+            "Please enter Student ID."
+        );
 
-        document.getElementById("studentId").focus();
+
+        document
+            .getElementById(
+                "studentId"
+            )
+            .focus();
+
 
         return;
 
     }
+
 
     if (studentId.length < 4) {
 
-        alert("Student ID is too short.");
+        alert(
+            "Student ID is too short."
+        );
 
-        document.getElementById("studentId").focus();
+
+        document
+            .getElementById(
+                "studentId"
+            )
+            .focus();
+
 
         return;
 
     }
+
+
+    //=================================================
+    // EMAIL
+    //=================================================
 
     if (studentEmail === "") {
 
-        alert("Please enter Email Address.");
+        alert(
+            "Please enter Email Address."
+        );
 
-        document.getElementById("studentEmail").focus();
+
+        document
+            .getElementById(
+                "studentEmail"
+            )
+            .focus();
+
+
+        return;
+
+    }
+
+
+    if (
+        !validateEmail(
+            studentEmail
+        )
+    ) {
+
+        alert(
+            "Please enter a valid Email Address."
+        );
+
+
+        document
+            .getElementById(
+                "studentEmail"
+            )
+            .focus();
+
 
         return;
 
     }
 
-    if (!validateEmail(studentEmail)) {
 
-        alert("Please enter a valid Email Address.");
-
-        document.getElementById("studentEmail").focus();
-
-        return;
-
-    }
+    //=================================================
+    // DEPARTMENT
+    //=================================================
 
     if (department === "") {
 
-        alert("Please select Department.");
+        alert(
+            "Please select Department."
+        );
 
-        document.getElementById("department").focus();
+
+        document
+            .getElementById(
+                "department"
+            )
+            .focus();
+
 
         return;
 
     }
+
+
+    //=================================================
+    // PASSWORD
+    //=================================================
 
     if (password === "") {
 
-        alert("Please enter Password.");
+        alert(
+            "Please enter Password."
+        );
 
-        document.getElementById("password").focus();
+
+        document
+            .getElementById(
+                "password"
+            )
+            .focus();
+
 
         return;
 
     }
+
 
     if (password.length < 6) {
 
-        alert("Password must contain at least 6 characters.");
+        alert(
+            "Password must contain at least 6 characters."
+        );
 
-        document.getElementById("password").focus();
+
+        document
+            .getElementById(
+                "password"
+            )
+            .focus();
+
 
         return;
 
     }
+
+
+    //=================================================
+    // CONFIRM PASSWORD
+    //=================================================
 
     if (confirmPassword === "") {
 
-        alert("Please confirm your Password.");
+        alert(
+            "Please confirm your Password."
+        );
 
-        document.getElementById("confirmPassword").focus();
 
-        return;
+        document
+            .getElementById(
+                "confirmPassword"
+            )
+            .focus();
 
-    }
-
-    if (password !== confirmPassword) {
-
-        alert("Passwords do not match.");
-
-        document.getElementById("confirmPassword").focus();
 
         return;
 
     }
 
-    //--------------------------------------------
-    // LOCAL STORAGE
-    //--------------------------------------------
 
-    let students =
-        JSON.parse(localStorage.getItem("students")) || [];
+    if (
+        password !==
+        confirmPassword
+    ) {
 
-    //--------------------------------------------
-    // CHECK EMAIL
-    //--------------------------------------------
+        alert(
+            "Passwords do not match."
+        );
 
-    const emailExists = students.some(student =>
-        student.email.toLowerCase() ===
-        studentEmail.toLowerCase()
-    );
 
-    if (emailExists) {
+        document
+            .getElementById(
+                "confirmPassword"
+            )
+            .focus();
 
-        alert("Email already registered.");
-
-        document.getElementById("studentEmail").focus();
 
         return;
 
     }
 
-    //--------------------------------------------
-    // CHECK STUDENT ID
-    //--------------------------------------------
 
-    const idExists = students.some(student =>
-        student.studentId === studentId
-    );
+    try {
 
-    if (idExists) {
+        //=============================================
+        // CHECK EMAIL THROUGH MOCK API
+        //=============================================
 
-        alert("Student ID already exists.");
+        const emailStudents =
+            await queryData(
+                "students",
+                {
+                    email:
+                        studentEmail
+                }
+            );
 
-        document.getElementById("studentId").focus();
 
-        return;
+        if (
+            emailStudents.length > 0
+        ) {
+
+            alert(
+                "Email already registered."
+            );
+
+
+            document
+                .getElementById(
+                    "studentEmail"
+                )
+                .focus();
+
+
+            return;
+
+        }
+
+
+        //=============================================
+        // CHECK STUDENT ID THROUGH MOCK API
+        //=============================================
+
+        const idStudents =
+            await queryData(
+                "students",
+                {
+                    studentId:
+                        studentId
+                }
+            );
+
+
+        if (
+            idStudents.length > 0
+        ) {
+
+            alert(
+                "Student ID already exists."
+            );
+
+
+            document
+                .getElementById(
+                    "studentId"
+                )
+                .focus();
+
+
+            return;
+
+        }
+
+
+        //=============================================
+        // CREATE STUDENT
+        //=============================================
+
+        const newStudent = {
+
+            studentName:
+                studentName,
+
+            studentId:
+                studentId,
+
+            email:
+                studentEmail,
+
+            department:
+                department,
+
+            password:
+                password,
+
+            role:
+                "Student",
+
+            enrolledCourses:
+                [],
+
+            completedCourses:
+                [],
+
+            certificates:
+                [],
+
+            progress:
+                {},
+
+            registrationDate:
+                new Date()
+                    .toLocaleDateString(),
+
+            lastLogin:
+                "",
+
+            active:
+                true
+
+        };
+
+
+        //=============================================
+        // SAVE TO MOCK API
+        //=============================================
+
+        await saveData(
+            "students",
+            newStudent
+        );
+
+
+        //=============================================
+        // EXISTING SUCCESS FLOW
+        //=============================================
+
+        alert(
+            "Student Registration Successful!"
+        );
+
+
+        document
+            .getElementById(
+                "registerForm"
+            )
+            .reset();
+
+
+        window.location.href =
+            "/login";
 
     }
 
-    //--------------------------------------------
-    // CREATE STUDENT OBJECT
-    //--------------------------------------------
+    catch (error) {
 
-    const newStudent = {
+        console.error(
+            "Student registration error:",
+            error
+        );
 
-        studentName: studentName,
 
-        studentId: studentId,
+        alert(
+            "Unable to register student."
+        );
 
-        email: studentEmail,
+    }
 
-        department: department,
+}
 
-        password: password,
 
-        role: "Student",
-
-        enrolledCourses: [],
-
-        completedCourses: [],
-
-        certificates: [],
-
-        progress: {},
-
-        registrationDate: new Date().toLocaleDateString(),
-
-        lastLogin: "",
-
-        active: true
-
-    };
-
-    //--------------------------------------------
-    // SAVE STUDENT
-    //--------------------------------------------
-
-    students.push(newStudent);
-
-    localStorage.setItem(
-        "students",
-        JSON.stringify(students)
-    );
-
-    //--------------------------------------------
-    // SAVE CURRENT USER
-    //--------------------------------------------
-
-    localStorage.setItem("loggedInStudent", JSON.stringify(newStudent));
-
-    //--------------------------------------------
-    // SUCCESS MESSAGE
-    //--------------------------------------------
-
-    alert("Student Registration Successful!");
-
-    //--------------------------------------------
-    // RESET FORM
-    //--------------------------------------------
-
-    document.getElementById("registerForm").reset();
-
-    //--------------------------------------------
-    // REDIRECT
-    //--------------------------------------------
-
-    window.location.href = "login.html";
-
-}//=====================================================
+//=====================================================
 // EMAIL VALIDATION
 //=====================================================
 
@@ -292,167 +540,337 @@ function validateEmail(email) {
     const emailPattern =
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    return emailPattern.test(email);
+
+    return emailPattern.test(
+        email
+    );
 
 }
+
 
 //=====================================================
 // PASSWORD STRENGTH
 //=====================================================
 
-const passwordField =
-    document.getElementById("password");
+function initializePasswordValidation() {
 
-if (passwordField) {
+    const passwordField =
+        document.getElementById(
+            "password"
+        );
 
-    passwordField.addEventListener("keyup", () => {
 
-        const password = passwordField.value;
+    if (
+        passwordField &&
+        passwordField.dataset.passwordInitialized !==
+        "true"
+    ) {
 
-        if (password.length === 0) {
+        passwordField.dataset.passwordInitialized =
+            "true";
 
-            passwordField.style.borderColor = "#ccc";
+
+        passwordField.addEventListener(
+            "keyup",
+            () => {
+
+                const password =
+                    passwordField.value;
+
+
+                if (
+                    password.length === 0
+                ) {
+
+                    passwordField
+                        .style
+                        .borderColor =
+                        "#ccc";
+
+                }
+
+                else if (
+                    password.length < 6
+                ) {
+
+                    passwordField
+                        .style
+                        .borderColor =
+                        "red";
+
+                }
+
+                else if (
+                    password.length < 8
+                ) {
+
+                    passwordField
+                        .style
+                        .borderColor =
+                        "orange";
+
+                }
+
+                else {
+
+                    passwordField
+                        .style
+                        .borderColor =
+                        "green";
+
+                }
+
+            }
+        );
+
+    }
+
+}
+
+
+//=====================================================
+// CONFIRM PASSWORD
+//=====================================================
+
+function initializeConfirmPassword() {
+
+    const confirmPasswordField =
+        document.getElementById(
+            "confirmPassword"
+        );
+
+
+    if (
+        !confirmPasswordField ||
+        confirmPasswordField.dataset.confirmInitialized ===
+        "true"
+    ) {
+
+        return;
+
+    }
+
+
+    confirmPasswordField.dataset.confirmInitialized =
+        "true";
+
+
+    confirmPasswordField.addEventListener(
+        "keyup",
+        () => {
+
+            const passwordField =
+                document.getElementById(
+                    "password"
+                );
+
+
+            if (!passwordField) {
+
+                return;
+
+            }
+
+
+            const password =
+                passwordField.value;
+
+
+            const confirmPassword =
+                confirmPasswordField.value;
+
+
+            if (
+                confirmPassword.length === 0
+            ) {
+
+                confirmPasswordField
+                    .style
+                    .borderColor =
+                    "#ccc";
+
+
+                return;
+
+            }
+
+
+            if (
+                password ===
+                confirmPassword
+            ) {
+
+                confirmPasswordField
+                    .style
+                    .borderColor =
+                    "green";
+
+            }
+
+            else {
+
+                confirmPasswordField
+                    .style
+                    .borderColor =
+                    "red";
+
+            }
 
         }
-
-        else if (password.length < 6) {
-
-            passwordField.style.borderColor = "red";
-
-        }
-
-        else if (password.length < 8) {
-
-            passwordField.style.borderColor = "orange";
-
-        }
-
-        else {
-
-            passwordField.style.borderColor = "green";
-
-        }
-
-    });
+    );
 
 }
 
-//=====================================================
-// CONFIRM PASSWORD CHECK
-//=====================================================
-
-const confirmPasswordField =
-    document.getElementById("confirmPassword");
-
-if (confirmPasswordField) {
-
-    confirmPasswordField.addEventListener("keyup", () => {
-
-        const password =
-            document.getElementById("password").value;
-
-        const confirmPassword =
-            confirmPasswordField.value;
-
-        if (confirmPassword.length === 0) {
-
-            confirmPasswordField.style.borderColor = "#ccc";
-
-            return;
-
-        }
-
-        if (password === confirmPassword) {
-
-            confirmPasswordField.style.borderColor = "green";
-
-        }
-
-        else {
-
-            confirmPasswordField.style.borderColor = "red";
-
-        }
-
-    });
-
-}
 
 //=====================================================
 // STUDENT NAME
-// ONLY LETTERS & SPACES
 //=====================================================
 
-const studentNameField =
-    document.getElementById("studentName");
+function initializeStudentName() {
 
-if (studentNameField) {
+    const studentNameField =
+        document.getElementById(
+            "studentName"
+        );
 
-    studentNameField.addEventListener("input", () => {
 
-        studentNameField.value =
-            studentNameField.value.replace(
-                /[^a-zA-Z\s]/g,
-                ""
-            );
+    if (
+        !studentNameField ||
+        studentNameField.dataset.nameInitialized ===
+        "true"
+    ) {
 
-    });
+        return;
+
+    }
+
+
+    studentNameField.dataset.nameInitialized =
+        "true";
+
+
+    studentNameField.addEventListener(
+        "input",
+        () => {
+
+            studentNameField.value =
+                studentNameField
+                    .value
+                    .replace(
+                        /[^a-zA-Z\s]/g,
+                        ""
+                    );
+
+        }
+    );
+
+
+    studentNameField.addEventListener(
+        "blur",
+        () => {
+
+            studentNameField.value =
+                studentNameField
+                    .value
+                    .toLowerCase()
+                    .replace(
+                        /\b\w/g,
+                        letter =>
+                            letter.toUpperCase()
+                    );
+
+        }
+    );
 
 }
 
-//=====================================================
-// AUTO CAPITALIZE NAME
-//=====================================================
-
-if (studentNameField) {
-
-    studentNameField.addEventListener("blur", () => {
-
-        studentNameField.value =
-            studentNameField.value
-            .toLowerCase()
-            .replace(/\b\w/g, letter => letter.toUpperCase());
-
-    });
-
-}
 
 //=====================================================
 // STUDENT ID
-// NO SPACES
 //=====================================================
 
-const studentIdField =
-    document.getElementById("studentId");
+function initializeStudentId() {
 
-if (studentIdField) {
+    const studentIdField =
+        document.getElementById(
+            "studentId"
+        );
 
-    studentIdField.addEventListener("input", () => {
 
-        studentIdField.value =
-            studentIdField.value.replace(/\s/g, "");
+    if (
+        !studentIdField ||
+        studentIdField.dataset.idInitialized ===
+        "true"
+    ) {
 
-    });
+        return;
+
+    }
+
+
+    studentIdField.dataset.idInitialized =
+        "true";
+
+
+    studentIdField.addEventListener(
+        "input",
+        () => {
+
+            studentIdField.value =
+                studentIdField
+                    .value
+                    .replace(
+                        /\s/g,
+                        ""
+                    );
+
+        }
+    );
 
 }
 
+
 //=====================================================
-// EMAIL TO LOWERCASE
+// EMAIL LOWERCASE
 //=====================================================
 
-const emailField =
-    document.getElementById("studentEmail");
+function initializeEmailField() {
 
-if (emailField) {
+    const emailField =
+        document.getElementById(
+            "studentEmail"
+        );
 
-    emailField.addEventListener("blur", () => {
 
-        emailField.value =
-            emailField.value.toLowerCase();
+    if (
+        !emailField ||
+        emailField.dataset.emailInitialized ===
+        "true"
+    ) {
 
-    });
+        return;
+
+    }
+
+
+    emailField.dataset.emailInitialized =
+        "true";
+
+
+    emailField.addEventListener(
+        "blur",
+        () => {
+
+            emailField.value =
+                emailField
+                    .value
+                    .toLowerCase();
+
+        }
+    );
 
 }
+
 
 //=====================================================
 // RESET FORM
@@ -460,42 +878,129 @@ if (emailField) {
 
 function clearRegistrationForm() {
 
-    document.getElementById("registerForm").reset();
+    const form =
+        document.getElementById(
+            "registerForm"
+        );
 
-    passwordField.style.borderColor = "#ccc";
 
-    confirmPasswordField.style.borderColor = "#ccc";
+    if (form) {
 
-}
-
-//=====================================================
-// ENTER KEY SUPPORT
-//=====================================================
-
-document.addEventListener("keypress", (event) => {
-
-    if (event.key === "Enter") {
-
-        const form =
-            document.getElementById("registerForm");
-
-        if (form) {
-
-            event.preventDefault();
-
-            form.requestSubmit();
-
-        }
+        form.reset();
 
     }
 
-});
+
+    const passwordField =
+        document.getElementById(
+            "password"
+        );
+
+
+    const confirmPasswordField =
+        document.getElementById(
+            "confirmPassword"
+        );
+
+
+    if (passwordField) {
+
+        passwordField
+            .style
+            .borderColor =
+            "#ccc";
+
+    }
+
+
+    if (
+        confirmPasswordField
+    ) {
+
+        confirmPasswordField
+            .style
+            .borderColor =
+            "#ccc";
+
+    }
+
+}
+
 
 //=====================================================
-// PAGE INITIALIZATION
+// ENTER KEY
 //=====================================================
 
-window.addEventListener("load", () => {
+function initializeEnterKey() {
+
+    const form =
+        document.getElementById(
+            "registerForm"
+        );
+
+
+    if (
+        !form ||
+        form.dataset.enterInitialized ===
+        "true"
+    ) {
+
+        return;
+
+    }
+
+
+    form.dataset.enterInitialized =
+        "true";
+
+
+    form.addEventListener(
+        "keypress",
+        event => {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                event.preventDefault();
+
+                form.requestSubmit();
+
+            }
+
+        }
+    );
+
+}
+
+
+//=====================================================
+// START REGISTRATION PAGE
+//=====================================================
+
+function startRegistrationPage() {
+
+    initializeRegistration();
+
+    initializePasswordValidation();
+
+    initializeConfirmPassword();
+
+    initializeStudentName();
+
+    initializeStudentId();
+
+    initializeEmailField();
+
+    initializeEnterKey();
+
+
+    const studentNameField =
+        document.getElementById(
+            "studentName"
+        );
+
 
     if (studentNameField) {
 
@@ -503,59 +1008,38 @@ window.addEventListener("load", () => {
 
     }
 
-});
+}
+
 
 //=====================================================
-// OPTIONAL LOGOUT HELPER
+// REACT + NORMAL HTML COMPATIBLE INITIALIZATION
 //=====================================================
 
-function logoutStudent() {
+if (
+    document.readyState ===
+    "loading"
+) {
 
-    localStorage.removeItem("loggedInStudent");
-
-    window.location.href = "login.html";
+    document.addEventListener(
+        "DOMContentLoaded",
+        startRegistrationPage,
+        {
+            once: true
+        }
+    );
 
 }
 
+else {
+
+    startRegistrationPage();
+
+}
+
+
 //=====================================================
-// FUTURE BACKEND FLOW
+// MAKE RESET AVAILABLE IF NEEDED
 //=====================================================
 
-/*
-
-Student Registration
-
-↓
-
-Client Validation
-
-↓
-
-Duplicate Email Check
-
-↓
-
-Duplicate Student ID Check
-
-↓
-
-Save to LocalStorage
-
-↓
-
-Future:
-POST /api/students/register
-
-↓
-
-Database
-
-↓
-
-Email Verification
-
-↓
-
-Login
-
-*/
+window.clearRegistrationForm =
+    clearRegistrationForm;

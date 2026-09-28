@@ -1,520 +1,1126 @@
-// ===============================
+//=====================================================
 // ADMIN DASHBOARD
-// ===============================
+// MOCK API + REACT VERSION
+//=====================================================
 
-// Default Courses (used if localStorage is empty)
+import {
+    getData,
+    getById,
+    removeData,
+    patchData,
+    getSession,
+    clearSessions
+} from "./api.js";
 
-const defaultCourses = [
 
-{
-key: "python",
-title: "Python Programming",
-instructor: "John Smith",
-level: "Beginner"
-},
+//=====================================================
+// DATA
+//=====================================================
 
-{
-key: "java",
-title: "Java Programming",
-instructor: "David Wilson",
-level: "Intermediate"
-},
+let courses = [];
 
-{
-key: "web",
-title: "Web Development",
-instructor: "Sophia Johnson",
-level: "Beginner"
-},
+let enrollments = [];
 
-{
-key: "database",
-title: "Database Management",
-instructor: "Michael Brown",
-level: "Intermediate"
-},
+let students = [];
 
-{
-key: "machinelearning",
-title: "Machine Learning",
-instructor: "Andrew Thomas",
-level: "Advanced"
-},
+let currentAdmin = null;
 
-{
-key: "artificialintelligence",
-title: "Artificial Intelligence",
-instructor: "Sarah Lee",
-level: "Advanced"
-},
+let refreshTimer = null;
 
-{
-key: "cybersecurity",
-title: "Cyber Security",
-instructor: "Robert King",
-level: "Intermediate"
-},
 
-{
-key: "cloudcomputing",
-title: "Cloud Computing",
-instructor: "Emily Davis",
-level: "Intermediate"
-},
+//=====================================================
+// VERIFY ADMIN
+//=====================================================
 
-{
-key: "mobiledevelopment",
-title: "Mobile Development",
-instructor: "James Miller",
-level: "Beginner"
-},
+async function verifyAdmin() {
 
-{
-key: "devops",
-title: "DevOps",
-instructor: "Daniel Scott",
-level: "Advanced"
-}
+    try {
 
-];
+        const session =
+            await getSession();
 
-// ===============================
-// KEY MIGRATION (for admins who already had courses saved
-// before this "key" field existed — matches them up by their
-// original default title so edits/deletes keep working)
-// ===============================
 
-const DEFAULT_KEY_TITLES = {
-    python: "Python Programming",
-    java: "Java Programming",
-    web: "Web Development",
-    database: "Database Management",
-    machinelearning: "Machine Learning",
-    artificialintelligence: "Artificial Intelligence",
-    cybersecurity: "Cyber Security",
-    cloudcomputing: "Cloud Computing",
-    mobiledevelopment: "Mobile Development",
-    devops: "DevOps"
-};
+        if (
+            !session ||
+            session.role !== "admin"
+        ) {
 
-// ===============================
-// LOAD COURSES
-// ===============================
+            window.location.replace(
+                "/login"
+            );
 
-let courses =
-JSON.parse(localStorage.getItem("courses"));
-
-if (!courses) {
-
-courses = defaultCourses;
-
-localStorage.setItem(
-"courses",
-JSON.stringify(courses)
-);
-
-}
-
-// Backfill "key" on any pre-existing saved courses that match a default title
-let coursesKeyMigrated = false;
-
-courses.forEach(c => {
-
-    if (!c.key) {
-
-        const foundKey = Object.keys(DEFAULT_KEY_TITLES).find(
-            k => DEFAULT_KEY_TITLES[k] === c.title
-        );
-
-        if (foundKey) {
-
-            c.key = foundKey;
-            coursesKeyMigrated = true;
-
+            return false;
         }
+
+
+        currentAdmin =
+            await getById(
+                "admins",
+                session.userId
+            );
+
+
+        if (
+            !currentAdmin ||
+            currentAdmin.active === false
+        ) {
+
+            await clearSessions();
+
+
+            window.location.replace(
+                "/login"
+            );
+
+            return false;
+        }
+
+
+        return true;
 
     }
 
-});
+    catch (error) {
 
-if (coursesKeyMigrated) {
+        console.error(
+            "Admin Authentication Error:",
+            error
+        );
 
-    localStorage.setItem("courses", JSON.stringify(courses));
 
+        window.location.replace(
+            "/login"
+        );
+
+
+        return false;
+    }
 }
 
-// ===============================
-// LOAD ENROLLMENTS
-// ===============================
 
-let enrollments =
-JSON.parse(localStorage.getItem("enrolledCourses")) || [];
+//=====================================================
+// LOAD DASHBOARD DATA
+//=====================================================
 
-// ===============================
-// UPDATE DASHBOARD STATISTICS
-// ===============================
+async function loadDashboardData() {
+
+    try {
+
+        const [
+            courseData,
+            enrollmentData,
+            studentData
+        ] =
+            await Promise.all([
+
+                getData(
+                    "courses"
+                ),
+
+                getData(
+                    "enrollments"
+                ),
+
+                getData(
+                    "students"
+                )
+
+            ]);
+
+
+        courses =
+            Array.isArray(
+                courseData
+            )
+                ? courseData
+                : [];
+
+
+        enrollments =
+            Array.isArray(
+                enrollmentData
+            )
+                ? enrollmentData
+                : [];
+
+
+        students =
+            Array.isArray(
+                studentData
+            )
+                ? studentData
+                : [];
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Unable to load dashboard data:",
+            error
+        );
+
+
+        courses = [];
+
+        enrollments = [];
+
+        students = [];
+    }
+}
+
+
+//=====================================================
+// STATISTICS
+//=====================================================
 
 function loadStatistics() {
 
-document.getElementById("totalCourses").textContent =
-courses.length;
+    setText(
+        "totalCourses",
+        courses.length
+    );
 
-const students =
-JSON.parse(localStorage.getItem("students")) || [];
 
-document.getElementById("totalStudents").textContent =
-students.length;
+    setText(
+        "totalStudents",
+        students.length
+    );
 
-document.getElementById("totalEnrollments").textContent =
-enrollments.length;
 
-document.getElementById("courseCompletions").textContent =
-enrollments.filter(item => item.completed).length;
+    setText(
+        "totalEnrollments",
+        enrollments.length
+    );
 
+
+    const completed =
+        enrollments.filter(
+            enrollment =>
+
+                enrollment.completed === true
+
+                ||
+
+                String(
+                    enrollment.status || ""
+                ).toLowerCase() ===
+                    "completed"
+
+        ).length;
+
+
+    setText(
+        "courseCompletions",
+        completed
+    );
 }
 
-// ===============================
-// LOAD COURSE TABLE
-// ===============================
+
+//=====================================================
+// LOAD COURSES
+//=====================================================
 
 function loadCourses() {
 
-const table =
-document.getElementById("courseTable");
+    const table =
+        document.getElementById(
+            "courseTable"
+        );
 
-table.innerHTML = "";
 
-courses.forEach((course,index)=>{
-
-table.innerHTML += `
-
-<tr>
-
-<td>${course.title}</td>
-
-<td>${course.instructor}</td>
-
-<td>${course.level}</td>
-
-<td>${course.status || "Active"}</td>
-
-<td>
-
-<button
-class="action-btn"
-onclick="editCourse(${index})">
-
-Edit
-
-</button>
-
-<button
-class="delete-btn"
-onclick="deleteCourse(${index})">
-
-Delete
-
-</button>
-
-</td>
-
-</tr>
-
-`;
-
-});
-
-}
-
-// ===============================
-// DELETE COURSE
-// ===============================
-
-function deleteCourse(index){
-
-if(confirm("Delete this course?")){
-
-courses.splice(index,1);
-
-localStorage.setItem(
-"courses",
-JSON.stringify(courses)
-);
-
-loadCourses();
-
-loadStatistics();
-
-}
-
-}
-
-// ===============================
-// EDIT COURSE
-// ===============================
-
-function editCourse(index){
-
-localStorage.setItem(
-"editCourseIndex",
-index
-);
-
-window.location.href =
-"edit_course.html";
-
-}
-// ===============================
-// LOAD STUDENT ENROLLMENTS
-// ===============================
-
-// ===============================
-// LOAD STUDENT ENROLLMENTS
-// ===============================
-
-function loadEnrollments() {
-
-    const table = document.getElementById("enrollmentTable");
-
-    if (!table) return;
-
-    table.innerHTML = "";
-
-    if (enrollments.length === 0) {
-
-        table.innerHTML = `
-        <tr>
-            <td colspan="3" style="text-align:center;color:gray;">
-                No enrollments found.
-            </td>
-        </tr>
-        `;
+    if (!table) {
 
         return;
     }
 
-    enrollments.forEach((enrollment) => {
 
-        table.innerHTML += `
-        <tr>
-            <td>${enrollment.student || "Student"}</td>
-            <td>${enrollment.title || "Course"}</td>
-            <td>${enrollment.completed ? "Completed" : "Enrolled"}</td>
-        </tr>
+    table.innerHTML =
+        "";
+
+
+    if (
+        courses.length === 0
+    ) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="5"
+                    style="
+                        text-align:center;
+                        color:gray;
+                    "
+                >
+
+                    No courses found.
+
+                </td>
+
+            </tr>
         `;
 
-    });
 
-}
+        return;
+    }
 
-// ===============================
-// LOAD NOTIFICATIONS
-// ===============================
 
-function loadNotifications() {
+    courses.forEach(
+        course => {
 
-const container =
-document.getElementById("notificationContainer");
+            table.innerHTML += `
 
-if (!container) return;
+                <tr>
 
-container.innerHTML = "";
+                    <td>
 
-let notifications = [];
+                        ${escapeHTML(
+                            course.title ||
+                            "Course"
+                        )}
 
-if (courses.length === 0) {
+                    </td>
 
-const students =
-JSON.parse(localStorage.getItem("students")) || [];
 
-notifications.push(`${courses.length} Courses Available`);
-notifications.push(`${students.length} Students Registered`);
-notifications.push(`${enrollments.length} Enrollments Found`);
-}
+                    <td>
 
-if (enrollments.length === 0) {
+                        ${escapeHTML(
+                            course.instructor ||
+                            "-"
+                        )}
 
-notifications.push(
-"No students have enrolled yet."
-);
+                    </td>
 
-}
 
-if (notifications.length === 0) {
+                    <td>
 
-notifications.push(
-"Dashboard is running normally."
-);
+                        ${escapeHTML(
+                            course.level ||
+                            "-"
+                        )}
 
-notifications.push(
-`${courses.length} courses are available.`
-);
+                    </td>
 
-notifications.push(
-`${enrollments.length} student enrollments found.`
-);
 
-}
+                    <td>
 
-notifications.forEach((note) => {
+                        ${escapeHTML(
+                            course.status ||
+                            "Active"
+                        )}
 
-container.innerHTML += `
+                    </td>
 
-<div class="notification-item">
 
-${note}
+                    <td>
 
-</div>
+                        <button
+                            class="action-btn"
+                            onclick="editCourse('${escapeAttribute(
+                                course.id
+                            )}')"
+                        >
 
-`;
+                            Edit
 
-});
+                        </button>
 
-}
 
-// ===============================
-// COURSE SEARCH (OPTIONAL)
-// ===============================
+                        <button
+                            class="delete-btn"
+                            onclick="deleteCourse('${escapeAttribute(
+                                course.id
+                            )}')"
+                        >
 
-function searchCourse(keyword) {
+                            Delete
 
-return courses.filter(course =>
+                        </button>
 
-course.title
-.toLowerCase()
-.includes(keyword.toLowerCase())
+                    </td>
 
-);
-
-}
-
-// ===============================
-// REFRESH DASHBOARD
-// ===============================
-
-function refreshDashboard(){
-
-loadStatistics();
-
-loadCourses();
-
-loadEnrollments();
-
-loadNotifications();
-
-}
-// ===============================
-// DASHBOARD OVERVIEW
-// ===============================
-
-function loadDashboardOverview() {
-
-    const totalCourses = courses.length;
-    const totalEnrollments = enrollments.length;
-    const completedCourses = enrollments.filter(
-        course => course.completed
-    ).length;
-
-    console.log("========== ADMIN DASHBOARD ==========");
-    console.log("Total Courses :", totalCourses);
-    console.log("Total Enrollments :", totalEnrollments);
-    console.log("Completed Courses :", completedCourses);
-
-}
-
-// ===============================
-// SAVE COURSES
-// ===============================
-
-function saveCourses() {
-
-    localStorage.setItem(
-        "courses",
-        JSON.stringify(courses)
+                </tr>
+            `;
+        }
     );
-
 }
 
-// ===============================
-// SAVE ENROLLMENTS
-// ===============================
 
-function saveEnrollments() {
+//=====================================================
+// DELETE COURSE
+//=====================================================
 
-    localStorage.setItem(
-        "enrolledCourses",
-        JSON.stringify(enrollments)
-    );
+async function deleteCourse(
+    courseId
+) {
 
-}
+    if (
+        !confirm(
+            "Delete this course?"
+        )
+    ) {
 
-// ===============================
-// RESET DASHBOARD (OPTIONAL)
-// ===============================
+        return;
+    }
 
-function resetDashboard() {
 
-    if (confirm("Reset dashboard data?")) {
+    try {
 
-        localStorage.removeItem("courses");
-        localStorage.removeItem("enrolledCourses");
+        await removeData(
+            "courses",
+            courseId
+        );
 
-        location.reload();
+
+        courses =
+            courses.filter(
+                course =>
+                    String(
+                        course.id
+                    ) !==
+                    String(
+                        courseId
+                    )
+            );
+
+
+        loadCourses();
+
+        loadStatistics();
+
+        loadNotifications();
 
     }
 
+    catch (error) {
+
+        console.error(
+            "Delete Course Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to delete course."
+        );
+    }
 }
 
-// ===============================
+
+//=====================================================
+// EDIT COURSE
+//=====================================================
+
+async function editCourse(
+    courseId
+) {
+
+    try {
+
+        await patchData(
+            "appState",
+            "current",
+            {
+                editCourseId:
+                    courseId
+            }
+        );
+
+
+        window.location.href =
+            "/edit-course";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Edit Course Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to open course editor."
+        );
+    }
+}
+
+
+//=====================================================
+// LOAD ENROLLMENTS
+//=====================================================
+
+function loadEnrollments() {
+
+    const table =
+        document.getElementById(
+            "enrollmentTable"
+        );
+
+
+    if (!table) {
+
+        return;
+    }
+
+
+    table.innerHTML =
+        "";
+
+
+    if (
+        enrollments.length === 0
+    ) {
+
+        table.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="3"
+                    style="
+                        text-align:center;
+                        color:gray;
+                    "
+                >
+
+                    No enrollments found.
+
+                </td>
+
+            </tr>
+        `;
+
+
+        return;
+    }
+
+
+    enrollments.forEach(
+        enrollment => {
+
+            const studentName =
+                enrollment.student ||
+                enrollment.studentName ||
+                enrollment.studentEmail ||
+                "Student";
+
+
+            const courseName =
+                enrollment.title ||
+                enrollment.course ||
+                enrollment.courseTitle ||
+                "Course";
+
+
+            let status =
+                enrollment.status ||
+                (
+                    enrollment.completed
+                        ? "Completed"
+                        : "Enrolled"
+                );
+
+
+            table.innerHTML += `
+
+                <tr>
+
+                    <td>
+
+                        ${escapeHTML(
+                            studentName
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHTML(
+                            courseName
+                        )}
+
+                    </td>
+
+
+                    <td>
+
+                        ${escapeHTML(
+                            status
+                        )}
+
+                    </td>
+
+                </tr>
+            `;
+        }
+    );
+}
+
+
+//=====================================================
+// NOTIFICATIONS
+//=====================================================
+
+function loadNotifications() {
+
+    const container =
+        document.getElementById(
+            "notificationContainer"
+        );
+
+
+    if (!container) {
+
+        return;
+    }
+
+
+    const notifications =
+        [];
+
+
+    if (
+        courses.length === 0
+    ) {
+
+        notifications.push(
+            "No courses available."
+        );
+    }
+
+    else {
+
+        notifications.push(
+            `${courses.length} courses are available.`
+        );
+    }
+
+
+    if (
+        students.length === 0
+    ) {
+
+        notifications.push(
+            "No students registered yet."
+        );
+    }
+
+    else {
+
+        notifications.push(
+            `${students.length} students registered.`
+        );
+    }
+
+
+    if (
+        enrollments.length === 0
+    ) {
+
+        notifications.push(
+            "No students have enrolled yet."
+        );
+    }
+
+    else {
+
+        notifications.push(
+            `${enrollments.length} student enrollments found.`
+        );
+    }
+
+
+    container.innerHTML =
+        notifications
+            .map(
+                note => `
+
+                    <div
+                        class="notification-item"
+                    >
+
+                        ${escapeHTML(
+                            note
+                        )}
+
+                    </div>
+                `
+            )
+            .join("");
+}
+
+
+//=====================================================
+// SEARCH COURSE
+//=====================================================
+
+function searchCourse(
+    keyword
+) {
+
+    const value =
+        String(
+            keyword || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    if (value === "") {
+
+        return courses;
+    }
+
+
+    return courses.filter(
+        course =>
+
+            String(
+                course.title || ""
+            )
+                .toLowerCase()
+                .includes(
+                    value
+                )
+    );
+}
+
+
+//=====================================================
+// DASHBOARD OVERVIEW
+//=====================================================
+
+function loadDashboardOverview() {
+
+    const completedCourses =
+        enrollments.filter(
+            enrollment =>
+
+                enrollment.completed === true
+
+                ||
+
+                String(
+                    enrollment.status || ""
+                ).toLowerCase() ===
+                    "completed"
+
+        ).length;
+
+
+    console.log(
+        "========== ADMIN DASHBOARD =========="
+    );
+
+
+    console.log(
+        "Administrator:",
+        currentAdmin?.email || "-"
+    );
+
+
+    console.log(
+        "Total Courses:",
+        courses.length
+    );
+
+
+    console.log(
+        "Total Students:",
+        students.length
+    );
+
+
+    console.log(
+        "Total Enrollments:",
+        enrollments.length
+    );
+
+
+    console.log(
+        "Completed Courses:",
+        completedCourses
+    );
+}
+
+
+//=====================================================
+// REFRESH DASHBOARD
+//=====================================================
+
+async function refreshDashboard() {
+
+    try {
+
+        const validAdmin =
+            await verifyAdmin();
+
+
+        if (!validAdmin) {
+
+            return;
+        }
+
+
+        await loadDashboardData();
+
+
+        loadStatistics();
+
+        loadCourses();
+
+        loadEnrollments();
+
+        loadNotifications();
+
+        loadDashboardOverview();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Refresh Dashboard Error:",
+            error
+        );
+    }
+}
+
+
+//=====================================================
+// RESET DASHBOARD
+//=====================================================
+
+async function resetDashboard() {
+
+    if (
+        !confirm(
+            "Reset dashboard data?"
+        )
+    ) {
+
+        return;
+    }
+
+
+    try {
+
+        const [
+            currentCourses,
+            currentEnrollments
+        ] =
+            await Promise.all([
+
+                getData(
+                    "courses"
+                ),
+
+                getData(
+                    "enrollments"
+                )
+
+            ]);
+
+
+        for (
+            const course of
+            currentCourses
+        ) {
+
+            if (
+                course.id !== undefined &&
+                course.id !== null
+            ) {
+
+                await removeData(
+                    "courses",
+                    course.id
+                );
+            }
+        }
+
+
+        for (
+            const enrollment of
+            currentEnrollments
+        ) {
+
+            if (
+                enrollment.id !== undefined &&
+                enrollment.id !== null
+            ) {
+
+                await removeData(
+                    "enrollments",
+                    enrollment.id
+                );
+            }
+        }
+
+
+        await refreshDashboard();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Reset Dashboard Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to reset dashboard data."
+        );
+    }
+}
+
+
+//=====================================================
+// LOGOUT
+//=====================================================
+
+async function logout() {
+
+    try {
+
+        await clearSessions();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Logout Error:",
+            error
+        );
+    }
+
+
+    alert(
+        "Logged Out Successfully."
+    );
+
+
+    window.location.replace(
+        "/login"
+    );
+}
+
+
+//=====================================================
+// LOGOUT BUTTON
+//=====================================================
+
+function initializeLogoutButton() {
+
+    const logoutBtn =
+        document.getElementById(
+            "logoutBtn"
+        );
+
+
+    if (
+        !logoutBtn ||
+        logoutBtn.dataset.initialized ===
+            "true"
+    ) {
+
+        return;
+    }
+
+
+    logoutBtn.dataset.initialized =
+        "true";
+
+
+    logoutBtn.addEventListener(
+        "click",
+        logout
+    );
+}
+
+
+//=====================================================
 // INITIALIZE DASHBOARD
-// ===============================
+//=====================================================
 
-function initializeDashboard() {
+async function initializeDashboard() {
 
-    loadStatistics();
+    initializeLogoutButton();
 
-    loadCourses();
 
-    loadEnrollments();
+    const validAdmin =
+        await verifyAdmin();
 
-    loadNotifications();
 
-    loadDashboardOverview();
+    if (!validAdmin) {
+
+        return;
+    }
+
+
+    await refreshDashboard();
+
+
+    //=================================================
+    // AUTO REFRESH
+    //=================================================
+
+    if (!refreshTimer) {
+
+        refreshTimer =
+            setInterval(
+                async () => {
+
+                    /*
+                     * Do not refresh this dashboard
+                     * after React has navigated away.
+                     */
+
+                    if (
+                        !document.getElementById(
+                            "totalCourses"
+                        ) &&
+                        !document.getElementById(
+                            "courseTable"
+                        )
+                    ) {
+
+                        clearInterval(
+                            refreshTimer
+                        );
+
+
+                        refreshTimer =
+                            null;
+
+
+                        return;
+                    }
+
+
+                    await refreshDashboard();
+
+                },
+                30000
+            );
+    }
+}
+
+
+//=====================================================
+// REACT-COMPATIBLE INITIALIZATION
+//=====================================================
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeDashboard,
+        {
+            once: true
+        }
+    );
 
 }
 
-// ===============================
-// WINDOW LOAD
-// ===============================
-
-window.onload = function () {
+else {
 
     initializeDashboard();
-
-};
-
-// ===============================
-// AUTO REFRESH (Every 30 Seconds)
-// ===============================
-
-setInterval(() => {
-
-    courses =
-        JSON.parse(localStorage.getItem("courses")) || [];
-
-    enrollments =
-        JSON.parse(localStorage.getItem("enrolledCourses")) || [];
-
-    initializeDashboard();
-
-}, 30000);
-function logout() {
-
-    localStorage.removeItem("loggedInAdmin");
-
-    alert("Logged Out Successfully.");
-
-    window.location.href = "login.html";
-
 }
-document.getElementById("logoutBtn").addEventListener("click", logout);
+
+
+//=====================================================
+// HELPERS
+//=====================================================
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+    }
+}
+
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+}
+
+
+function escapeAttribute(
+    value
+) {
+
+    return escapeHTML(
+        value
+    );
+}
+
+
+//=====================================================
+// GLOBAL FUNCTIONS
+//=====================================================
+
+window.editCourse =
+    editCourse;
+
+window.deleteCourse =
+    deleteCourse;
+
+window.searchCourse =
+    searchCourse;
+
+window.resetDashboard =
+    resetDashboard;
+
+window.refreshDashboard =
+    refreshDashboard;
+
+window.logout =
+    logout;

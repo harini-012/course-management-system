@@ -9,7 +9,7 @@ import LegacyScript
     from "../components/LegacyScript";
 
 
-function Login() {
+export default function Login() {
 
     return (
 
@@ -34,6 +34,8 @@ function Login() {
                     LOGIN PORTAL
                 </h2>
 
+
+                {/* ================= ROLE TABS ================= */}
 
                 <div className="tabs">
 
@@ -64,11 +66,19 @@ function Login() {
                 </p>
 
 
-                <form>
+                {/* ================= LOGIN FORM ================= */}
+
+                <form
+                    id="loginForm"
+                    onSubmit={
+                        event =>
+                            event.preventDefault()
+                    }
+                >
 
                     <div className="input-box">
 
-                        <label>
+                        <label htmlFor="email">
                             Email
                         </label>
 
@@ -77,6 +87,7 @@ function Login() {
                             type="email"
                             placeholder="Enter Email"
                             id="email"
+                            autoComplete="email"
                         />
 
                     </div>
@@ -84,7 +95,7 @@ function Login() {
 
                     <div className="input-box">
 
-                        <label>
+                        <label htmlFor="password">
                             Password
                         </label>
 
@@ -93,6 +104,7 @@ function Login() {
                             type="password"
                             placeholder="Enter Password"
                             id="password"
+                            autoComplete="current-password"
                         />
 
                     </div>
@@ -124,12 +136,15 @@ function Login() {
                     <button
                         type="button"
                         className="login-btn"
+                        id="loginBtn"
                     >
                         Login
                     </button>
 
                 </form>
 
+
+                {/* ================= REGISTER ================= */}
 
                 <div className="register">
 
@@ -142,6 +157,13 @@ function Login() {
                         Don't have a student account?
                     </p>
 
+
+                    {/*
+                        Keep this as <a>, not <Link>.
+
+                        login.js changes href depending on whether
+                        Student or Admin login is selected.
+                    */}
 
                     <a
                         href="/register"
@@ -157,14 +179,8 @@ function Login() {
 
             <LegacyScript
                 src="/legacy/js/login.js"
-                module={true}
             />
 
         </>
-
     );
-
 }
-
-
-export default Login;

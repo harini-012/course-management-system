@@ -1,17 +1,39 @@
-import PageShell from "../components/PageShell";
-import PageCss from "../components/PageCss";
-import LegacyScript from "../components/LegacyScript";
+import {
+    useNavigate
+} from "react-router-dom";
+
+import PageShell
+    from "../components/PageShell";
+
+import PageCss
+    from "../components/PageCss";
+
+import LegacyScript
+    from "../components/LegacyScript";
+
 
 export default function ManageEnrollment() {
-    return (
-        <>
-            <PageCss href="/css/manage_enrollment.css" />
 
-            <PageShell variant="admin">
+    const navigate =
+        useNavigate();
+
+
+    return (
+
+        <>
+
+            <PageCss
+                href="/css/manage_enrollment.css"
+            />
+
+
+            <PageShell
+                variant="admin"
+            >
 
                 <div className="container">
 
-                    {/* PAGE HEADER */}
+                    {/* ================= BANNER ================= */}
 
                     <div className="banner">
 
@@ -19,119 +41,153 @@ export default function ManageEnrollment() {
                             Manage Student Enrollments
                         </h1>
 
+
                         <p>
-                            Review, approve, reject, and manage student enrollment requests.
-                            All enrollment requests submitted by students will be displayed here.
+                            Review student enrollment requests,
+                            approve or reject applications and
+                            monitor enrollment status.
                         </p>
 
                     </div>
 
 
-                    {/* STATISTICS */}
+                    {/* ================= STATISTICS ================= */}
 
                     <div className="stats">
 
                         <div className="card">
-                            <h3>Total Requests</h3>
+
+                            <h3>
+                                Total Enrollments
+                            </h3>
+
                             <div
                                 className="number"
-                                id="totalRequests"
+                                id="totalEnrollments"
                             >
                                 0
                             </div>
+
                         </div>
 
-                        <div className="card">
-                            <h3>Approved</h3>
-                            <div
-                                className="number"
-                                id="approvedRequests"
-                            >
-                                0
-                            </div>
-                        </div>
 
                         <div className="card">
-                            <h3>Pending</h3>
+
+                            <h3>
+                                Pending
+                            </h3>
+
                             <div
                                 className="number"
-                                id="pendingRequests"
+                                id="pendingCount"
                             >
                                 0
                             </div>
+
                         </div>
 
+
                         <div className="card">
-                            <h3>Rejected</h3>
+
+                            <h3>
+                                Approved
+                            </h3>
+
                             <div
                                 className="number"
-                                id="rejectedRequests"
+                                id="approvedCount"
                             >
                                 0
                             </div>
+
+                        </div>
+
+
+                        <div className="card">
+
+                            <h3>
+                                Rejected
+                            </h3>
+
+                            <div
+                                className="number"
+                                id="rejectedCount"
+                            >
+                                0
+                            </div>
+
+                        </div>
+
+
+                        <div className="card">
+
+                            <h3>
+                                Completed
+                            </h3>
+
+                            <div
+                                className="number"
+                                id="completedCount"
+                            >
+                                0
+                            </div>
+
                         </div>
 
                     </div>
 
 
-                    {/* SEARCH */}
-
-                    <div className="search-box">
-
-                        <input
-                            type="text"
-                            id="searchEnrollment"
-                            placeholder="Search Enrollment Request..."
-                        />
-
-                    </div>
-
-
-                    {/* FILTER */}
+                    {/* ================= SEARCH / FILTER ================= */}
 
                     <div className="search-box">
 
                         <div
                             style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                flexWrap: "wrap",
+                                display: "grid",
+                                gridTemplateColumns:
+                                    "minmax(250px, 1fr) 220px",
                                 gap: "15px"
                             }}
                         >
 
-                            <h2
-                                style={{
-                                    color: "#1E3A8A"
-                                }}
-                            >
-                                Enrollment Requests
-                            </h2>
+                            <input
+                                type="text"
+                                id="searchEnrollment"
+                                placeholder="Search student, email or course..."
+                            />
+
 
                             <select
                                 id="statusFilter"
+                                defaultValue="all"
                                 style={{
-                                    padding: "12px",
-                                    borderRadius: "8px",
-                                    border: "1px solid #CBD5E1"
+                                    padding: "15px",
+                                    border:
+                                        "1px solid #CBD5E1",
+                                    borderRadius: "10px",
+                                    fontSize: "16px",
+                                    outline: "none"
                                 }}
                             >
 
-                                <option value="All">
-                                    All Requests
+                                <option value="all">
+                                    All Status
                                 </option>
 
-                                <option value="Pending">
+                                <option value="pending">
                                     Pending
                                 </option>
 
-                                <option value="Approved">
+                                <option value="approved">
                                     Approved
                                 </option>
 
-                                <option value="Rejected">
+                                <option value="rejected">
                                     Rejected
+                                </option>
+
+                                <option value="completed">
+                                    Completed
                                 </option>
 
                             </select>
@@ -141,282 +197,139 @@ export default function ManageEnrollment() {
                     </div>
 
 
-                    {/* ENROLLMENT REQUESTS */}
+                    {/* ================= ENROLLMENT TABLE ================= */}
 
                     <div className="section">
 
                         <h2>
-                            Student Enrollment Requests
+                            Enrollment Requests
                         </h2>
 
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Student Name
-                                    </th>
-
-                                    <th>
-                                        Course Name
-                                    </th>
-
-                                    <th>
-                                        Enrollment Date
-                                    </th>
-
-                                    <th>
-                                        Status
-                                    </th>
-
-                                    <th>
-                                        Actions
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="enrollmentTable">
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    {/* SELECTED ENROLLMENT */}
-
-                    <div className="section">
-
-                        <h2>
-                            Selected Enrollment
-                        </h2>
 
                         <div
-                            id="selectedEnrollment"
                             style={{
-                                padding: "40px",
-                                border: "2px dashed #CBD5E1",
-                                borderRadius: "12px",
-                                textAlign: "center",
-                                color: "#6B7280",
-                                lineHeight: "30px"
+                                width: "100%",
+                                overflowX: "auto"
                             }}
                         >
 
-                            <h3
-                                style={{
-                                    color: "#1E3A8A",
-                                    marginBottom: "15px"
-                                }}
-                            >
-                                No Enrollment Selected
-                            </h3>
+                            <table>
 
-                            <p>
-                                Select an enrollment request from the table above
-                                to view complete student and course information.
-                            </p>
+                                <thead>
 
-                        </div>
+                                    <tr>
 
-                    </div>
+                                        <th>
+                                            Student
+                                        </th>
 
+                                        <th>
+                                            Email
+                                        </th>
 
-                    {/* ENROLLMENT SUMMARY */}
+                                        <th>
+                                            Course
+                                        </th>
 
-                    <div className="section">
+                                        <th>
+                                            Enrollment Date
+                                        </th>
 
-                        <h2>
-                            Enrollment Summary
-                        </h2>
+                                        <th>
+                                            Status
+                                        </th>
 
-                        <div className="stats">
+                                        <th>
+                                            Actions
+                                        </th>
 
-                            <div className="card">
+                                    </tr>
 
-                                <h3>
-                                    Total Enrollment Requests
-                                </h3>
-
-                                <div
-                                    className="number"
-                                    id="summaryTotal"
-                                >
-                                    0
-                                </div>
-
-                                <p
-                                    style={{
-                                        marginTop: "12px",
-                                        color: "#666"
-                                    }}
-                                >
-                                    Displays the total number of enrollment requests received.
-                                </p>
-
-                            </div>
+                                </thead>
 
 
-                            <div className="card">
+                                <tbody id="enrollmentTable">
 
-                                <h3>
-                                    Approved Requests
-                                </h3>
+                                    <tr>
 
-                                <div
-                                    className="number"
-                                    id="summaryApproved"
-                                >
-                                    0
-                                </div>
+                                        <td
+                                            colSpan="6"
+                                            style={{
+                                                textAlign:
+                                                    "center",
+                                                padding:
+                                                    "30px",
+                                                color:
+                                                    "gray"
+                                            }}
+                                        >
+                                            Loading enrollments...
+                                        </td>
 
-                                <p
-                                    style={{
-                                        marginTop: "12px",
-                                        color: "#666"
-                                    }}
-                                >
-                                    Shows the number of approved enrollments.
-                                </p>
+                                    </tr>
 
-                            </div>
+                                </tbody>
 
-
-                            <div className="card">
-
-                                <h3>
-                                    Pending Requests
-                                </h3>
-
-                                <div
-                                    className="number"
-                                    id="summaryPending"
-                                >
-                                    0
-                                </div>
-
-                                <p
-                                    style={{
-                                        marginTop: "12px",
-                                        color: "#666"
-                                    }}
-                                >
-                                    Shows enrollment requests awaiting approval.
-                                </p>
-
-                            </div>
-
-
-                            <div className="card">
-
-                                <h3>
-                                    Rejected Requests
-                                </h3>
-
-                                <div
-                                    className="number"
-                                    id="summaryRejected"
-                                >
-                                    0
-                                </div>
-
-                                <p
-                                    style={{
-                                        marginTop: "12px",
-                                        color: "#666"
-                                    }}
-                                >
-                                    Shows rejected enrollment requests.
-                                </p>
-
-                            </div>
+                            </table>
 
                         </div>
 
                     </div>
 
 
-                    {/* RECENTLY APPROVED */}
+                    {/* ================= INFORMATION ================= */}
 
                     <div className="section">
 
                         <h2>
-                            Recently Approved Enrollments
+                            Enrollment Management
                         </h2>
 
-                        <table>
 
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Student
-                                    </th>
-
-                                    <th>
-                                        Course
-                                    </th>
-
-                                    <th>
-                                        Approved By
-                                    </th>
-
-                                    <th>
-                                        Approval Date
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="approvedTable">
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-
-                    {/* RECENT ACTIVITY */}
-
-                    <div className="section">
-
-                        <h2>
-                            Recent Enrollment Activity
-                        </h2>
-
-                        <div
-                            id="activityContainer"
+                        <p
                             style={{
-                                padding: "40px",
-                                border: "2px dashed #CBD5E1",
-                                borderRadius: "12px",
-                                textAlign: "center",
-                                color: "#6B7280",
-                                lineHeight: "30px"
+                                color: "#555",
+                                lineHeight: "28px"
                             }}
                         >
+                            Pending enrollment requests can be
+                            approved or rejected using the action
+                            buttons in the table. Approved or
+                            rejected requests can also be returned
+                            to pending status when required.
+                        </p>
 
-                            <h3
-                                style={{
-                                    color: "#1E3A8A",
-                                    marginBottom: "15px"
-                                }}
-                            >
-                                No Recent Activity
-                            </h3>
+                    </div>
 
-                            <p>
-                                Recent enrollment activities will appear here after
-                                students submit enrollment requests.
-                            </p>
 
-                        </div>
+                    {/* ================= BACK ================= */}
+
+                    <div
+                        style={{
+                            textAlign: "center",
+                            marginBottom: "30px"
+                        }}
+                    >
+
+                        <button
+                            type="button"
+                            onClick={() =>
+                                navigate(
+                                    "/admin-dashboard"
+                                )
+                            }
+                            style={{
+                                padding: "13px 25px",
+                                background: "#2563EB",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "8px",
+                                cursor: "pointer",
+                                fontWeight: "bold"
+                            }}
+                        >
+                            ← Back to Admin Dashboard
+                        </button>
 
                     </div>
 

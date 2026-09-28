@@ -1,193 +1,1022 @@
-// ===============================
-// GET STUDENT + COURSE
-// ===============================
+//=====================================================
+// CERTIFICATE
+// MOCK API + REACT VERSION
+//=====================================================
 
-const student =
-JSON.parse(localStorage.getItem("loggedInStudent"));
+import {
+    getData,
+    getById,
+    queryData,
+    getSession,
+    clearSessions
+} from "./api.js";
 
-if (!student) {
-    window.location.href = "login.html";
+
+let student = null;
+
+let course = null;
+
+let progressRecord = null;
+
+let enrollment = null;
+
+let courseKey = null;
+
+
+//=====================================================
+// INITIALIZE CERTIFICATE
+//=====================================================
+
+async function initializeCertificate() {
+
+    try {
+
+        //=================================================
+        // SESSION
+        //=================================================
+
+        const session =
+            await getSession();
+
+
+        if (
+            !session ||
+            session.role !== "student"
+        ) {
+
+            window.location.replace(
+                "/login"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // STUDENT
+        //=================================================
+
+        student =
+            await getById(
+                "students",
+                session.userId
+            );
+
+
+        if (
+            !student ||
+            student.active === false
+        ) {
+
+            await clearSessions();
+
+
+            window.location.replace(
+                "/login"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // APP STATE
+        //=================================================
+
+        const appState =
+            await getById(
+                "appState",
+                "current"
+            );
+
+
+        courseKey =
+            appState
+                ? appState.selectedCourseKey
+                : null;
+
+
+        if (!courseKey) {
+
+            alert(
+                "No course selected."
+            );
+
+
+            window.location.replace(
+                "/my-courses"
+            );
+
+            return;
+        }
+
+
+        //=================================================
+        // COURSE
+        //=================================================
+
+        course =
+            await findCourse(
+                courseKey
+            );
+
+
+        if (!course) {
+
+            alert(
+                "Course not found."
+            );
+
+
+            window.location.replace(
+                "/my-courses"
+            );
+
+            return;
+        }
+
+
+        courseKey =
+            course.courseKey ||
+            course.key ||
+            course.id ||
+            courseKey;
+
+
+        //=================================================
+        // PROGRESS
+        //=================================================
+
+        const progressData =
+            await queryData(
+                "progress",
+                {
+                    studentEmail:
+                        student.email
+                }
+            );
+
+
+        //=================================================
+// FIND LATEST / COMPLETED PROGRESS
+//=================================================
+
+const matchingProgress =
+    Array.isArray(progressData)
+        ? progressData.filter(
+            item =>
+                sameCourse(item)
+        )
+        : [];
+
+
+console.log(
+    "All matching progress records:",
+    matchingProgress
+);
+
+
+// Prefer a completed record first.
+// If there are multiple records, use the newest one.
+
+progressRecord =
+    matchingProgress
+        .sort(
+            (a, b) => {
+
+                // Completed record gets priority
+
+                const aCompleted =
+                    a.completed === true ||
+                    Number(
+                        a.percentage || 0
+                    ) >= 100;
+
+                const bCompleted =
+                    b.completed === true ||
+                    Number(
+                        b.percentage || 0
+                    ) >= 100;
+
+
+                if (
+                    aCompleted &&
+                    !bCompleted
+                ) {
+
+                    return -1;
+                }
+
+
+                if (
+                    bCompleted &&
+                    !aCompleted
+                ) {
+
+                    return 1;
+                }
+
+
+                // Otherwise newest record first
+
+                const aDate =
+                    new Date(
+                        a.updatedAt ||
+                        a.completedAt ||
+                        a.startedAt ||
+                        0
+                    ).getTime();
+
+
+                const bDate =
+                    new Date(
+                        b.updatedAt ||
+                        b.completedAt ||
+                        b.startedAt ||
+                        0
+                    ).getTime();
+
+
+                return bDate - aDate;
+            }
+        )[0] || null;
+
+
+console.log(
+    "Selected progress record:",
+    progressRecord
+);
+
+        //=================================================
+        // ENROLLMENT
+        //=================================================
+
+        const enrollmentData =
+            await queryData(
+                "enrollments",
+                {
+                    studentEmail:
+                        student.email
+                }
+            );
+
+
+        enrollment =
+            Array.isArray(enrollmentData)
+                ? enrollmentData.find(
+                    item =>
+                        sameCourse(
+                            item
+                        )
+                )
+                : null;
+
+
+       //=================================================
+// VERIFY COMPLETION
+//=================================================
+
+const completedVideos =
+    Array.isArray(
+        progressRecord?.completedVideos
+    )
+        ? progressRecord.completedVideos
+        : [];
+
+
+const totalVideos =
+    Array.isArray(course.videos)
+        ? course.videos.length
+        : Number(
+            progressRecord?.totalVideos || 0
+        );
+
+
+const allVideosCompleted =
+    totalVideos > 0 &&
+    completedVideos.length >=
+        totalVideos;
+
+
+const completed =
+    Boolean(
+        progressRecord &&
+        (
+            progressRecord.completed === true
+
+            ||
+
+            Number(
+                progressRecord.percentage || 0
+            ) >= 100
+
+            ||
+
+            allVideosCompleted
+        )
+    );
+
+
+console.log(
+    "CERTIFICATE COMPLETION CHECK",
+    {
+        progressRecord,
+        completedVideos,
+        completedCount:
+            completedVideos.length,
+        totalVideos,
+        percentage:
+            progressRecord?.percentage,
+        completedFlag:
+            progressRecord?.completed,
+        allVideosCompleted,
+        certificateAllowed:
+            completed
+    }
+);
+
+
+if (!completed) {
+
+    console.error(
+        "Certificate blocked because progress is incomplete.",
+        progressRecord
+    );
+
+    alert(
+        "Complete the course before viewing the certificate."
+    );
+
+    window.location.replace(
+        "/my-courses"
+    );
+
+    return;
 }
 
-const studentKey = student.email;
 
-const urlParams = new URLSearchParams(window.location.search);
-const courseTitle = urlParams.get("course") || "Course";
+        //=================================================
+        // RENDER
+        //=================================================
 
-// Confirm the student actually completed this course before issuing one
-const isCompleted =
-    localStorage.getItem(studentKey + "_" + courseTitle + "_completed") === "true";
+        renderCertificate();
 
-if (!isCompleted) {
-    alert("You need to complete this course before viewing its certificate.");
-    window.location.href = "my_courses.html";
+
+        initializeCertificateButtons();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Certificate Error:",
+            error
+        );
+
+
+        alert(
+            "Unable to load certificate."
+        );
+    }
 }
 
-// Use today's date unless a completion date was already stored
-const completionDateKey = studentKey + "_" + courseTitle + "_completedDate";
 
-let completionDate = localStorage.getItem(completionDateKey);
+//=====================================================
+// FIND COURSE
+//=====================================================
 
-if (!completionDate) {
-    completionDate = new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-    });
-    localStorage.setItem(completionDateKey, completionDate);
+async function findCourse(
+    key
+) {
+
+    try {
+
+        const directCourse =
+            await getById(
+                "courses",
+                key
+            );
+
+
+        if (directCourse) {
+
+            return directCourse;
+        }
+
+    }
+
+    catch (error) {
+
+        // Continue with collection search.
+    }
+
+
+    const courseData =
+        await getData(
+            "courses"
+        );
+
+
+    if (
+        !Array.isArray(courseData)
+    ) {
+
+        return null;
+    }
+
+
+    const normalized =
+        String(key)
+            .trim()
+            .toLowerCase();
+
+
+    return courseData.find(
+        item => {
+
+            const values = [
+
+                item.id,
+
+                item.key,
+
+                item.courseKey,
+
+                item.title
+
+            ];
+
+
+            return values.some(
+                value =>
+                    value !== undefined &&
+                    value !== null &&
+                    String(value)
+                        .trim()
+                        .toLowerCase() ===
+                    normalized
+            );
+        }
+    ) || null;
 }
 
-const studentName =
-    student.name || student.fullName || student.email.split("@")[0];
 
-// ===============================
-// DRAW CERTIFICATE ON CANVAS
-// ===============================
+//=====================================================
+// SAME COURSE
+//=====================================================
 
-const canvas = document.getElementById("certificateCanvas");
-const ctx = canvas.getContext("2d");
+function sameCourse(item) {
 
-const W = canvas.width;
-const H = canvas.height;
+    if (!item || !course) {
 
-function drawCertificate() {
+        return false;
+    }
 
-    // Background
-    ctx.fillStyle = "#FDF6E3";
-    ctx.fillRect(0, 0, W, H);
 
-    // Outer border
-    ctx.strokeStyle = "#1E3A8A";
-    ctx.lineWidth = 10;
-    ctx.strokeRect(25, 25, W - 50, H - 50);
+    // 1. Prefer database course ID
 
-    // Inner gold border
-    ctx.strokeStyle = "#C9A227";
-    ctx.lineWidth = 3;
-    ctx.strokeRect(45, 45, W - 90, H - 90);
+    if (
+        item.courseId !== undefined &&
+        item.courseId !== null &&
+        course.id !== undefined &&
+        course.id !== null
+    ) {
 
-    // Header
-    ctx.fillStyle = "#1E3A8A";
-    ctx.font = "bold 26px Georgia, serif";
-    ctx.textAlign = "center";
-    ctx.fillText("CourseMS", W / 2, 110);
+        if (
+            String(item.courseId) ===
+            String(course.id)
+        ) {
 
-    ctx.fillStyle = "#0F172A";
-    ctx.font = "bold 52px Georgia, serif";
-    ctx.fillText("Certificate of Completion", W / 2, 200);
+            return true;
+        }
+    }
 
-    ctx.strokeStyle = "#C9A227";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(W / 2 - 180, 225);
-    ctx.lineTo(W / 2 + 180, 225);
-    ctx.stroke();
 
-    // Subtitle
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "#334155";
-    ctx.fillText("This certificate is proudly presented to", W / 2, 300);
+    // 2. Compare course key
 
-    // Student name
-    ctx.font = "italic bold 46px Georgia, serif";
-    ctx.fillStyle = "#1E3A8A";
-    ctx.fillText(studentName, W / 2, 375);
+    const itemKey =
+        item.courseKey ||
+        item.key;
 
-    ctx.strokeStyle = "#94a3b8";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(W / 2 - 250, 395);
-    ctx.lineTo(W / 2 + 250, 395);
-    ctx.stroke();
 
-    // Course line
-    ctx.font = "20px Arial";
-    ctx.fillStyle = "#334155";
-    ctx.fillText("for successfully completing the course", W / 2, 445);
+    const selectedKey =
+        course.courseKey ||
+        course.key ||
+        courseKey;
 
-    ctx.font = "bold 34px Georgia, serif";
-    ctx.fillStyle = "#0F172A";
-    ctx.fillText(courseTitle, W / 2, 500);
 
-    // Date
-    ctx.font = "18px Arial";
-    ctx.fillStyle = "#475569";
-    ctx.fillText("Completed on " + completionDate, W / 2, 560);
+    if (
+        itemKey &&
+        selectedKey &&
+        String(itemKey)
+            .trim()
+            .toLowerCase() ===
+        String(selectedKey)
+            .trim()
+            .toLowerCase()
+    ) {
 
-    // Signature area
-    ctx.textAlign = "left";
-    ctx.strokeStyle = "#334155";
-    ctx.lineWidth = 1;
+        return true;
+    }
 
-    ctx.beginPath();
-    ctx.moveTo(160, 730);
-    ctx.lineTo(420, 730);
-    ctx.stroke();
-    ctx.font = "16px Arial";
-    ctx.fillText("Course Instructor", 160, 755);
 
-    ctx.beginPath();
-    ctx.moveTo(W - 420, 730);
-    ctx.lineTo(W - 160, 730);
-    ctx.stroke();
-    ctx.textAlign = "right";
-    ctx.fillText("Date Issued", W - 160, 755);
+    // 3. Title only as final fallback
 
-    // Seal
-    ctx.textAlign = "center";
-    ctx.beginPath();
-    ctx.arc(W / 2, 700, 45, 0, Math.PI * 2);
-    ctx.fillStyle = "#C9A227";
-    ctx.fill();
-    ctx.fillStyle = "#0F172A";
-    ctx.font = "bold 13px Arial";
-    ctx.fillText("VERIFIED", W / 2, 695);
-    ctx.fillText("COURSEMS", W / 2, 710);
+    const itemTitle =
+        item.courseTitle ||
+        item.course ||
+        item.title;
 
+
+    if (
+        itemTitle &&
+        course.title &&
+        String(itemTitle)
+            .trim()
+            .toLowerCase() ===
+        String(course.title)
+            .trim()
+            .toLowerCase()
+    ) {
+
+        return true;
+    }
+
+
+    return false;
 }
 
-drawCertificate();
 
-// ===============================
-// DOWNLOAD AS IMAGE
-// ===============================
+//=====================================================
+// RENDER CERTIFICATE
+//=====================================================
 
-document.getElementById("downloadBtn").addEventListener("click", function () {
+function renderCertificate() {
 
-    const link = document.createElement("a");
-    link.download = courseTitle.replace(/\s+/g, "_") + "_Certificate.png";
-    link.href = canvas.toDataURL("image/png");
-    link.click();
+    const studentName =
+        student.studentName ||
+        student.name ||
+        student.email ||
+        "Student";
 
-});
 
-// ===============================
-// PRINT
-// ===============================
+    const courseName =
+        course.title ||
+        "Course";
 
-document.getElementById("printBtn").addEventListener("click", function () {
+
+    const completionDate =
+        getCompletionDate();
+
+
+    const certificateId =
+        generateCertificateId();
+
+
+    //=================================================
+    // STUDENT NAME
+    //=================================================
+
+    setText(
+        "studentName",
+        studentName
+    );
+
+
+    setText(
+        "certificateStudentName",
+        studentName
+    );
+
+
+    setText(
+        "name",
+        studentName
+    );
+
+
+    //=================================================
+    // COURSE NAME
+    //=================================================
+
+    setText(
+        "courseName",
+        courseName
+    );
+
+
+    setText(
+        "certificateCourseName",
+        courseName
+    );
+
+
+    setText(
+        "courseTitle",
+        courseName
+    );
+
+
+    //=================================================
+    // DATE
+    //=================================================
+
+    setText(
+        "completionDate",
+        completionDate
+    );
+
+
+    setText(
+        "certificateDate",
+        completionDate
+    );
+
+
+    setText(
+        "date",
+        completionDate
+    );
+
+
+    //=================================================
+    // CERTIFICATE ID
+    //=================================================
+
+    setText(
+        "certificateId",
+        certificateId
+    );
+
+
+    setText(
+        "certificateNumber",
+        certificateId
+    );
+
+
+    //=================================================
+    // INSTRUCTOR
+    //=================================================
+
+    setText(
+        "instructorName",
+        course.instructor ||
+        "Course Instructor"
+    );
+
+
+    setText(
+        "instructor",
+        course.instructor ||
+        "Course Instructor"
+    );
+
+
+    //=================================================
+    // DOCUMENT TITLE
+    //=================================================
+
+    document.title =
+        `Certificate - ${courseName}`;
+}
+
+
+//=====================================================
+// COMPLETION DATE
+//=====================================================
+
+function getCompletionDate() {
+
+    const possibleDate =
+
+        enrollment
+            ?.completionDate
+
+        ||
+
+        progressRecord
+            ?.completedAt
+
+        ||
+
+        progressRecord
+            ?.updatedAt;
+
+
+    if (!possibleDate) {
+
+        return new Date()
+            .toLocaleDateString(
+                "en-US",
+                {
+                    day:
+                        "numeric",
+
+                    month:
+                        "long",
+
+                    year:
+                        "numeric"
+                }
+            );
+    }
+
+
+    const parsed =
+        new Date(
+            possibleDate
+        );
+
+
+    if (
+        Number.isNaN(
+            parsed.getTime()
+        )
+    ) {
+
+        return possibleDate;
+    }
+
+
+    return parsed
+        .toLocaleDateString(
+            "en-US",
+            {
+                day:
+                    "numeric",
+
+                month:
+                    "long",
+
+                year:
+                    "numeric"
+            }
+        );
+}
+
+
+//=====================================================
+// CERTIFICATE ID
+//=====================================================
+
+function generateCertificateId() {
+
+    const studentPart =
+        String(
+            student.studentId ||
+            student.id ||
+            "STUDENT"
+        )
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .toUpperCase();
+
+
+    const coursePart =
+        String(
+            course.courseKey ||
+            course.key ||
+            course.id ||
+            "COURSE"
+        )
+            .replace(
+                /[^a-zA-Z0-9]/g,
+                ""
+            )
+            .toUpperCase();
+
+
+    const year =
+        new Date()
+            .getFullYear();
+
+
+    return (
+        `CMS-${studentPart}-${coursePart}-${year}`
+    );
+}
+
+
+//=====================================================
+// PRINT CERTIFICATE
+//=====================================================
+
+function printCertificate() {
 
     window.print();
+}
 
-});
 
-// ===============================
-// BACK
-// ===============================
+//=====================================================
+// DOWNLOAD CERTIFICATE
+//=====================================================
 
-document.getElementById("backBtn").addEventListener("click", function () {
+function downloadCertificate() {
 
-    window.location.href = "my_courses.html";
+    /*
+     * Browser print dialog allows:
+     *
+     * Destination → Save as PDF
+     *
+     * This avoids adding another PDF library.
+     */
 
-});
+    window.print();
+}
 
-function logout() {
 
-    localStorage.removeItem("loggedInStudent");
+//=====================================================
+// BACK TO MY COURSES
+//=====================================================
 
-    alert("Logged Out Successfully.");
+function backToMyCourses() {
 
-    window.location.href = "login.html";
+    window.location.href =
+        "/my-courses";
+}
+
+
+//=====================================================
+// GO TO DASHBOARD
+//=====================================================
+
+function goToDashboard() {
+
+    window.location.href =
+        "/student-dashboard";
+}
+
+
+//=====================================================
+// INITIALIZE BUTTONS
+//=====================================================
+
+function initializeCertificateButtons() {
+
+    bindButton(
+        "printBtn",
+        printCertificate
+    );
+
+
+    bindButton(
+        "downloadBtn",
+        downloadCertificate
+    );
+
+
+    bindButton(
+        "backBtn",
+        backToMyCourses
+    );
+
+
+    bindButton(
+        "dashboardBtn",
+        goToDashboard
+    );
+
+
+    bindButton(
+        "logoutBtn",
+        logout
+    );
+}
+
+
+//=====================================================
+// BIND BUTTON
+//=====================================================
+
+function bindButton(
+    id,
+    handler
+) {
+
+    const button =
+        document.getElementById(
+            id
+        );
+
+
+    if (
+        !button ||
+        button.dataset.initialized ===
+            "true"
+    ) {
+
+        return;
+    }
+
+
+    button.dataset.initialized =
+        "true";
+
+
+    button.addEventListener(
+        "click",
+        handler
+    );
+}
+
+
+//=====================================================
+// LOGOUT
+//=====================================================
+
+async function logout() {
+
+    try {
+
+        await clearSessions();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Logout Error:",
+            error
+        );
+    }
+
+
+    alert(
+        "Logged Out Successfully."
+    );
+
+
+    window.location.replace(
+        "/login"
+    );
+}
+
+
+//=====================================================
+// HELPER
+//=====================================================
+
+function setText(
+    id,
+    value
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            value;
+    }
+}
+
+
+//=====================================================
+// REACT-SAFE INITIALIZATION
+//=====================================================
+
+if (
+    document.readyState === "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initializeCertificate,
+        {
+            once: true
+        }
+    );
 
 }
-document.getElementById("logoutBtn").addEventListener("click", logout);
+
+else {
+
+    initializeCertificate();
+}
+
+
+//=====================================================
+// GLOBAL FUNCTIONS
+//=====================================================
+
+window.printCertificate =
+    printCertificate;
+
+window.downloadCertificate =
+    downloadCertificate;
+
+window.backToMyCourses =
+    backToMyCourses;
+
+window.goToDashboard =
+    goToDashboard;
+
+window.logout =
+    logout;
