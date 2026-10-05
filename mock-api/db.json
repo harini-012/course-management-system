@@ -12,7 +12,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "9/28/2026, 9:33:20 PM",
+      "lastLogin": "9/29/2026, 11:15:26 AM",
       "active": true,
       "id": "2ktXrV4EtDs",
       "passwordUpdatedAt": "2026-09-28T15:40:13.492Z"
@@ -45,7 +45,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "9/28/2026, 9:30:22 PM",
+      "lastLogin": "10/5/2026, 2:08:30 PM",
       "active": true,
       "id": "faDPPfA_RCQ"
     }
@@ -62,7 +62,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "9/28/2026, 9:33:28 PM",
+      "lastLogin": "10/5/2026, 2:02:23 PM",
       "active": true,
       "id": "1aflrowmla0",
       "passwordUpdatedAt": "2026-09-28T13:07:07.332Z"
@@ -78,7 +78,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "9/28/2026, 9:00:51 PM",
+      "lastLogin": "10/5/2026, 1:05:19 PM",
       "active": true,
       "id": "nqxexoDWm_4",
       "passwordUpdatedAt": "2026-09-28T15:40:44.983Z"
@@ -94,7 +94,7 @@
       "overview": "Learn Python programming from the fundamentals to advanced concepts. This course covers variables, operators, control statements, functions, object-oriented programming, file handling, exception handling, modules, and real-world application development using Python.",
       "description": "This comprehensive Python Programming course is designed for beginners as well as learners who want to strengthen their programming skills. Through practical examples and mini projects, students will gain confidence in solving real-world problems using Python.",
       "duration": "8 Weeks",
-      "instructor": "Dr. John",
+      "instructor": "Dr. Harini",
       "level": "Beginner",
       "mode": "Online",
       "status": "Active",
@@ -187,7 +187,7 @@
         }
       ],
       "updatedBy": "fpc@sdnb.com",
-      "updatedAt": "2026-09-28T15:24:55.562Z"
+      "updatedAt": "2026-10-05T08:32:01.294Z"
     },
     {
       "id": "java",
@@ -1190,6 +1190,77 @@
       ],
       "createdBy": "fpc@sdnb.com",
       "createdAt": "2026-09-28T15:49:15.132Z"
+    },
+    {
+      "id": "f6jCZZ33158",
+      "key": "react",
+      "courseKey": "react",
+      "title": "React JS",
+      "instructor": "Harini",
+      "duration": "4",
+      "level": "Intermediate",
+      "mode": "Offline",
+      "status": "Active",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRfDfsdAZXSMbowQETI4TkF63lBGpwA52I-uLUn6VxGZA&s=10",
+      "overview": "This is a course which will take you through react framework",
+      "description": "Accelerate your career in web development by mastering React (React 19+), the world's most popular front-end JavaScript library. This hands-on, project-driven course transitions you from a standard JavaScript developer into a proficient React engineer capable of building high-performance, single-page web applications (SPAs).",
+      "instructorInfo": "Harini , An IIT master",
+      "modules": [
+        "React Fundamentals",
+        "React Components",
+        "Core React",
+        "Project"
+      ],
+      "syllabus": [
+        "JavaScript Foundations & Initial Setup",
+        "JSX, Architecture, & Rendering Essentials",
+        "Dataflow & Managing Interactivity",
+        "Project"
+      ],
+      "skills": [
+        "HTML",
+        "CSS",
+        "JS",
+        "REact"
+      ],
+      "outcomes": [
+        "Build Dynamic, Interactive UIs",
+        "Eliminate Manual DOM Manipulation"
+      ],
+      "prerequisites": [
+        "JS"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "L1",
+          "url": "https://youtu.be/hn80mWvP-9g?si=oLOUs2PWLsOIZuXl"
+        },
+        {
+          "id": "video-2",
+          "title": "L2",
+          "url": "https://youtu.be/j942wKiXFu8?si=RIsZP7QkSej2qifN"
+        },
+        {
+          "id": "video-3",
+          "title": "L3",
+          "url": "https://youtu.be/0KlRgFEEz0g?si=qmkvAEaQnuNsFcDj"
+        },
+        {
+          "id": "video-4",
+          "title": "L4",
+          "url": "https://youtu.be/xxRAA0v2lvM?si=6sYB5t5r4rRaImux"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "Notes",
+          "url": "https://www.w3schools.com/React/Default.ASP"
+        }
+      ],
+      "createdBy": "fpc@sdnb.com",
+      "createdAt": "2026-10-05T08:37:46.211Z"
     }
   ],
   "enrollments": [
@@ -1637,6 +1708,36 @@
       "completed": true,
       "id": "VAu13NJgoh4",
       "completionDate": "9/28/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "devops",
+      "courseKey": "devops",
+      "title": "DevOps",
+      "course": "DevOps",
+      "enrollDate": "10/5/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "11krtn9NShM",
+      "completionDate": "10/5/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "f6jCZZ33158",
+      "courseKey": "react",
+      "title": "React JS",
+      "course": "React JS",
+      "enrollDate": "10/5/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "3geIxiBFkAQ",
+      "completionDate": "10/5/2026"
     }
   ],
   "progress": [
@@ -2516,13 +2617,77 @@
       "updatedAt": "2026-09-28T16:00:42.770Z",
       "id": "4HhzXT_BCkU",
       "completedAt": "2026-09-28T16:00:42.757Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "devops",
+      "courseKey": "devops",
+      "courseTitle": "DevOps",
+      "completedVideos": [
+        "video-1",
+        "video-2"
+      ],
+      "totalVideos": 2,
+      "currentVideoIndex": 1,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-05T08:31:31.373Z",
+      "updatedAt": "2026-10-05T08:31:37.475Z",
+      "id": "1bSd3xFpJno",
+      "completedAt": "2026-10-05T08:31:35.411Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "f6jCZZ33158",
+      "courseKey": "react",
+      "courseTitle": "React JS",
+      "completedVideos": [],
+      "totalVideos": 4,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-05T08:38:45.353Z",
+      "updatedAt": "2026-10-05T08:38:45.353Z",
+      "id": "Nrgy9GQHqJE"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "f6jCZZ33158",
+      "courseKey": "react",
+      "courseTitle": "React JS",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3",
+        "video-4"
+      ],
+      "totalVideos": 4,
+      "currentVideoIndex": 0,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-05T08:38:45.356Z",
+      "updatedAt": "2026-10-05T08:38:58.073Z",
+      "id": "0ialrG9fBtQ",
+      "completedAt": "2026-10-05T08:38:50.282Z"
     }
   ],
-  "sessions": [],
+  "sessions": [
+    {
+      "role": "student",
+      "userId": "faDPPfA_RCQ",
+      "email": "hafeesha@gmail.com",
+      "name": "Hafeesha",
+      "loginTime": "2026-10-05T08:38:30.701Z",
+      "id": "s9HIIMItMW0"
+    }
+  ],
   "appState": [
     {
       "id": "current",
-      "selectedCourseKey": "ml3",
+      "selectedCourseKey": "react",
       "editCourseId": null,
       "resetEmail": null,
       "resetRole": null

@@ -405,16 +405,3 @@ button[type="submit"]:hover,
         width: 100%;
     }
 }
-footer {
-    margin-top: 45px;
-
-    background: #1e3a8a;
-
-    color: #dbeafe;
-
-    text-align: center;
-
-    padding: 22px;
-
-    font-size: 13px;
-}
