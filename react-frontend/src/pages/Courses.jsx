@@ -15,7 +15,7 @@ import CourseCard
 
 
 const API_URL =
-    "http://localhost:5000";
+    "http://localhost:3001/api";
 
 
 export default function Courses() {

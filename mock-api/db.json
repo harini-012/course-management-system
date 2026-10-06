@@ -45,7 +45,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/5/2026, 2:08:30 PM",
+      "lastLogin": "10/6/2026, 2:30:53 PM",
       "active": true,
       "id": "faDPPfA_RCQ"
     }
@@ -62,7 +62,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/5/2026, 2:02:23 PM",
+      "lastLogin": "10/6/2026, 2:36:15 PM",
       "active": true,
       "id": "1aflrowmla0",
       "passwordUpdatedAt": "2026-09-28T13:07:07.332Z"
@@ -561,43 +561,41 @@
       "instructorInfo": "Daniel Lee is a Cyber Security Consultant with over 12 years of experience in network security, penetration testing, cloud security, vulnerability assessment, and ethical hacking. He has worked with organizations to strengthen cybersecurity and train professionals in information security.",
       "videos": [
         {
+          "id": "video-1",
           "title": "Cyber Security Full Course",
-          "thumbnail": "https://img.youtube.com/vi/U_P23SqJaDc/maxresdefault.jpg",
-          "link": "https://www.youtube.com/watch?v=U_P23SqJaDc"
+          "url": "https://www.youtube.com/watch?v=U_P23SqJaDc"
         },
         {
+          "id": "video-2",
           "title": "Ethical Hacking Tutorial",
-          "thumbnail": "https://img.youtube.com/vi/3Kq1MIfTWCE/maxresdefault.jpg",
-          "link": "https://www.youtube.com/watch?v=3Kq1MIfTWCE"
+          "url": "https://www.youtube.com/watch?v=3Kq1MIfTWCE"
         },
         {
+          "id": "video-3",
           "title": "Network Security Basics",
-          "thumbnail": "https://img.youtube.com/vi/inWWhr5tnEA/maxresdefault.jpg",
-          "link": "https://www.youtube.com/watch?v=inWWhr5tnEA"
+          "url": "https://www.youtube.com/watch?v=inWWhr5tnEA"
         }
       ],
       "materials": [
         {
           "title": "OWASP",
-          "description": "Official OWASP Web Security Guide.",
-          "link": "https://owasp.org/"
+          "url": "https://owasp.org/"
         },
         {
           "title": "NIST Cybersecurity Framework",
-          "description": "Official Cybersecurity Framework.",
-          "link": "https://www.nist.gov/cyberframework"
+          "url": "https://www.nist.gov/cyberframework"
         },
         {
           "title": "Cisco Security",
-          "description": "Network Security Learning Resources.",
-          "link": "https://www.cisco.com/"
+          "url": "https://www.cisco.com/"
         },
         {
           "title": "Kali Linux Documentation",
-          "description": "Official Kali Linux Documentation.",
-          "link": "https://www.kali.org/docs/"
+          "url": "https://www.kali.org/docs/"
         }
-      ]
+      ],
+      "updatedBy": "fpc@sdnb.com",
+      "updatedAt": "2026-10-06T09:09:55.951Z"
     },
     {
       "id": "artificialintelligence",
@@ -1120,78 +1118,6 @@
       "createdAt": "2026-09-28T15:28:59.750Z"
     },
     {
-      "id": "KOt_K8UO5B0",
-      "key": "iot",
-      "courseKey": "iot",
-      "title": "IoT",
-      "instructor": "Ranjani",
-      "duration": "3",
-      "level": "Intermediate",
-      "mode": "Online",
-      "status": "Active",
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStI5UqEsHZs6g1MTyiZxRhb_9hqmmzfY-TPpWT8gs8NxCi4oB2886Ra398&s=10",
-      "overview": "This is an iot hardware based course",
-      "description": "The Internet of Things (IoT) is a network of physical objects embedded with sensors, software, and network connectivity that allows them to collect and exchange data",
-      "instructorInfo": "Ranjani,IIt madras professor",
-      "modules": [
-        "IoT 1",
-        "IoT 2",
-        "IoT 3"
-      ],
-      "syllabus": [
-        "The arduino basic",
-        "Server Connection",
-        "Full project"
-      ],
-      "skills": [
-        "IoT",
-        "Python"
-      ],
-      "outcomes": [
-        "IoT full project",
-        "The hardware components"
-      ],
-      "prerequisites": [
-        "Basic knowledge"
-      ],
-      "videos": [
-        {
-          "id": "video-1",
-          "title": "IoT 1",
-          "url": "https://youtu.be/4FxU-xpuCww?si=YyB23e77ymUhScUP"
-        },
-        {
-          "id": "video-2",
-          "title": "IoT 2",
-          "url": "https://youtu.be/-M74HobvzGA?si=FqOJrefCbwg_MTIU"
-        },
-        {
-          "id": "video-3",
-          "title": "IoT 3",
-          "url": "https://youtu.be/-syfaKGpiG8?si=F697LY2TBbV2F-Fn"
-        }
-      ],
-      "materials": [
-        {
-          "id": "material-1",
-          "title": "IoT 1",
-          "url": "https://www.ibm.com/think/topics/internet-of-things"
-        },
-        {
-          "id": "material-2",
-          "title": "IoT 2",
-          "url": "https://www.geeksforgeeks.org/computer-networks/introduction-to-internet-of-things-iot-set-1/"
-        },
-        {
-          "id": "material-3",
-          "title": "IoT 3",
-          "url": "https://www.coursera.org/in/articles/internet-of-things"
-        }
-      ],
-      "createdBy": "fpc@sdnb.com",
-      "createdAt": "2026-09-28T15:49:15.132Z"
-    },
-    {
       "id": "f6jCZZ33158",
       "key": "react",
       "courseKey": "react",
@@ -1261,6 +1187,52 @@
       ],
       "createdBy": "fpc@sdnb.com",
       "createdAt": "2026-10-05T08:37:46.211Z"
+    },
+    {
+      "id": "Xq79p8Zr07c",
+      "key": "oops",
+      "courseKey": "oops",
+      "title": "OOps Concept-1",
+      "instructor": "Harini",
+      "duration": "4 weeks",
+      "level": "Intermediate",
+      "mode": "Online",
+      "status": "Active",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc97t-VO0Kye3Vrw2AWEhI9RD_c4hUJ9cXS6jik17DPcIDA5XV",
+      "overview": "OOPs",
+      "description": "Course",
+      "instructorInfo": "phd",
+      "modules": [
+        "Java"
+      ],
+      "syllabus": [
+        "Variables"
+      ],
+      "skills": [
+        "Java"
+      ],
+      "outcomes": [
+        "Application"
+      ],
+      "prerequisites": [
+        "nil"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "oops",
+          "url": "https://youtu.be/BSVKUk58K6U?si=_nkIJ4I5aSFKw1GZ"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "notes",
+          "url": "https://www.geeksforgeeks.org/java/object-oriented-programming-oops-concept-in-java/"
+        }
+      ],
+      "createdBy": "fpc@sdnb.com",
+      "createdAt": "2026-10-06T09:04:22.997Z"
     }
   ],
   "enrollments": [
@@ -1293,7 +1265,7 @@
       "completed": false,
       "id": "QHVmFASA098",
       "approved": true,
-      "approvedDate": "9/28/2026",
+      "approvedDate": "10/6/2026",
       "approvedBy": "Face"
     },
     {
@@ -1684,7 +1656,7 @@
       "student": "Harini Rajesh",
       "studentName": "Harini Rajesh",
       "studentEmail": "harinirajesh0519@gmail.com",
-      "courseId": "KOt_K8UO5B0",
+      "courseId": null,
       "courseKey": "iot",
       "title": "IoT",
       "course": "IoT",
@@ -1738,6 +1710,36 @@
       "completed": true,
       "id": "3geIxiBFkAQ",
       "completionDate": "10/5/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "WrNbsZLvbPM",
+      "courseKey": "nlp1",
+      "title": "NLP",
+      "course": "NLP",
+      "enrollDate": "10/6/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "EPTl0qmGKMg",
+      "completionDate": "10/6/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": null,
+      "courseKey": "oops1",
+      "title": "OOps Concept-1",
+      "course": "OOps Concept-1",
+      "enrollDate": "10/6/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "u5jrJQeIxKg",
+      "completionDate": "10/6/2026"
     }
   ],
   "progress": [
@@ -2567,7 +2569,7 @@
     {
       "studentId": "2ktXrV4EtDs",
       "studentEmail": "harinirajesh0519@gmail.com",
-      "courseId": "KOt_K8UO5B0",
+      "courseId": null,
       "courseKey": "iot",
       "courseTitle": "IoT",
       "completedVideos": [],
@@ -2582,7 +2584,7 @@
     {
       "studentId": "2ktXrV4EtDs",
       "studentEmail": "harinirajesh0519@gmail.com",
-      "courseId": "KOt_K8UO5B0",
+      "courseId": null,
       "courseKey": "iot",
       "courseTitle": "IoT",
       "completedVideos": [
@@ -2672,23 +2674,81 @@
       "updatedAt": "2026-10-05T08:38:58.073Z",
       "id": "0ialrG9fBtQ",
       "completedAt": "2026-10-05T08:38:50.282Z"
-    }
-  ],
-  "sessions": [
+    },
     {
-      "role": "student",
-      "userId": "faDPPfA_RCQ",
-      "email": "hafeesha@gmail.com",
-      "name": "Hafeesha",
-      "loginTime": "2026-10-05T08:38:30.701Z",
-      "id": "s9HIIMItMW0"
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "WrNbsZLvbPM",
+      "courseKey": "nlp1",
+      "courseTitle": "NLP",
+      "completedVideos": [],
+      "totalVideos": 2,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-06T08:56:49.057Z",
+      "updatedAt": "2026-10-06T08:56:49.057Z",
+      "id": "DfP1_9K2OOs"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "WrNbsZLvbPM",
+      "courseKey": "nlp1",
+      "courseTitle": "NLP",
+      "completedVideos": [
+        "video-1",
+        "video-2"
+      ],
+      "totalVideos": 2,
+      "currentVideoIndex": 1,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-06T08:56:49.063Z",
+      "updatedAt": "2026-10-06T08:56:53.548Z",
+      "id": "uX8I8uUNDX0",
+      "completedAt": "2026-10-06T08:56:53.521Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": null,
+      "courseKey": "oops1",
+      "courseTitle": "OOps Concept-1",
+      "completedVideos": [],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-06T09:01:07.324Z",
+      "updatedAt": "2026-10-06T09:01:07.324Z",
+      "id": "Lh9p5h37Q3M"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": null,
+      "courseKey": "oops1",
+      "courseTitle": "OOps Concept-1",
+      "completedVideos": [
+        "video-1"
+      ],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-06T09:01:07.329Z",
+      "updatedAt": "2026-10-06T09:01:11.028Z",
+      "id": "TKXUNGyi5lA",
+      "completedAt": "2026-10-06T09:01:10.998Z"
     }
   ],
+  "sessions": [],
   "appState": [
     {
       "id": "current",
-      "selectedCourseKey": "react",
-      "editCourseId": null,
+      "selectedCourseKey": "oops1",
+      "editCourseId": "Xq79p8Zr07c",
       "resetEmail": null,
       "resetRole": null
     }
