@@ -2,7 +2,9 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-
+const notFound = require("./middleware/notFoundMiddleware");
+const errorHandler = require("./middleware/errorMiddleware");
+const validateCourse = require("./middleware/courseValidation");
 const PORT = 3001;
 
 // Existing JSON Server mock API
@@ -32,7 +34,13 @@ const allowedResources = [
     "appState",
     "draftCourses"
 ];
-
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Backend is healthy",
+    timestamp: new Date().toISOString()
+  });
+});
 
 // =====================================================
 // CHECK RESOURCE
@@ -207,10 +215,14 @@ app.get(
 // =====================================================
 // POST
 // =====================================================
+app.post("/api/:resource", (req, res, next) => {
+  if (req.params.resource === "courses") {
+    return validateCourse(req, res, next);
+  }
 
-app.post(
-    "/api/:resource",
-    async (req, res) => {
+  next();
+},
+     async (req, res) => {
 
         try {
 
@@ -503,7 +515,8 @@ app.delete(
 // =====================================================
 // START EXPRESS SERVER
 // =====================================================
-
+app.use(notFound);
+app.use(errorHandler);
 app.listen(
     PORT,
     () => {

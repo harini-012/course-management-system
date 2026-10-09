@@ -45,7 +45,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/6/2026, 2:30:53 PM",
+      "lastLogin": "10/9/2026, 10:13:17 PM",
       "active": true,
       "id": "faDPPfA_RCQ"
     }
@@ -62,7 +62,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/6/2026, 2:36:15 PM",
+      "lastLogin": "10/9/2026, 3:38:08 PM",
       "active": true,
       "id": "1aflrowmla0",
       "passwordUpdatedAt": "2026-09-28T13:07:07.332Z"
@@ -78,7 +78,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/5/2026, 1:05:19 PM",
+      "lastLogin": "10/9/2026, 10:08:59 PM",
       "active": true,
       "id": "nqxexoDWm_4",
       "passwordUpdatedAt": "2026-09-28T15:40:44.983Z"
@@ -1233,6 +1233,167 @@
       ],
       "createdBy": "fpc@sdnb.com",
       "createdAt": "2026-10-06T09:04:22.997Z"
+    },
+    {
+      "id": "rA_MN_slaVY",
+      "key": "fsd1",
+      "courseKey": "fsd1",
+      "title": "FSD",
+      "instructor": "Anitha",
+      "duration": "2",
+      "level": "Beginner",
+      "mode": "Offline",
+      "status": "Active",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi7BLjQiV7MB0tgdZlpPJjCLOT0mSBUVHuqkcajwmIeA&s=10",
+      "overview": "Fsd course",
+      "description": "Fsd",
+      "instructorInfo": "PHD",
+      "modules": [
+        "Frontend",
+        "Backend"
+      ],
+      "syllabus": [
+        "Frontend",
+        "Bakcend"
+      ],
+      "skills": [
+        "HTML"
+      ],
+      "outcomes": [
+        "Building web"
+      ],
+      "prerequisites": [
+        "Frontend"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "full video",
+          "url": "https://youtu.be/-AkIj8TG3Uc?si=EkM-mwMTg6UlOFxJ"
+        },
+        {
+          "id": "video-2",
+          "title": "Lesson 2",
+          "url": "https://youtu.be/Ga54kLJDfB0?si=uowHINvqLqqqRE7z"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "Notes",
+          "url": "https://www.w3schools.com/whatis/whatis_fullstack.asp"
+        }
+      ],
+      "createdBy": "fpc@sdnb.com",
+      "createdAt": "2026-10-09T10:15:17.483Z"
+    },
+    {
+      "id": "0jbsXxkLg0Q",
+      "key": "oops-4",
+      "courseKey": "oops-4",
+      "title": "OOps Concept4",
+      "instructor": "Harini",
+      "duration": "2",
+      "level": "Beginner",
+      "mode": "Offline",
+      "status": "Active",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1280px-Python-logo-notext.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "overview": "opps",
+      "description": "oops",
+      "instructorInfo": "phd",
+      "modules": [
+        "opps"
+      ],
+      "syllabus": [
+        "module 1"
+      ],
+      "skills": [
+        "python"
+      ],
+      "outcomes": [
+        "none"
+      ],
+      "prerequisites": [
+        "computer"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "oops1",
+          "url": "https://youtu.be/Ga54kLJDfB0?si=ZDPfGsPZ-8Q__vNH"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "notes",
+          "url": "https://www.w3schools.com/whatis/whatis_fullstack.asp"
+        }
+      ],
+      "createdBy": "fpc@sdnb.com",
+      "createdAt": "2026-10-09T10:23:27.741Z"
+    },
+    {
+      "id": "6W-Ki3YUJdA",
+      "key": "java1",
+      "courseKey": "java1",
+      "title": "Java programming",
+      "instructor": "Michael Brown",
+      "duration": "4",
+      "level": "Intermediate",
+      "mode": "Online",
+      "status": "Active",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-QmzCqPMPbyAgb1yZ4iydyEXlE0s2r_6j78VhtdUS2nVxzFoJOw8ItEQ&s=10",
+      "overview": "This is a java course for professionals",
+      "description": "The professionals can able to apply the java techniques in real world",
+      "instructorInfo": "A phd scholar",
+      "modules": [
+        "Java Fundaments",
+        "Java Oops",
+        "Java advanced",
+        "Assessment"
+      ],
+      "syllabus": [
+        "Variables and datatypes",
+        "classes and objects",
+        "Real world project"
+      ],
+      "skills": [
+        "Java"
+      ],
+      "outcomes": [
+        "Proficiency in java"
+      ],
+      "prerequisites": [
+        "Basic programming knowledge"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "Java intro",
+          "url": "https://youtu.be/eIrMbAQSU34?si=wpaGvhR1zaD8SmM5"
+        },
+        {
+          "id": "video-2",
+          "title": "Java advanced",
+          "url": "https://youtu.be/xTtL8E4LzTQ?si=FATM5W_f64Oeg5-1"
+        },
+        {
+          "id": "video-3",
+          "title": "Java  Project",
+          "url": "https://www.youtube.com/live/poowOrzjwNc?si=kEk0UHPnZghaJDy3"
+        }
+      ],
+      "materials": [
+        {
+          "title": "Notes",
+          "url": "https://www.geeksforgeeks.org/java/java/"
+        }
+      ],
+      "createdBy": "fpc@gmail.com",
+      "createdAt": "2026-10-09T16:42:36.530Z",
+      "updatedBy": "fpc@gmail.com",
+      "updatedAt": "2026-10-09T16:42:50.212Z"
     }
   ],
   "enrollments": [
@@ -1265,8 +1426,8 @@
       "completed": false,
       "id": "QHVmFASA098",
       "approved": true,
-      "approvedDate": "10/6/2026",
-      "approvedBy": "Face"
+      "approvedDate": "10/9/2026",
+      "approvedBy": "Fpc"
     },
     {
       "studentId": "2ktXrV4EtDs",
@@ -1740,6 +1901,36 @@
       "completed": true,
       "id": "u5jrJQeIxKg",
       "completionDate": "10/6/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "0jbsXxkLg0Q",
+      "courseKey": "oops-4",
+      "title": "OOps Concept4",
+      "course": "OOps Concept4",
+      "enrollDate": "10/9/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "JheN-7qrJII",
+      "completionDate": "10/9/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "6W-Ki3YUJdA",
+      "courseKey": "java1",
+      "title": "Java programming",
+      "course": "Java programming",
+      "enrollDate": "10/9/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "6FghKdSFrcg",
+      "completionDate": "10/9/2026"
     }
   ],
   "progress": [
@@ -2741,14 +2932,82 @@
       "updatedAt": "2026-10-06T09:01:11.028Z",
       "id": "TKXUNGyi5lA",
       "completedAt": "2026-10-06T09:01:10.998Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "0jbsXxkLg0Q",
+      "courseKey": "oops-4",
+      "courseTitle": "OOps Concept4",
+      "completedVideos": [],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-09T10:24:14.042Z",
+      "updatedAt": "2026-10-09T10:24:14.042Z",
+      "id": "R3-noEVBFnY"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "0jbsXxkLg0Q",
+      "courseKey": "oops-4",
+      "courseTitle": "OOps Concept4",
+      "completedVideos": [
+        "video-1"
+      ],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-09T10:24:14.046Z",
+      "updatedAt": "2026-10-09T10:24:16.027Z",
+      "id": "VlCN-T-5Zkc",
+      "completedAt": "2026-10-09T10:24:16.004Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "6W-Ki3YUJdA",
+      "courseKey": "java1",
+      "courseTitle": "Java programming",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-09T16:43:39.502Z",
+      "updatedAt": "2026-10-09T16:43:39.502Z",
+      "id": "ivGR2vtsoCg"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "6W-Ki3YUJdA",
+      "courseKey": "java1",
+      "courseTitle": "Java programming",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-09T16:43:39.504Z",
+      "updatedAt": "2026-10-09T16:43:51.193Z",
+      "id": "CeP5-pMVSlY",
+      "completedAt": "2026-10-09T16:43:51.161Z"
     }
   ],
   "sessions": [],
   "appState": [
     {
       "id": "current",
-      "selectedCourseKey": "oops1",
-      "editCourseId": "Xq79p8Zr07c",
+      "selectedCourseKey": "java1",
+      "editCourseId": null,
       "resetEmail": null,
       "resetRole": null
     }
