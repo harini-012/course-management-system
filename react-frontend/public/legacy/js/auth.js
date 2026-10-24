@@ -60,17 +60,31 @@ export async function loginUser(
         // SEARCH USER FROM MOCK API
         //---------------------------------------------
 
-        const users =
-            await queryData(
-                resource,
-                {
-                    email:
-                        normalizedEmail,
+        const response = await fetch(
+  "http://localhost:3001/api/v1/auth/login",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      email: normalizedEmail,
+      password: normalizedPassword,
+      role: normalizedRole
+    })
+  }
+);
 
-                    password:
-                        normalizedPassword
-                }
-            );
+const result = await response.json();
+
+if (!response.ok) {
+  return {
+    success: false,
+    message: result.message || "Invalid email or password"
+  };
+}
+
+const users = [result.user];
 
 
         //---------------------------------------------
@@ -183,7 +197,7 @@ export async function loginUser(
 
             });
 
-
+sessionStorage.setItem("token", result.token);
         //---------------------------------------------
         // UPDATE LAST LOGIN
         //---------------------------------------------
@@ -434,9 +448,9 @@ export async function isAdminLoggedIn() {
 export async function logoutUser() {
 
     try {
-
+sessionStorage.removeItem("token");
         await clearSessions();
-
+        
 
         return {
 

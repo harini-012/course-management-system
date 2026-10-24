@@ -326,11 +326,28 @@ async function registerAdmin(event) {
         // SAVE TO MOCK API
         //=================================================
 
-        await saveData(
-            "admins",
-            newAdmin
-        );
+       const response = await fetch(
+  "http://localhost:3001/api/v1/auth/admin/register",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      adminName,
+      adminId,
+      email: adminEmail,
+      designation,
+      password
+    })
+  }
+);
 
+const result = await response.json();
+
+if (!response.ok) {
+  throw new Error(result.message || "Admin registration failed");
+}
 
         alert(
             "Administrator Registration Successful!"

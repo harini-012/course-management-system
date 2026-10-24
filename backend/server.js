@@ -1,12 +1,16 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-
+const authRoutes = require("./authRoutes");
 const app = express();
 const notFound = require("./middleware/notFoundMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
 const validateCourse = require("./middleware/courseValidation");
 const PORT = 3001;
-
+const {
+  authenticateToken,
+  requireAdmin
+} = require("./middleware/authMiddleware");
 // Existing JSON Server mock API
 const MOCK_API_URL = "http://localhost:5000";
 
@@ -19,7 +23,7 @@ app.use(cors());
 
 app.use(express.json());
 
-
+app.use("/api/v1/auth", authRoutes);
 // =====================================================
 // ALLOWED MOCK API RESOURCES
 // =====================================================
@@ -74,7 +78,44 @@ app.get("/", (req, res) => {
 // =====================================================
 // GET ALL / QUERY
 // =====================================================
+app.use(
+  ["/api/courses", "/api/v1/courses"],
+  (req, res, next) => {
+    if (
+      req.method === "GET" ||
+      req.method === "HEAD" ||
+      req.method === "OPTIONS"
+    ) {
+      return next();
+    }
 
+    authenticateToken(req, res, () => {
+      requireAdmin(req, res, next);
+    });
+  }
+);
+// =====================================================
+// API VERSIONING - TASK 9 AND TASK 10
+// =====================================================
+
+// =====================================================
+// API VERSIONING - TASK 9 AND TASK 10
+// =====================================================
+
+app.use((req, res, next) => {
+  if (
+    req.originalUrl === "/api/v1/courses" ||
+    req.originalUrl.startsWith("/api/v1/courses/") ||
+    req.originalUrl.startsWith("/api/v1/courses?")
+  ) {
+    req.url = req.originalUrl.replace(
+      /^\/api\/v1\/courses(?=\/|\?|$)/,
+      "/api/courses"
+    );
+  }
+
+  next();
+});
 app.get(
     "/api/:resource",
     async (req, res) => {

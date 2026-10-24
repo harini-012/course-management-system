@@ -22,3 +22,20 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+# Task 9 & 10 - JWT secrets
+.env
+.env.*
+!.env.example
+
+# Dependencies in all project folders
+**/node_modules/
+
+# Build files
+**/dist/
+
+# Database backups
+db-backup.json
+**/db-backup.json
+
+# Local database containing user records
+mock-api/db.json

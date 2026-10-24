@@ -7,7 +7,16 @@
 const API_URL =
     "http://localhost:3001/api";
 
+function getAuthHeaders() {
+  const token = sessionStorage.getItem("token");
 
+  return {
+    "Content-Type": "application/json",
+    ...(token
+      ? { Authorization: `Bearer ${token}` }
+      : {})
+  };
+}
 //=====================================================
 // GET ALL DATA
 //=====================================================
@@ -158,11 +167,7 @@ export async function saveData(
                 method:
                     "POST",
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
+               headers: getAuthHeaders(),
                 body:
                     JSON.stringify(data)
             }
@@ -266,10 +271,7 @@ export async function patchData(
                 method:
                     "PATCH",
 
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
+              headers: getAuthHeaders(),
 
                 body:
                     JSON.stringify(data)
@@ -313,8 +315,8 @@ export async function removeData(
         await fetch(
             `${API_URL}/${resource}/${encodeURIComponent(id)}`,
             {
-                method:
-                    "DELETE"
+                method: "DELETE",
+headers: getAuthHeaders()
             }
         );
 

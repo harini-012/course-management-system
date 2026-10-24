@@ -5,24 +5,24 @@
       "studentId": "E24AI012",
       "email": "harinirajesh0519@gmail.com",
       "department": "Information Technology",
-      "password": "Harini#2006",
       "role": "Student",
       "enrolledCourses": [],
       "completedCourses": [],
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "9/29/2026, 11:15:26 AM",
+      "lastLogin": "10/24/2026, 5:00:17 PM",
       "active": true,
       "id": "2ktXrV4EtDs",
-      "passwordUpdatedAt": "2026-09-28T15:40:13.492Z"
+      "passwordUpdatedAt": "2026-10-24T11:28:05.741Z",
+      "passwordHash": "$2b$12$rJnFPDlHuv966GlT.yKIh.peJXgqgyjzJWf3PTIa3jJ1QJfWO6eTK",
+      "password": "Harini.2006"
     },
     {
       "studentName": "Mirra",
       "studentId": "mirra21",
       "email": "mirramahathi@gmail.com",
       "department": "Electronics & Communication",
-      "password": "Harini.2006",
       "role": "Student",
       "enrolledCourses": [],
       "completedCourses": [],
@@ -31,23 +31,72 @@
       "registrationDate": "9/28/2026",
       "lastLogin": "9/28/2026, 9:14:20 PM",
       "active": true,
-      "id": "bGVujCC0nEU"
+      "id": "bGVujCC0nEU",
+      "passwordHash": "$2b$12$jBqRj71e76fBy6fo4aFbc.XyNgQkl4L7EEL9wjgRLr.Ir/6mdfV8e"
     },
     {
       "studentName": "Hafeesha",
       "studentId": "E24AI010",
       "email": "hafeesha@gmail.com",
       "department": "Information Technology",
-      "password": "Harini.2006",
       "role": "Student",
       "enrolledCourses": [],
       "completedCourses": [],
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/9/2026, 10:13:17 PM",
+      "lastLogin": "10/24/2026, 5:10:48 PM",
       "active": true,
-      "id": "faDPPfA_RCQ"
+      "id": "faDPPfA_RCQ",
+      "passwordHash": "$2b$12$9gHvL4BjW09AQKseypue/.x68OFyJsfbqK1IIkqq8h1.o4/qBHnca"
+    },
+    {
+      "studentName": "Test Student",
+      "studentId": "TEST001",
+      "email": "test001@example.com",
+      "department": "Computer Science",
+      "passwordHash": "$2b$12$NQWqvmxACWkOlPTGVaDLYOjKaRG9ZuVQwHQXx0LpUU274wUMzURjC",
+      "role": "Student",
+      "enrolledCourses": [],
+      "completedCourses": [],
+      "certificates": [],
+      "progress": {},
+      "registrationDate": "24/10/2026",
+      "lastLogin": "10/24/2026, 5:00:04 PM",
+      "active": true,
+      "id": "ImYzMDFXsxM"
+    },
+    {
+      "studentName": "Rajesh",
+      "studentId": "1012",
+      "email": "rajesh@gmail.com",
+      "department": "Information Technology",
+      "passwordHash": "$2b$12$vTHRqzpxdMLv/XgOP6tQBey1YJhwSHJoA98JVceaSCwGqto5sCIxe",
+      "role": "Student",
+      "enrolledCourses": [],
+      "completedCourses": [],
+      "certificates": [],
+      "progress": {},
+      "registrationDate": "24/10/2026",
+      "lastLogin": "10/24/2026, 5:03:52 PM",
+      "active": true,
+      "id": "Pf2eCYOT_aA"
+    },
+    {
+      "studentName": "Task Nine Student",
+      "studentId": "TASK9001",
+      "email": "task9student@example.com",
+      "department": "Computer Science",
+      "passwordHash": "$2b$12$J.u2btT.1IxqWF/vCxqjBeP8qeI3Io6CjW8fdGmguDxmI.Se2h9PG",
+      "role": "Student",
+      "enrolledCourses": [],
+      "completedCourses": [],
+      "certificates": [],
+      "progress": {},
+      "registrationDate": "24/10/2026",
+      "lastLogin": "",
+      "active": true,
+      "id": "GSU3Eivpuyo"
     }
   ],
   "admins": [
@@ -56,32 +105,47 @@
       "adminId": "fpc213",
       "email": "fpc@sdnb.com",
       "designation": "Principal",
-      "password": "Harini.2006",
       "role": "Administrator",
       "createdCourses": [],
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/9/2026, 3:38:08 PM",
+      "lastLogin": "10/24/2026, 5:00:38 PM",
       "active": true,
       "id": "1aflrowmla0",
-      "passwordUpdatedAt": "2026-09-28T13:07:07.332Z"
+      "passwordUpdatedAt": "2026-10-24T11:05:54.180Z",
+      "passwordHash": "$2b$12$HrrKn26BfSZ5p0EcFJOiie1XionVjRpMxKQ5vS9QKqw7p7S14wSdW",
+      "password": "Harini.2006"
     },
     {
       "adminName": "Fpc",
       "adminId": "f233",
       "email": "fpc@gmail.com",
       "designation": "Faculty",
-      "password": "Harini.2006",
       "role": "Administrator",
       "createdCourses": [],
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/9/2026, 10:08:59 PM",
+      "lastLogin": "10/24/2026, 4:59:47 PM",
       "active": true,
       "id": "nqxexoDWm_4",
-      "passwordUpdatedAt": "2026-09-28T15:40:44.983Z"
+      "passwordUpdatedAt": "2026-09-28T15:40:44.983Z",
+      "passwordHash": "$2b$12$yRyEtOt5rt2XbRgOFZb3de6j3.SBnbl/GHlUCSzVG.qaJVxYI3CwW"
+    },
+    {
+      "adminName": "Harini",
+      "adminId": "a124",
+      "email": "admin@gmail.com",
+      "designation": "Principal",
+      "passwordHash": "$2b$12$nG0W5hq8nqDd.77LBLg5yud4hw7UlBwYU71yzeA6yutDX7Xt3YC0K",
+      "role": "Administrator",
+      "createdCourses": [],
+      "managedStudents": [],
+      "registrationDate": "24/10/2026",
+      "lastLogin": "10/24/2026, 5:04:30 PM",
+      "active": true,
+      "id": "2Cng3ZxFkpw"
     }
   ],
   "courses": [
@@ -198,7 +262,7 @@
       "overview": "Master Java programming by learning object-oriented programming, exception handling, collections, file handling, multithreading, JDBC, and application development using Java.",
       "description": "This Java Programming course provides a strong foundation in object-oriented programming and application development. Students will learn core Java concepts through practical coding exercises, hands-on examples, and mini projects suitable for academic and industry requirements.",
       "duration": "10 Weeks",
-      "instructor": "Prof. Michael Brown",
+      "instructor": "Prof. Michael",
       "level": "Intermediate",
       "mode": "Online",
       "status": "Active",
@@ -291,7 +355,7 @@
         }
       ],
       "updatedBy": "fpc@sdnb.com",
-      "updatedAt": "2026-09-28T14:29:30.492Z"
+      "updatedAt": "2026-10-24T11:29:17.262Z"
     },
     {
       "id": "database",
@@ -1394,6 +1458,52 @@
       "createdAt": "2026-10-09T16:42:36.530Z",
       "updatedBy": "fpc@gmail.com",
       "updatedAt": "2026-10-09T16:42:50.212Z"
+    },
+    {
+      "id": "JajYT4xLzhU",
+      "key": "ml4",
+      "courseKey": "ml4",
+      "title": "Machine leanring 4",
+      "instructor": "harini",
+      "duration": "2",
+      "level": "Intermediate",
+      "mode": "Hybrid",
+      "status": "Active",
+      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1280px-Python-logo-notext.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
+      "overview": "ml",
+      "description": "ml",
+      "instructorInfo": "phd",
+      "modules": [
+        "ml"
+      ],
+      "syllabus": [
+        "ml"
+      ],
+      "skills": [
+        "ml"
+      ],
+      "outcomes": [
+        "ml"
+      ],
+      "prerequisites": [
+        "ml"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "1",
+          "url": "https://youtu.be/Vx2DpMgplEM?si=mUP4bU4xeOBhOqBW"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "1",
+          "url": "https://www.life-global.org/trainee/courses/13/lessons/44/tasks/19/xapiactivity"
+        }
+      ],
+      "createdBy": "fpc@sdnb.com",
+      "createdAt": "2026-10-24T11:31:52.838Z"
     }
   ],
   "enrollments": [
@@ -1931,6 +2041,66 @@
       "completed": true,
       "id": "6FghKdSFrcg",
       "completionDate": "10/9/2026"
+    },
+    {
+      "studentId": "ImYzMDFXsxM",
+      "student": "Test Student",
+      "studentName": "Test Student",
+      "studentEmail": "test001@example.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "title": "Java Programming",
+      "course": "Java Programming",
+      "enrollDate": "10/24/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "GY4YVo6xKBQ",
+      "completionDate": "10/24/2026"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "student": "Harini Rajesh",
+      "studentName": "Harini Rajesh",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": null,
+      "courseKey": "react1",
+      "title": "React",
+      "course": "React",
+      "enrollDate": "10/24/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "So2n5zjQOKg",
+      "completionDate": "10/24/2026"
+    },
+    {
+      "studentId": "ImYzMDFXsxM",
+      "student": "Test Student",
+      "studentName": "Test Student",
+      "studentEmail": "test001@example.com",
+      "courseId": "python",
+      "courseKey": "python",
+      "title": "Python Programming",
+      "course": "Python Programming",
+      "enrollDate": "10/24/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "7SdYFADteXM",
+      "completionDate": "10/24/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "JajYT4xLzhU",
+      "courseKey": "ml4",
+      "title": "Machine leanring 4",
+      "course": "Machine leanring 4",
+      "enrollDate": "10/24/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "HPvpkXNf03s",
+      "completionDate": "10/24/2026"
     }
   ],
   "progress": [
@@ -3000,13 +3170,120 @@
       "updatedAt": "2026-10-09T16:43:51.193Z",
       "id": "CeP5-pMVSlY",
       "completedAt": "2026-10-09T16:43:51.161Z"
+    },
+    {
+      "studentId": "ImYzMDFXsxM",
+      "studentEmail": "test001@example.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-24T11:12:52.877Z",
+      "updatedAt": "2026-10-24T11:12:57.385Z",
+      "id": "BWP1oqlcn-0",
+      "completedAt": "2026-10-24T11:12:57.367Z"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": null,
+      "courseKey": "react1",
+      "courseTitle": "React",
+      "completedVideos": [
+        "video-1",
+        "video-2"
+      ],
+      "totalVideos": 2,
+      "currentVideoIndex": 1,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-24T11:24:43.889Z",
+      "updatedAt": "2026-10-24T11:24:47.535Z",
+      "id": "WgAoZOrPOH8",
+      "completedAt": "2026-10-24T11:24:47.511Z"
+    },
+    {
+      "studentId": "ImYzMDFXsxM",
+      "studentEmail": "test001@example.com",
+      "courseId": "python",
+      "courseKey": "python",
+      "courseTitle": "Python Programming",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-24T11:28:34.231Z",
+      "updatedAt": "2026-10-24T11:28:34.231Z",
+      "id": "qx_i-HQPGrs"
+    },
+    {
+      "studentId": "ImYzMDFXsxM",
+      "studentEmail": "test001@example.com",
+      "courseId": "python",
+      "courseKey": "python",
+      "courseTitle": "Python Programming",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-24T11:28:34.235Z",
+      "updatedAt": "2026-10-24T11:28:38.830Z",
+      "id": "21Op0i3yFWk",
+      "completedAt": "2026-10-24T11:28:38.812Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "JajYT4xLzhU",
+      "courseKey": "ml4",
+      "courseTitle": "Machine leanring 4",
+      "completedVideos": [
+        "video-1"
+      ],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-24T11:32:24.612Z",
+      "updatedAt": "2026-10-24T11:32:27.772Z",
+      "id": "w2nNHAUV0rs",
+      "completedAt": "2026-10-24T11:32:27.750Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "JajYT4xLzhU",
+      "courseKey": "ml4",
+      "courseTitle": "Machine leanring 4",
+      "completedVideos": [],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-24T11:32:24.618Z",
+      "updatedAt": "2026-10-24T11:32:24.618Z",
+      "id": "xFsM3F5NH6U"
     }
   ],
   "sessions": [],
   "appState": [
     {
       "id": "current",
-      "selectedCourseKey": "java1",
+      "selectedCourseKey": "ml4",
       "editCourseId": null,
       "resetEmail": null,
       "resetRole": null
