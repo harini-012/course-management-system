@@ -11,12 +11,11 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/24/2026, 5:00:17 PM",
+      "lastLogin": "10/26/2026, 2:35:27 PM",
       "active": true,
       "id": "2ktXrV4EtDs",
-      "passwordUpdatedAt": "2026-10-24T11:28:05.741Z",
-      "passwordHash": "$2b$12$rJnFPDlHuv966GlT.yKIh.peJXgqgyjzJWf3PTIa3jJ1QJfWO6eTK",
-      "password": "Harini.2006"
+      "passwordUpdatedAt": "2026-10-26T09:02:58.932Z",
+      "passwordHash": "$2b$12$yTEnCWl49KNlXW8vhM1v/eNVcV0SUr3MlQwOIayMvPXJDfBnJWTL."
     },
     {
       "studentName": "Mirra",
@@ -29,7 +28,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "9/28/2026, 9:14:20 PM",
+      "lastLogin": "10/26/2026, 2:22:21 PM",
       "active": true,
       "id": "bGVujCC0nEU",
       "passwordHash": "$2b$12$jBqRj71e76fBy6fo4aFbc.XyNgQkl4L7EEL9wjgRLr.Ir/6mdfV8e"
@@ -45,10 +44,11 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/24/2026, 5:10:48 PM",
+      "lastLogin": "10/26/2026, 2:33:53 PM",
       "active": true,
       "id": "faDPPfA_RCQ",
-      "passwordHash": "$2b$12$9gHvL4BjW09AQKseypue/.x68OFyJsfbqK1IIkqq8h1.o4/qBHnca"
+      "passwordHash": "$2b$12$lksk.zbxgQ4EkkgxjdsIc.sYA83S0UlmajIibhZWbO7qsbwCevGsG",
+      "passwordUpdatedAt": "2026-10-26T09:03:50.014Z"
     },
     {
       "studentName": "Test Student",
@@ -78,7 +78,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "24/10/2026",
-      "lastLogin": "10/24/2026, 5:03:52 PM",
+      "lastLogin": "10/26/2026, 2:21:21 PM",
       "active": true,
       "id": "Pf2eCYOT_aA"
     },
@@ -97,6 +97,22 @@
       "lastLogin": "",
       "active": true,
       "id": "GSU3Eivpuyo"
+    },
+    {
+      "studentName": "Task Student",
+      "studentId": "TASK001",
+      "email": "task@student.com",
+      "department": "Computer Science",
+      "passwordHash": "$2b$12$/pdN/bD8XioT9wN5T4QHbudueBU8uxnRx7s1b49Ph/CwbZpFU83EO",
+      "role": "Student",
+      "enrolledCourses": [],
+      "completedCourses": [],
+      "certificates": [],
+      "progress": {},
+      "registrationDate": "26/10/2026",
+      "lastLogin": "10/26/2026, 2:35:44 PM",
+      "active": true,
+      "id": "jeNlq6U0eh4"
     }
   ],
   "admins": [
@@ -127,7 +143,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/24/2026, 4:59:47 PM",
+      "lastLogin": "10/26/2026, 2:21:12 PM",
       "active": true,
       "id": "nqxexoDWm_4",
       "passwordUpdatedAt": "2026-09-28T15:40:44.983Z",
@@ -143,9 +159,37 @@
       "createdCourses": [],
       "managedStudents": [],
       "registrationDate": "24/10/2026",
-      "lastLogin": "10/24/2026, 5:04:30 PM",
+      "lastLogin": "10/26/2026, 2:35:00 PM",
       "active": true,
       "id": "2Cng3ZxFkpw"
+    },
+    {
+      "adminName": "Test Admin",
+      "adminId": "ADMTEST001",
+      "email": "testadmin@example.com",
+      "designation": "Course Administrator",
+      "passwordHash": "$2b$12$03mdIYwHzE.X.24XL9zVq.uFB8LDGw4Oz3bt0b69rR.970B/VoY3q",
+      "role": "Administrator",
+      "createdCourses": [],
+      "managedStudents": [],
+      "registrationDate": "26/10/2026",
+      "lastLogin": "10/26/2026, 1:12:31 PM",
+      "active": true,
+      "id": "vxxXymt7ZHM"
+    },
+    {
+      "adminName": "Test Admin",
+      "adminId": "ADMTEST006",
+      "email": "admin5@example.com",
+      "designation": "Course Administrator",
+      "passwordHash": "$2b$12$Gn3ENWPYZiUWS7g.L86OfeIBLMV6UAlwtPj8hOROFGn8amTRbE9K.",
+      "role": "Administrator",
+      "createdCourses": [],
+      "managedStudents": [],
+      "registrationDate": "26/10/2026",
+      "lastLogin": "10/26/2026, 2:38:30 PM",
+      "active": true,
+      "id": "YiGbqmSGpCk"
     }
   ],
   "courses": [
@@ -159,7 +203,7 @@
       "description": "This comprehensive Python Programming course is designed for beginners as well as learners who want to strengthen their programming skills. Through practical examples and mini projects, students will gain confidence in solving real-world problems using Python.",
       "duration": "8 Weeks",
       "instructor": "Dr. Harini",
-      "level": "Beginner",
+      "level": "Advanced",
       "mode": "Online",
       "status": "Active",
       "modules": [
@@ -250,8 +294,8 @@
           "url": "https://www.w3schools.com/python/"
         }
       ],
-      "updatedBy": "fpc@sdnb.com",
-      "updatedAt": "2026-10-05T08:32:01.294Z"
+      "updatedBy": "admin@gmail.com",
+      "updatedAt": "2026-10-26T09:05:17.238Z"
     },
     {
       "id": "java",
@@ -2101,6 +2145,21 @@
       "completed": true,
       "id": "HPvpkXNf03s",
       "completionDate": "10/24/2026"
+    },
+    {
+      "studentId": "jeNlq6U0eh4",
+      "student": "Task Student",
+      "studentName": "Task Student",
+      "studentEmail": "task@student.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "title": "Java Programming",
+      "course": "Java Programming",
+      "enrollDate": "10/26/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "bHLIujjO9pg",
+      "completionDate": "10/26/2026"
     }
   ],
   "progress": [
@@ -3277,13 +3336,57 @@
       "startedAt": "2026-10-24T11:32:24.618Z",
       "updatedAt": "2026-10-24T11:32:24.618Z",
       "id": "xFsM3F5NH6U"
+    },
+    {
+      "studentId": "jeNlq6U0eh4",
+      "studentEmail": "task@student.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-26T09:05:53.953Z",
+      "updatedAt": "2026-10-26T09:05:53.953Z",
+      "id": "hNxWh8qY14E"
+    },
+    {
+      "studentId": "jeNlq6U0eh4",
+      "studentEmail": "task@student.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-26T09:05:53.959Z",
+      "updatedAt": "2026-10-26T09:05:57.391Z",
+      "id": "O4gr4-Daw1Y",
+      "completedAt": "2026-10-26T09:05:57.343Z"
     }
   ],
-  "sessions": [],
+  "sessions": [
+    {
+      "role": "admin",
+      "userId": "YiGbqmSGpCk",
+      "email": "admin5@example.com",
+      "name": "Test Admin",
+      "loginTime": "2026-10-26T09:08:30.394Z",
+      "id": "Gg4JUP7oxKk"
+    }
+  ],
   "appState": [
     {
       "id": "current",
-      "selectedCourseKey": "ml4",
+      "selectedCourseKey": "java",
       "editCourseId": null,
       "resetEmail": null,
       "resetRole": null

@@ -255,4 +255,80 @@ router.post("/admin/register", async (req, res, next) => {
     next(error);
   }
 });
+// LOCAL DEVELOPMENT PASSWORD RESET
+// Do not deploy: this flow does not verify email ownership.
+
+router.post("/dev/reset-password", async (req, res, next) => {
+  try {
+    // Only allow this temporary route in local development.
+    if (
+      process.env.NODE_ENV === "production" ||
+      !["127.0.0.1", "::1", "::ffff:127.0.0.1"]
+        .includes(req.socket.remoteAddress)
+    ) {
+      return res.status(403).json({
+        message: "Local development only"
+      });
+    }
+
+    const { email, role, newPassword } = req.body || {};
+
+    if (
+      typeof email !== "string" ||
+      !["student", "admin"].includes(role) ||
+      typeof newPassword !== "string" ||
+      newPassword.length < 8 ||
+      newPassword.length > 72
+    ) {
+      return res.status(400).json({
+        message: "Enter a valid email, role and 8–72 character password"
+      });
+    }
+
+    const resource = role === "admin" ? "admins" : "students";
+
+    const users = await readUsers(resource);
+
+    const user = users.find(u =>
+      String(u.email).toLowerCase() === email.trim().toLowerCase()
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Account not found"
+      });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+
+    // Remove the old plaintext password field.
+    const { password, ...remainingUser } = user;
+
+    const response = await fetch(
+      `${DB}/${resource}/${encodeURIComponent(user.id)}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...remainingUser,
+          passwordHash,
+          passwordUpdatedAt: new Date().toISOString()
+        })
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Unable to update password");
+    }
+
+    return res.status(200).json({
+      message: "Password reset successful"
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;

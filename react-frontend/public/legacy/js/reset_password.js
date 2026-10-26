@@ -394,20 +394,28 @@ async function handleResetPassword(
         //=================================================
         // UPDATE PASSWORD
         //=================================================
+const response = await fetch(
+    "http://localhost:3001/api/v1/auth/dev/reset-password",
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email: resetEmail,
+            role: resetRole,
+            newPassword: password
+        })
+    }
+);
 
-        await patchData(
-            resource,
-            resetUser.id,
-            {
-                password:
-                    password,
+const result = await response.json();
 
-                passwordUpdatedAt:
-                    new Date()
-                        .toISOString()
-            }
-        );
-
+if (!response.ok) {
+    throw new Error(
+        result.message || "Password reset failed"
+    );
+}
 
         //=================================================
         // CLEAR RESET STATE
@@ -579,7 +587,7 @@ function initializePasswordFields() {
                 }
 
                 else if (
-                    password.length < 6
+                   password.length < 8 || password.length > 72
                 ) {
 
                     passwordField
