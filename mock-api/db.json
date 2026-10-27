@@ -44,11 +44,11 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/26/2026, 2:33:53 PM",
+      "lastLogin": "10/27/2026, 9:12:00 AM",
       "active": true,
       "id": "faDPPfA_RCQ",
-      "passwordHash": "$2b$12$lksk.zbxgQ4EkkgxjdsIc.sYA83S0UlmajIibhZWbO7qsbwCevGsG",
-      "passwordUpdatedAt": "2026-10-26T09:03:50.014Z"
+      "passwordHash": "$2b$12$rkZBO6hhC2ANY9RB5yKELeMvjZNJMDVppeTA7hSB2FCcLsGmhLOrm",
+      "passwordUpdatedAt": "2026-10-27T03:40:28.697Z"
     },
     {
       "studentName": "Test Student",
@@ -187,7 +187,7 @@
       "createdCourses": [],
       "managedStudents": [],
       "registrationDate": "26/10/2026",
-      "lastLogin": "10/26/2026, 2:38:30 PM",
+      "lastLogin": "10/27/2026, 9:09:41 AM",
       "active": true,
       "id": "YiGbqmSGpCk"
     }
@@ -3373,16 +3373,7 @@
       "completedAt": "2026-10-26T09:05:57.343Z"
     }
   ],
-  "sessions": [
-    {
-      "role": "admin",
-      "userId": "YiGbqmSGpCk",
-      "email": "admin5@example.com",
-      "name": "Test Admin",
-      "loginTime": "2026-10-26T09:08:30.394Z",
-      "id": "Gg4JUP7oxKk"
-    }
-  ],
+  "sessions": [],
   "appState": [
     {
       "id": "current",

@@ -587,7 +587,7 @@ function initializePasswordFields() {
                 }
 
                 else if (
-                   password.length < 8 || password.length > 72
+                    password.length < 6
                 ) {
 
                     passwordField
