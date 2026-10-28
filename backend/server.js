@@ -28,14 +28,31 @@ const PORT = Number(process.env.PORT) || 3001;
 const httpServer = http.createServer(app);
 initializeSocket(httpServer);
 const allowedOrigins = [
-  ...(process.env.CLIENT_URL || "")
-    .split(",")
-    .map(origin => origin.trim().replace(/\/$/, ""))
-    .filter(Boolean),
+  process.env.CLIENT_URL,
+  "https://course-management-system-wine-nine.vercel.app",
+  "http://localhost:5173"
+]
+  .filter(Boolean)
+  .flatMap(value => value.split(","))
+  .map(origin => origin.trim().replace(/\/+$/, ""));
 
-  "http://localhost:5173",
-  "https://course-management-system-r57b2y6dr-harini-r-s-projects.vercel.app"
-];
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.error("CORS blocked origin:", origin);
+
+      const error = new Error("Origin not allowed by CORS");
+      error.status = 403;
+      return callback(error);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+  })
+);
 
 app.use(
   cors({
