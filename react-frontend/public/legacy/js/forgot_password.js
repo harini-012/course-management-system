@@ -1,469 +1,143 @@
-//=====================================================
-// FORGOT PASSWORD
-// JSON SERVER + REACT VERSION
-//=====================================================
 
-import {
-    queryData,
-    patchData
-} from "./api.js";
+/* =====================================================
+   FORGOT PASSWORD - LOCAL MONGODB DEMO
+   ===================================================== */
 
-
-//=====================================================
-// INITIALIZE
-//=====================================================
+const AUTH_API = "http://localhost:3001/api/v1/auth";
 
 function initializeForgotPassword() {
+  const form = document.getElementById("forgotPasswordForm");
 
-    const form =
-        document.getElementById(
-            "forgotPasswordForm"
-        );
+  if (!form || form.dataset.initialized === "true") {
+    return;
+  }
 
+  form.dataset.initialized = "true";
+  form.addEventListener("submit", handleForgotPassword);
+}
 
-    if (!form) {
+async function handleForgotPassword(event) {
+  event.preventDefault();
 
-        console.error(
-            "Forgot Password Form Not Found."
-        );
+  const emailField = document.getElementById("email");
+  const roleField = document.querySelector(
+    'input[name="role"]:checked'
+  );
 
-        return;
-    }
+  const email = String(emailField?.value || "")
+    .trim()
+    .toLowerCase();
 
+  const role = String(roleField?.value || "")
+    .trim()
+    .toLowerCase();
 
-    if (
-        form.dataset.initialized ===
-        "true"
-    ) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showMessage("Please enter a valid email address.", "error");
+    emailField?.focus();
+    return;
+  }
 
-        return;
-    }
+  if (!["student", "admin"].includes(role)) {
+    showMessage("Please select Student or Admin.", "error");
+    return;
+  }
 
+  setButtonLoading(true);
 
-    form.dataset.initialized =
-        "true";
-
-
-    form.addEventListener(
-        "submit",
-        handleForgotPassword
+  try {
+    const response = await fetch(
+      `${AUTH_API}/dev/check-email`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ email, role })
+      }
     );
-}
 
+    const result = await response.json();
 
-//=====================================================
-// HANDLE FORGOT PASSWORD
-//=====================================================
-
-async function handleForgotPassword(
-    event
-) {
-
-    event.preventDefault();
-
-
-    //=================================================
-    // EMAIL
-    //=================================================
-
-    const emailField =
-        document.getElementById(
-            "email"
-        );
-
-
-    if (!emailField) {
-
-        console.error(
-            "Email field not found."
-        );
-
-        return;
+    if (!response.ok) {
+      throw new Error(
+        result.message || "Unable to verify email"
+      );
     }
 
-
-    const email =
-        String(
-            emailField.value || ""
-        )
-            .trim()
-            .toLowerCase();
-
-
-    //=================================================
-    // SELECTED ROLE
-    //=================================================
-
-    const roleField =
-        document.querySelector(
-            'input[name="role"]:checked'
-        );
-
-
-    const role =
-        roleField
-            ? String(
-                roleField.value
-            )
-                .trim()
-                .toLowerCase()
-            : null;
-
-
-    //=================================================
-    // EMAIL VALIDATION
-    //=================================================
-
-    if (!email) {
-
-        showMessage(
-            "Please enter your Email Address.",
-            "error"
-        );
-
-
-        emailField.focus();
-
-        return;
-    }
-
-
-    if (
-        !validateEmail(
-            email
-        )
-    ) {
-
-        showMessage(
-            "Please enter a valid Email Address.",
-            "error"
-        );
-
-
-        emailField.focus();
-
-        return;
-    }
-
-
-    //=================================================
-    // ROLE VALIDATION
-    //=================================================
-
-    if (
-        role !== "student" &&
-        role !== "admin"
-    ) {
-
-        showMessage(
-            "Please select Student or Admin.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    try {
-
-        setButtonLoading(
-            true
-        );
-
-
-        //=================================================
-        // CHOOSE ONLY SELECTED COLLECTION
-        //=================================================
-
-        const resource =
-            role === "admin"
-                ? "admins"
-                : "students";
-
-
-        //=================================================
-        // SEARCH ONLY THAT COLLECTION
-        //=================================================
-
-        const users =
-            await queryData(
-                resource,
-                {
-                    email:
-                        email
-                }
-            );
-
-
-        //=================================================
-        // NOT FOUND
-        //=================================================
-
-        if (
-            !Array.isArray(users) ||
-            users.length === 0
-        ) {
-
-            const roleName =
-                role === "admin"
-                    ? "Admin"
-                    : "Student";
-
-
-            showMessage(
-                `No ${roleName} account found with this Email Address.`,
-                "error"
-            );
-
-
-            emailField.focus();
-
-            return;
-        }
-
-
-        //=================================================
-        // FOUND
-        //=================================================
-
-        await saveResetState(
-            email,
-            role
-        );
-
-
-        showMessage(
-            "Email verified successfully. Redirecting to reset password...",
-            "success"
-        );
-
-
-        setTimeout(
-            () => {
-
-                window.location.replace(
-                    "/reset-password"
-                );
-
-            },
-            800
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Forgot Password Error:",
-            error
-        );
-
-
-        showMessage(
-            "Unable to verify your account. Please try again.",
-            "error"
-        );
-
-    }
-
-    finally {
-
-        setButtonLoading(
-            false
-        );
-    }
-}
-
-
-//=====================================================
-// SAVE RESET STATE
-//=====================================================
-
-async function saveResetState(
-    email,
-    role
-) {
-
-    await patchData(
-        "appState",
-        "current",
-        {
-            resetEmail:
-                email,
-
-            resetRole:
-                role
-        }
+    // Store only the selected account details.
+    // This is not proof of account ownership.
+    sessionStorage.setItem(
+      "localDemoReset",
+      JSON.stringify({ email, role })
     );
-}
 
-
-//=====================================================
-// VALIDATE EMAIL
-//=====================================================
-
-function validateEmail(
-    email
-) {
-
-    const pattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    return pattern.test(
-        email
+    showMessage(
+      "Email verified! Redirecting to Reset Password...",
+      "success"
     );
+
+    setTimeout(() => {
+      window.location.replace("/reset-password");
+    }, 800);
+
+  } catch (error) {
+    console.error("Forgot Password Error:", error);
+    showMessage(error.message, "error");
+  } finally {
+    setButtonLoading(false);
+  }
 }
 
+function showMessage(message, type = "error") {
+  const box = document.getElementById("message");
 
-//=====================================================
-// SHOW MESSAGE
-//=====================================================
+  if (!box) {
+    alert(message);
+    return;
+  }
 
-function showMessage(
-    message,
-    type = "error"
-) {
+  box.textContent = message;
+  box.style.display = "block";
+  box.style.color =
+    type === "success" ? "#15803d" : "#dc2626";
 
-    const messageBox =
-        document.getElementById(
-            "message"
-        );
+  box.classList.remove("success", "error");
+  box.classList.add(type);
+}
 
-
-    if (messageBox) {
-
-        messageBox.textContent =
-            message;
-
-
-        messageBox.style.display =
-            "block";
-
-
-        messageBox.classList.remove(
-            "success",
-            "error"
-        );
-
-
-        messageBox.classList.add(
-            type
-        );
-
-
-        messageBox.style.color =
-            type === "success"
-                ? "#15803d"
-                : "#dc2626";
-
-
-        return;
-    }
-
-
-    alert(
-        message
+function setButtonLoading(loading) {
+  const button =
+    document.getElementById("resetBtn") ||
+    document.querySelector(
+      '#forgotPasswordForm button[type="submit"]'
     );
+
+  if (!button) return;
+
+  if (!button.dataset.originalText) {
+    button.dataset.originalText = button.textContent;
+  }
+
+  button.disabled = loading;
+  button.textContent = loading
+    ? "Verifying..."
+    : button.dataset.originalText;
 }
-
-
-//=====================================================
-// BUTTON LOADING
-//=====================================================
-
-function setButtonLoading(
-    loading
-) {
-
-    const button =
-        document.getElementById(
-            "resetBtn"
-        );
-
-
-    if (!button) {
-
-        return;
-    }
-
-
-    if (loading) {
-
-        if (
-            !button.dataset.originalText
-        ) {
-
-            button.dataset.originalText =
-                button.textContent;
-        }
-
-
-        button.disabled =
-            true;
-
-
-        button.textContent =
-            "Verifying...";
-
-    }
-
-    else {
-
-        button.disabled =
-            false;
-
-
-        button.textContent =
-            button.dataset.originalText ||
-            "Reset Password";
-    }
-}
-
-
-//=====================================================
-// GO TO LOGIN
-//=====================================================
 
 function goToLogin() {
-
-    window.location.href =
-        "/login";
+  window.location.href = "/login";
 }
 
-
-//=====================================================
-// REACT SAFE INITIALIZATION
-//=====================================================
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeForgotPassword,
-        {
-            once: true
-        }
-    );
-
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeForgotPassword,
+    { once: true }
+  );
+} else {
+  initializeForgotPassword();
 }
 
-else {
-
-    initializeForgotPassword();
-}
-
-
-//=====================================================
-// GLOBAL FUNCTIONS
-//=====================================================
-
-window.handleForgotPassword =
-    handleForgotPassword;
-
-
-window.goToLogin =
-    goToLogin;
+window.handleForgotPassword = handleForgotPassword;
+window.goToLogin = goToLogin;

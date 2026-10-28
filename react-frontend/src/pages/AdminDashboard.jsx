@@ -260,75 +260,7 @@ export default function AdminDashboard() {
 
                             {/* ================= REPORTS ================= */}
 
-                            <div className="section">
-
-                                <h2>
-                                    Reports Overview
-                                </h2>
-
-
-                                <table>
-
-                                    <thead>
-
-                                        <tr>
-                                            <th>Report</th>
-                                            <th>Status</th>
-                                        </tr>
-
-                                    </thead>
-
-
-                                    <tbody>
-
-                                        <tr>
-                                            <td>
-                                                Student Performance
-                                            </td>
-
-                                            <td>
-                                                Available
-                                            </td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td>
-                                                Course Completion
-                                            </td>
-
-                                            <td>
-                                                Available
-                                            </td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td>
-                                                Enrollment Summary
-                                            </td>
-
-                                            <td>
-                                                Available
-                                            </td>
-                                        </tr>
-
-
-                                        <tr>
-                                            <td>
-                                                Attendance Report
-                                            </td>
-
-                                            <td>
-                                                Available
-                                            </td>
-                                        </tr>
-
-                                    </tbody>
-
-                                </table>
-
-                            </div>
+                           
 
 
                             {/* ================= NOTIFICATIONS ================= */}
@@ -426,38 +358,7 @@ export default function AdminDashboard() {
 
                             {/* ================= OVERVIEW ================= */}
 
-                            <div className="section">
-
-                                <h2>
-                                    Dashboard Overview
-                                </h2>
-
-
-                                <img
-                                    src="https://picsum.photos/450/230"
-                                    alt="Dashboard Overview"
-                                    style={{
-                                        width: "100%",
-                                        borderRadius: "12px"
-                                    }}
-                                />
-
-
-                                <p
-                                    style={{
-                                        textAlign: "center",
-                                        marginTop: "18px",
-                                        color: "gray",
-                                        lineHeight: "28px"
-                                    }}
-                                >
-                                    Analytics, charts, course statistics,
-                                    enrollment trends and overall system
-                                    insights will be displayed here.
-                                </p>
-
-                            </div>
-
+                            
                         </div>
 
                     </div>

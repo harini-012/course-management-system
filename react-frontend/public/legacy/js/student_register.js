@@ -1,1063 +1,448 @@
-import {
-    queryData,
-    saveData
-} from "./api.js";
 
+/* =====================================================
+   STUDENT COURSE MANAGEMENT SYSTEM
+   STUDENT REGISTRATION - MONGODB VERSION
+   ===================================================== */
 
-//=====================================================
-// STUDENT REGISTRATION
-//=====================================================
+const AUTH_URL = "http://localhost:3001/api/v1/auth";
 
-
-//=====================================================
-// INITIALIZE PAGE
-//=====================================================
+// =====================================================
+// INITIALIZE REGISTRATION
+// =====================================================
 
 function initializeRegistration() {
+  const form = document.getElementById("registerForm");
 
-    const form =
-        document.getElementById(
-            "registerForm"
-        );
+  if (!form) {
+    console.error("Registration form not found.");
+    return;
+  }
 
+  if (form.dataset.registrationInitialized === "true") {
+    return;
+  }
 
-    if (!form) {
+  form.dataset.registrationInitialized = "true";
+  form.addEventListener("submit", registerStudent);
+}
 
-        console.error(
-            "Registration form not found."
-        );
+// =====================================================
+// REGISTER STUDENT
+// =====================================================
 
-        return;
+async function registerStudent(event) {
+  event.preventDefault();
 
+  const form = document.getElementById("registerForm");
+
+  const studentNameField =
+    document.getElementById("studentName");
+
+  const studentIdField =
+    document.getElementById("studentId");
+
+  const studentEmailField =
+    document.getElementById("studentEmail");
+
+  const departmentField =
+    document.getElementById("department");
+
+  const passwordField =
+    document.getElementById("password");
+
+  const confirmPasswordField =
+    document.getElementById("confirmPassword");
+
+  if (
+    !form ||
+    !studentNameField ||
+    !studentIdField ||
+    !studentEmailField ||
+    !departmentField ||
+    !passwordField ||
+    !confirmPasswordField
+  ) {
+    console.error("Registration form fields are missing.");
+    alert("Registration form is incomplete.");
+    return;
+  }
+
+  const studentName = studentNameField.value.trim();
+  const studentId = studentIdField.value.trim();
+
+  const studentEmail = studentEmailField.value
+    .trim()
+    .toLowerCase();
+
+  const department = departmentField.value;
+  const password = passwordField.value;
+  const confirmPassword = confirmPasswordField.value;
+
+  // STUDENT NAME
+  if (!studentName) {
+    alert("Please enter Student Name.");
+    studentNameField.focus();
+    return;
+  }
+
+  if (studentName.length < 3) {
+    alert("Student Name should contain at least 3 characters.");
+    studentNameField.focus();
+    return;
+  }
+
+  // STUDENT ID
+  if (!studentId) {
+    alert("Please enter Student ID.");
+    studentIdField.focus();
+    return;
+  }
+
+  if (studentId.length < 4) {
+    alert("Student ID is too short.");
+    studentIdField.focus();
+    return;
+  }
+
+  // EMAIL
+  if (!studentEmail) {
+    alert("Please enter Email Address.");
+    studentEmailField.focus();
+    return;
+  }
+
+  if (!validateEmail(studentEmail)) {
+    alert("Please enter a valid Email Address.");
+    studentEmailField.focus();
+    return;
+  }
+
+  // DEPARTMENT
+  if (!department) {
+    alert("Please select Department.");
+    departmentField.focus();
+    return;
+  }
+
+  // PASSWORD
+  if (!password) {
+    alert("Please enter Password.");
+    passwordField.focus();
+    return;
+  }
+
+  if (password.length < 8 || password.length > 72) {
+    alert("Password must contain 8 to 72 characters.");
+    passwordField.focus();
+    return;
+  }
+
+  // CONFIRM PASSWORD
+  if (!confirmPassword) {
+    alert("Please confirm your Password.");
+    confirmPasswordField.focus();
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    confirmPasswordField.focus();
+    return;
+  }
+
+  const submitButton = form.querySelector(
+    'button[type="submit"], input[type="submit"]'
+  );
+
+  const originalButtonText = submitButton
+    ? submitButton.tagName === "INPUT"
+      ? submitButton.value
+      : submitButton.textContent
+    : "";
+
+  try {
+    if (submitButton) {
+      submitButton.disabled = true;
+
+      if (submitButton.tagName === "INPUT") {
+        submitButton.value = "Registering...";
+      } else {
+        submitButton.textContent = "Registering...";
+      }
     }
 
+    // Backend checks duplicate email and student ID.
+    // No public GET /api/students request is needed.
 
-    /*
-     * Prevent duplicate event binding if React
-     * loads the script again.
-     */
-
-    if (
-        form.dataset.registrationInitialized ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    form.dataset.registrationInitialized =
-        "true";
-
-
-    form.addEventListener(
-        "submit",
-        registerStudent
+    const response = await fetch(
+      `${AUTH_URL}/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          studentName,
+          studentId,
+          email: studentEmail,
+          department,
+          password
+        })
+      }
     );
 
-}
+    const result = await response.json();
 
-
-//=====================================================
-// REGISTER STUDENT
-//=====================================================
-
-async function registerStudent(
-    event
-) {
-
-    event.preventDefault();
-
-
-    const studentName =
-        document
-            .getElementById(
-                "studentName"
-            )
-            .value
-            .trim();
-
-
-    const studentId =
-        document
-            .getElementById(
-                "studentId"
-            )
-            .value
-            .trim();
-
-
-    const studentEmail =
-        document
-            .getElementById(
-                "studentEmail"
-            )
-            .value
-            .trim()
-            .toLowerCase();
-
-
-    const department =
-        document
-            .getElementById(
-                "department"
-            )
-            .value;
-
-
-    const password =
-        document
-            .getElementById(
-                "password"
-            )
-            .value;
-
-
-    const confirmPassword =
-        document
-            .getElementById(
-                "confirmPassword"
-            )
-            .value;
-
-
-    //=================================================
-    // STUDENT NAME
-    //=================================================
-
-    if (studentName === "") {
-
-        alert(
-            "Please enter Student Name."
-        );
-
-
-        document
-            .getElementById(
-                "studentName"
-            )
-            .focus();
-
-
-        return;
-
+    if (!response.ok) {
+      throw new Error(
+        result.message || "Student registration failed."
+      );
     }
 
+    alert("Student Registration Successful!");
 
-    if (studentName.length < 3) {
+    clearRegistrationForm();
 
-        alert(
-            "Student Name should contain at least 3 characters."
-        );
+    window.location.href = "/login";
 
+  } catch (error) {
+    console.error("Student registration error:", error);
 
-        document
-            .getElementById(
-                "studentName"
-            )
-            .focus();
+    alert(
+      error.message || "Unable to register student."
+    );
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
 
-
-        return;
-
+      if (submitButton.tagName === "INPUT") {
+        submitButton.value = originalButtonText;
+      } else {
+        submitButton.textContent = originalButtonText;
+      }
     }
-
-
-    //=================================================
-    // STUDENT ID
-    //=================================================
-
-    if (studentId === "") {
-
-        alert(
-            "Please enter Student ID."
-        );
-
-
-        document
-            .getElementById(
-                "studentId"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    if (studentId.length < 4) {
-
-        alert(
-            "Student ID is too short."
-        );
-
-
-        document
-            .getElementById(
-                "studentId"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    //=================================================
-    // EMAIL
-    //=================================================
-
-    if (studentEmail === "") {
-
-        alert(
-            "Please enter Email Address."
-        );
-
-
-        document
-            .getElementById(
-                "studentEmail"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    if (
-        !validateEmail(
-            studentEmail
-        )
-    ) {
-
-        alert(
-            "Please enter a valid Email Address."
-        );
-
-
-        document
-            .getElementById(
-                "studentEmail"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    //=================================================
-    // DEPARTMENT
-    //=================================================
-
-    if (department === "") {
-
-        alert(
-            "Please select Department."
-        );
-
-
-        document
-            .getElementById(
-                "department"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    //=================================================
-    // PASSWORD
-    //=================================================
-
-    if (password === "") {
-
-        alert(
-            "Please enter Password."
-        );
-
-
-        document
-            .getElementById(
-                "password"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    if (password.length < 6) {
-
-        alert(
-            "Password must contain at least 6 characters."
-        );
-
-
-        document
-            .getElementById(
-                "password"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    //=================================================
-    // CONFIRM PASSWORD
-    //=================================================
-
-    if (confirmPassword === "") {
-
-        alert(
-            "Please confirm your Password."
-        );
-
-
-        document
-            .getElementById(
-                "confirmPassword"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    if (
-        password !==
-        confirmPassword
-    ) {
-
-        alert(
-            "Passwords do not match."
-        );
-
-
-        document
-            .getElementById(
-                "confirmPassword"
-            )
-            .focus();
-
-
-        return;
-
-    }
-
-
-    try {
-
-        //=============================================
-        // CHECK EMAIL THROUGH MOCK API
-        //=============================================
-
-        const emailStudents =
-            await queryData(
-                "students",
-                {
-                    email:
-                        studentEmail
-                }
-            );
-
-
-        if (
-            emailStudents.length > 0
-        ) {
-
-            alert(
-                "Email already registered."
-            );
-
-
-            document
-                .getElementById(
-                    "studentEmail"
-                )
-                .focus();
-
-
-            return;
-
-        }
-
-
-        //=============================================
-        // CHECK STUDENT ID THROUGH MOCK API
-        //=============================================
-
-        const idStudents =
-            await queryData(
-                "students",
-                {
-                    studentId:
-                        studentId
-                }
-            );
-
-
-        if (
-            idStudents.length > 0
-        ) {
-
-            alert(
-                "Student ID already exists."
-            );
-
-
-            document
-                .getElementById(
-                    "studentId"
-                )
-                .focus();
-
-
-            return;
-
-        }
-
-
-        //=============================================
-        // CREATE STUDENT
-        //=============================================
-
-        const newStudent = {
-
-            studentName:
-                studentName,
-
-            studentId:
-                studentId,
-
-            email:
-                studentEmail,
-
-            department:
-                department,
-
-            password:
-                password,
-
-            role:
-                "Student",
-
-            enrolledCourses:
-                [],
-
-            completedCourses:
-                [],
-
-            certificates:
-                [],
-
-            progress:
-                {},
-
-            registrationDate:
-                new Date()
-                    .toLocaleDateString(),
-
-            lastLogin:
-                "",
-
-            active:
-                true
-
-        };
-
-
-        //=============================================
-        // SAVE TO MOCK API
-        //=============================================
-
-       const response = await fetch(
-  "http://localhost:3001/api/v1/auth/register",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      studentName,
-      studentId,
-      email: studentEmail,
-      department,
-      password
-    })
   }
-);
-
-const result = await response.json();
-
-if (!response.ok) {
-  throw new Error(result.message || "Registration failed");
 }
 
-
-        //=============================================
-        // EXISTING SUCCESS FLOW
-        //=============================================
-
-        alert(
-            "Student Registration Successful!"
-        );
-
-
-        document
-            .getElementById(
-                "registerForm"
-            )
-            .reset();
-
-
-        window.location.href =
-            "/login";
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Student registration error:",
-            error
-        );
-
-
-        alert(
-            "Unable to register student."
-        );
-
-    }
-
-}
-
-
-//=====================================================
+// =====================================================
 // EMAIL VALIDATION
-//=====================================================
+// =====================================================
 
 function validateEmail(email) {
-
-    const emailPattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    return emailPattern.test(
-        email
-    );
-
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-
-//=====================================================
+// =====================================================
 // PASSWORD STRENGTH
-//=====================================================
+// =====================================================
 
 function initializePasswordValidation() {
+  const passwordField =
+    document.getElementById("password");
 
-    const passwordField =
-        document.getElementById(
-            "password"
-        );
+  if (
+    !passwordField ||
+    passwordField.dataset.passwordInitialized === "true"
+  ) {
+    return;
+  }
 
+  passwordField.dataset.passwordInitialized = "true";
 
-    if (
-        passwordField &&
-        passwordField.dataset.passwordInitialized !==
-        "true"
-    ) {
+  passwordField.addEventListener("input", () => {
+    const password = passwordField.value;
 
-        passwordField.dataset.passwordInitialized =
-            "true";
-
-
-        passwordField.addEventListener(
-            "keyup",
-            () => {
-
-                const password =
-                    passwordField.value;
-
-
-                if (
-                    password.length === 0
-                ) {
-
-                    passwordField
-                        .style
-                        .borderColor =
-                        "#ccc";
-
-                }
-
-                else if (
-                    password.length < 6
-                ) {
-
-                    passwordField
-                        .style
-                        .borderColor =
-                        "red";
-
-                }
-
-                else if (
-                    password.length < 8
-                ) {
-
-                    passwordField
-                        .style
-                        .borderColor =
-                        "orange";
-
-                }
-
-                else {
-
-                    passwordField
-                        .style
-                        .borderColor =
-                        "green";
-
-                }
-
-            }
-        );
-
+    if (password.length === 0) {
+      passwordField.style.borderColor = "#ccc";
+    } else if (password.length < 8) {
+      passwordField.style.borderColor = "red";
+    } else if (password.length < 12) {
+      passwordField.style.borderColor = "orange";
+    } else {
+      passwordField.style.borderColor = "green";
     }
-
+  });
 }
 
-
-//=====================================================
-// CONFIRM PASSWORD
-//=====================================================
+// =====================================================
+// CONFIRM PASSWORD VALIDATION
+// =====================================================
 
 function initializeConfirmPassword() {
+  const confirmPasswordField =
+    document.getElementById("confirmPassword");
 
-    const confirmPasswordField =
-        document.getElementById(
-            "confirmPassword"
-        );
+  const passwordField =
+    document.getElementById("password");
 
+  if (
+    !confirmPasswordField ||
+    !passwordField ||
+    confirmPasswordField.dataset.confirmInitialized === "true"
+  ) {
+    return;
+  }
 
-    if (
-        !confirmPasswordField ||
-        confirmPasswordField.dataset.confirmInitialized ===
-        "true"
-    ) {
+  confirmPasswordField.dataset.confirmInitialized = "true";
 
-        return;
+  confirmPasswordField.addEventListener("input", () => {
+    const password = passwordField.value;
+    const confirmPassword = confirmPasswordField.value;
 
+    if (!confirmPassword) {
+      confirmPasswordField.style.borderColor = "#ccc";
+    } else if (password === confirmPassword) {
+      confirmPasswordField.style.borderColor = "green";
+    } else {
+      confirmPasswordField.style.borderColor = "red";
     }
-
-
-    confirmPasswordField.dataset.confirmInitialized =
-        "true";
-
-
-    confirmPasswordField.addEventListener(
-        "keyup",
-        () => {
-
-            const passwordField =
-                document.getElementById(
-                    "password"
-                );
-
-
-            if (!passwordField) {
-
-                return;
-
-            }
-
-
-            const password =
-                passwordField.value;
-
-
-            const confirmPassword =
-                confirmPasswordField.value;
-
-
-            if (
-                confirmPassword.length === 0
-            ) {
-
-                confirmPasswordField
-                    .style
-                    .borderColor =
-                    "#ccc";
-
-
-                return;
-
-            }
-
-
-            if (
-                password ===
-                confirmPassword
-            ) {
-
-                confirmPasswordField
-                    .style
-                    .borderColor =
-                    "green";
-
-            }
-
-            else {
-
-                confirmPasswordField
-                    .style
-                    .borderColor =
-                    "red";
-
-            }
-
-        }
-    );
-
+  });
 }
 
-
-//=====================================================
-// STUDENT NAME
-//=====================================================
+// =====================================================
+// STUDENT NAME FORMATTING
+// =====================================================
 
 function initializeStudentName() {
+  const field = document.getElementById("studentName");
 
-    const studentNameField =
-        document.getElementById(
-            "studentName"
-        );
+  if (!field || field.dataset.nameInitialized === "true") {
+    return;
+  }
 
+  field.dataset.nameInitialized = "true";
 
-    if (
-        !studentNameField ||
-        studentNameField.dataset.nameInitialized ===
-        "true"
-    ) {
+  field.addEventListener("input", () => {
+    field.value = field.value.replace(/[^a-zA-Z\s]/g, "");
+  });
 
-        return;
-
-    }
-
-
-    studentNameField.dataset.nameInitialized =
-        "true";
-
-
-    studentNameField.addEventListener(
-        "input",
-        () => {
-
-            studentNameField.value =
-                studentNameField
-                    .value
-                    .replace(
-                        /[^a-zA-Z\s]/g,
-                        ""
-                    );
-
-        }
-    );
-
-
-    studentNameField.addEventListener(
-        "blur",
-        () => {
-
-            studentNameField.value =
-                studentNameField
-                    .value
-                    .toLowerCase()
-                    .replace(
-                        /\b\w/g,
-                        letter =>
-                            letter.toUpperCase()
-                    );
-
-        }
-    );
-
+  field.addEventListener("blur", () => {
+    field.value = field.value
+      .toLowerCase()
+      .replace(/\b\w/g, letter => letter.toUpperCase());
+  });
 }
 
-
-//=====================================================
-// STUDENT ID
-//=====================================================
+// =====================================================
+// STUDENT ID FORMATTING
+// =====================================================
 
 function initializeStudentId() {
+  const field = document.getElementById("studentId");
 
-    const studentIdField =
-        document.getElementById(
-            "studentId"
-        );
+  if (!field || field.dataset.idInitialized === "true") {
+    return;
+  }
 
+  field.dataset.idInitialized = "true";
 
-    if (
-        !studentIdField ||
-        studentIdField.dataset.idInitialized ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    studentIdField.dataset.idInitialized =
-        "true";
-
-
-    studentIdField.addEventListener(
-        "input",
-        () => {
-
-            studentIdField.value =
-                studentIdField
-                    .value
-                    .replace(
-                        /\s/g,
-                        ""
-                    );
-
-        }
-    );
-
+  field.addEventListener("input", () => {
+    field.value = field.value.replace(/\s/g, "");
+  });
 }
 
-
-//=====================================================
-// EMAIL LOWERCASE
-//=====================================================
+// =====================================================
+// EMAIL FORMATTING
+// =====================================================
 
 function initializeEmailField() {
+  const field = document.getElementById("studentEmail");
 
-    const emailField =
-        document.getElementById(
-            "studentEmail"
-        );
+  if (!field || field.dataset.emailInitialized === "true") {
+    return;
+  }
 
+  field.dataset.emailInitialized = "true";
 
-    if (
-        !emailField ||
-        emailField.dataset.emailInitialized ===
-        "true"
-    ) {
-
-        return;
-
-    }
-
-
-    emailField.dataset.emailInitialized =
-        "true";
-
-
-    emailField.addEventListener(
-        "blur",
-        () => {
-
-            emailField.value =
-                emailField
-                    .value
-                    .toLowerCase();
-
-        }
-    );
-
+  field.addEventListener("blur", () => {
+    field.value = field.value.trim().toLowerCase();
+  });
 }
 
-
-//=====================================================
-// RESET FORM
-//=====================================================
+// =====================================================
+// CLEAR REGISTRATION FORM
+// =====================================================
 
 function clearRegistrationForm() {
+  const form = document.getElementById("registerForm");
 
-    const form =
-        document.getElementById(
-            "registerForm"
-        );
+  if (form) {
+    form.reset();
+  }
 
+  const passwordField =
+    document.getElementById("password");
 
-    if (form) {
+  const confirmPasswordField =
+    document.getElementById("confirmPassword");
 
-        form.reset();
+  if (passwordField) {
+    passwordField.style.borderColor = "#ccc";
+  }
 
-    }
-
-
-    const passwordField =
-        document.getElementById(
-            "password"
-        );
-
-
-    const confirmPasswordField =
-        document.getElementById(
-            "confirmPassword"
-        );
-
-
-    if (passwordField) {
-
-        passwordField
-            .style
-            .borderColor =
-            "#ccc";
-
-    }
-
-
-    if (
-        confirmPasswordField
-    ) {
-
-        confirmPasswordField
-            .style
-            .borderColor =
-            "#ccc";
-
-    }
-
+  if (confirmPasswordField) {
+    confirmPasswordField.style.borderColor = "#ccc";
+  }
 }
 
-
-//=====================================================
+// =====================================================
 // ENTER KEY
-//=====================================================
+// =====================================================
 
 function initializeEnterKey() {
+  const form = document.getElementById("registerForm");
 
-    const form =
-        document.getElementById(
-            "registerForm"
-        );
+  if (!form || form.dataset.enterInitialized === "true") {
+    return;
+  }
 
+  form.dataset.enterInitialized = "true";
 
+  form.addEventListener("keydown", event => {
     if (
-        !form ||
-        form.dataset.enterInitialized ===
-        "true"
+      event.key === "Enter" &&
+      event.target.tagName !== "TEXTAREA" &&
+      event.target.tagName !== "BUTTON"
     ) {
-
-        return;
-
+      event.preventDefault();
+      form.requestSubmit();
     }
-
-
-    form.dataset.enterInitialized =
-        "true";
-
-
-    form.addEventListener(
-        "keypress",
-        event => {
-
-            if (
-                event.key ===
-                "Enter"
-            ) {
-
-                event.preventDefault();
-
-                form.requestSubmit();
-
-            }
-
-        }
-    );
-
+  });
 }
 
-
-//=====================================================
+// =====================================================
 // START REGISTRATION PAGE
-//=====================================================
+// =====================================================
 
 function startRegistrationPage() {
+  initializeRegistration();
+  initializePasswordValidation();
+  initializeConfirmPassword();
+  initializeStudentName();
+  initializeStudentId();
+  initializeEmailField();
+  initializeEnterKey();
 
-    initializeRegistration();
+  const nameField =
+    document.getElementById("studentName");
 
-    initializePasswordValidation();
-
-    initializeConfirmPassword();
-
-    initializeStudentName();
-
-    initializeStudentId();
-
-    initializeEmailField();
-
-    initializeEnterKey();
-
-
-    const studentNameField =
-        document.getElementById(
-            "studentName"
-        );
-
-
-    if (studentNameField) {
-
-        studentNameField.focus();
-
-    }
-
+  if (nameField) {
+    nameField.focus();
+  }
 }
 
-
-//=====================================================
-// REACT + NORMAL HTML COMPATIBLE INITIALIZATION
-//=====================================================
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        startRegistrationPage,
-        {
-            once: true
-        }
-    );
-
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    startRegistrationPage,
+    { once: true }
+  );
+} else {
+  startRegistrationPage();
 }
 
-else {
+// =====================================================
+// GLOBAL FUNCTIONS
+// =====================================================
 
-    startRegistrationPage();
-
-}
-
-
-//=====================================================
-// MAKE RESET AVAILABLE IF NEEDED
-//=====================================================
-
-window.clearRegistrationForm =
-    clearRegistrationForm;
+window.clearRegistrationForm = clearRegistrationForm;

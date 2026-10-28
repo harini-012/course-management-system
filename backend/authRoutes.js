@@ -1,23 +1,25 @@
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("node:crypto");
+const mongoose = require("mongoose");
 
 const router = express.Router();
-const DB = "http://localhost:5000";
 
-async function readUsers(resource) {
-  const response = await fetch(`${DB}/${resource}`);
-
-  if (!response.ok) {
-    throw new Error("Unable to access database");
-  }
-
-  return response.json();
+function dbCollection(name) {
+  return mongoose.connection.db.collection(name);
 }
 
 function safeUser(user) {
-  const { password, passwordHash, ...data } = user;
-  return data;
+  const {
+    _id,
+    password,
+    passwordHash,
+    ...safe
+  } = user;
+
+  return safe;
 }
 
 function generateToken(user, role) {
@@ -26,7 +28,10 @@ function generateToken(user, role) {
   }
 
   return jwt.sign(
-    { email: user.email, role },
+    {
+      email: user.email,
+      role
+    },
     process.env.JWT_SECRET,
     {
       subject: String(user.id),
@@ -35,7 +40,41 @@ function generateToken(user, role) {
   );
 }
 
-// TASK 9 — STUDENT REGISTRATION
+function validEmail(email) {
+  return (
+    typeof email === "string" &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+  );
+}
+
+function validPassword(password) {
+  return (
+    typeof password === "string" &&
+    password.length >= 8 &&
+    password.length <= 72
+  );
+}
+
+async function accountExists(resource, email, idField, id) {
+  const users = await dbCollection(resource)
+    .find(
+      {},
+      {
+        projection: {
+          email: 1,
+          [idField]: 1
+        }
+      }
+    )
+    .toArray();
+
+  return users.some(user =>
+    String(user.email || "").toLowerCase() === email ||
+    String(user[idField] || "") === id
+  );
+}
+
+// STUDENT REGISTRATION
 router.post("/register", async (req, res, next) => {
   try {
     const {
@@ -47,49 +86,39 @@ router.post("/register", async (req, res, next) => {
     } = req.body || {};
 
     if (
-      [studentName, studentId, email, department, password]
-        .some(value => typeof value !== "string" || !value.trim())
+      [studentName, studentId, email, department]
+        .some(value =>
+          typeof value !== "string" || !value.trim()
+        ) ||
+      !validEmail(email) ||
+      !validPassword(password)
     ) {
       return res.status(400).json({
-        message: "All registration fields are required"
+        message:
+          "Enter all fields, a valid email and an 8–72 character password"
       });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    const normalizedId = studentId.trim();
 
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
-      return res.status(400).json({
-        message: "Invalid email address"
-      });
-    }
-
-    if (password.length < 8 || password.length > 72) {
-      return res.status(400).json({
-        message: "Password must be 8 to 72 characters"
-      });
-    }
-
-    const students = await readUsers("students");
-
-    if (students.some(s =>
-      String(s.email).toLowerCase() === normalizedEmail
-    )) {
+    if (
+      await accountExists(
+        "students",
+        normalizedEmail,
+        "studentId",
+        normalizedId
+      )
+    ) {
       return res.status(409).json({
-        message: "Email already registered"
-      });
-    }
-
-    if (students.some(s =>
-      String(s.studentId) === studentId.trim()
-    )) {
-      return res.status(409).json({
-        message: "Student ID already registered"
+        message: "Student email or ID already registered"
       });
     }
 
     const student = {
+      id: crypto.randomUUID(),
       studentName: studentName.trim(),
-      studentId: studentId.trim(),
+      studentId: normalizedId,
       email: normalizedEmail,
       department: department.trim(),
       passwordHash: await bcrypt.hash(password, 12),
@@ -103,54 +132,55 @@ router.post("/register", async (req, res, next) => {
       active: true
     };
 
-    const response = await fetch(`${DB}/students`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(student)
-    });
+    await dbCollection("students").insertOne(student);
 
-    if (!response.ok) {
-      throw new Error("Unable to save student");
-    }
-
-    const saved = await response.json();
-
-    return res.status(201).json({
+    res.status(201).json({
       message: "Student registered successfully",
-      student: safeUser(saved)
+      student: safeUser(student)
     });
-
   } catch (error) {
     next(error);
   }
 });
 
-// TASK 9 AND 10 — LOGIN
+// STUDENT AND ADMIN LOGIN
 router.post("/login", async (req, res, next) => {
   try {
-    const { email, password, role = "student" } = req.body || {};
+    const {
+      email,
+      password,
+      role = "student"
+    } = req.body || {};
 
     if (
-      typeof email !== "string" ||
+      !validEmail(email) ||
       typeof password !== "string" ||
-      !email.trim() ||
       !password
     ) {
       return res.status(400).json({
-        message: "Email and password are required"
+        message: "Valid email and password are required"
       });
     }
 
-    const normalizedRole = role === "admin" ? "admin" : "student";
-    const resource = normalizedRole === "admin" ? "admins" : "students";
+    const normalizedRole =
+      role === "admin" ? "admin" : "student";
 
-    const users = await readUsers(resource);
+    const resource =
+      normalizedRole === "admin"
+        ? "admins"
+        : "students";
 
-    const user = users.find(u =>
-      String(u.email).toLowerCase() === email.trim().toLowerCase()
-    );
+    const normalizedEmail = email.trim().toLowerCase();
 
-    if (!user || user.active === false || !user.passwordHash) {
+    const user = await dbCollection(resource).findOne({
+      email: normalizedEmail
+    });
+
+    if (
+      !user ||
+      user.active === false ||
+      !user.passwordHash
+    ) {
       return res.status(401).json({
         message: "Invalid email or password"
       });
@@ -167,21 +197,35 @@ router.post("/login", async (req, res, next) => {
       });
     }
 
-    return res.status(200).json({
+    res.json({
       message: "Login successful",
       token: generateToken(user, normalizedRole),
       tokenType: "Bearer",
       expiresIn: process.env.JWT_EXPIRES_IN || "1h",
       user: safeUser(user)
     });
-
   } catch (error) {
     next(error);
   }
 });
-// ADMIN REGISTRATION — CLASSROOM DEMO
+
+// ADMIN REGISTRATION
+// Restrict this route before production deployment.
 router.post("/admin/register", async (req, res, next) => {
   try {
+    if (
+      process.env.NODE_ENV === "production" ||
+      ![
+        "127.0.0.1",
+        "::1",
+        "::ffff:127.0.0.1"
+      ].includes(req.socket.remoteAddress)
+    ) {
+      return res.status(403).json({
+        message: "Admin registration is local-only"
+      });
+    }
+
     const {
       adminName,
       adminId,
@@ -191,39 +235,40 @@ router.post("/admin/register", async (req, res, next) => {
     } = req.body || {};
 
     if (
-      [adminName, adminId, email, designation, password]
-        .some(v => typeof v !== "string" || !v.trim())
+      [adminName, adminId, email, designation]
+        .some(value =>
+          typeof value !== "string" || !value.trim()
+        ) ||
+      !validEmail(email) ||
+      !validPassword(password)
     ) {
       return res.status(400).json({
-        message: "All admin fields are required"
+        message:
+          "Enter all fields, a valid email and an 8–72 character password"
       });
     }
+
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedId = adminId.trim();
 
     if (
-      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ||
-      password.length < 8 ||
-      password.length > 72
+      await accountExists(
+        "admins",
+        normalizedEmail,
+        "adminId",
+        normalizedId
+      )
     ) {
-      return res.status(400).json({
-        message: "Enter a valid email and 8–72 character password"
-      });
-    }
-
-    const admins = await readUsers("admins");
-
-    if (admins.some(a =>
-      String(a.email).toLowerCase() === email.trim().toLowerCase() ||
-      String(a.adminId) === adminId.trim()
-    )) {
       return res.status(409).json({
         message: "Admin email or ID already registered"
       });
     }
 
     const admin = {
+      id: crypto.randomUUID(),
       adminName: adminName.trim(),
-      adminId: adminId.trim(),
-      email: email.trim().toLowerCase(),
+      adminId: normalizedId,
+      email: normalizedEmail,
       designation: designation.trim(),
       passwordHash: await bcrypt.hash(password, 12),
       role: "Administrator",
@@ -234,101 +279,148 @@ router.post("/admin/register", async (req, res, next) => {
       active: true
     };
 
-    const response = await fetch(`${DB}/admins`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(admin)
-    });
+    await dbCollection("admins").insertOne(admin);
 
-    if (!response.ok) {
-      throw new Error("Unable to register admin");
-    }
-
-    const saved = await response.json();
-
-    return res.status(201).json({
+    res.status(201).json({
       message: "Administrator registered successfully",
-      admin: safeUser(saved)
+      admin: safeUser(admin)
     });
-
   } catch (error) {
     next(error);
   }
 });
-// LOCAL DEVELOPMENT PASSWORD RESET
-// Do not deploy: this flow does not verify email ownership.
 
-router.post("/dev/reset-password", async (req, res, next) => {
-  try {
-    // Only allow this temporary route in local development.
-    if (
-      process.env.NODE_ENV === "production" ||
-      !["127.0.0.1", "::1", "::ffff:127.0.0.1"]
-        .includes(req.socket.remoteAddress)
-    ) {
-      return res.status(403).json({
-        message: "Local development only"
-      });
-    }
+/* =====================================================
+   LOCAL DEMO ONLY - FORGOT / RESET PASSWORD
+   No SMTP or OTP required.
+   Never enable on a public server.
+   ===================================================== */
 
-    const { email, role, newPassword } = req.body || {};
+function allowLocalDemo(req, res, next) {
+  const localAddresses = [
+    "127.0.0.1",
+    "::1",
+    "::ffff:127.0.0.1"
+  ];
 
-    if (
-      typeof email !== "string" ||
-      !["student", "admin"].includes(role) ||
-      typeof newPassword !== "string" ||
-      newPassword.length < 8 ||
-      newPassword.length > 72
-    ) {
-      return res.status(400).json({
-        message: "Enter a valid email, role and 8–72 character password"
-      });
-    }
+  if (
+    process.env.NODE_ENV === "production" ||
+    process.env.LOCAL_DEMO_PASSWORD_RESET !== "true" ||
+    !localAddresses.includes(req.socket.remoteAddress)
+  ) {
+    return res.status(403).json({
+      message: "Local demo password reset is disabled"
+    });
+  }
 
-    const resource = role === "admin" ? "admins" : "students";
+  next();
+}
 
-    const users = await readUsers(resource);
+function getResetCollection(role) {
+  if (role === "student") return "students";
+  if (role === "admin") return "admins";
+  return null;
+}
 
-    const user = users.find(u =>
-      String(u.email).toLowerCase() === email.trim().toLowerCase()
-    );
+function normalizeResetEmail(email) {
+  return String(email || "").trim().toLowerCase();
+}
 
-    if (!user) {
-      return res.status(404).json({
-        message: "Account not found"
-      });
-    }
+// STEP 1 - CHECK REGISTERED EMAIL
+router.post(
+  "/dev/check-email",
+  allowLocalDemo,
+  async (req, res, next) => {
+    try {
+      const email = normalizeResetEmail(req.body?.email);
+      const role = String(req.body?.role || "")
+        .trim()
+        .toLowerCase();
 
-    const passwordHash = await bcrypt.hash(newPassword, 12);
+      const resource = getResetCollection(role);
 
-    // Remove the old plaintext password field.
-    const { password, ...remainingUser } = user;
-
-    const response = await fetch(
-      `${DB}/${resource}/${encodeURIComponent(user.id)}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          ...remainingUser,
-          passwordHash,
-          passwordUpdatedAt: new Date().toISOString()
-        })
+      if (!validEmail(email) || !resource) {
+        return res.status(400).json({
+          message: "Valid email and role are required"
+        });
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Unable to update password");
+      const user = await dbCollection(resource).findOne({
+        email,
+        active: { $ne: false }
+      });
+
+      if (!user) {
+        return res.status(404).json({
+          message: "No registered account found"
+        });
+      }
+
+      return res.json({
+        message: "Registered email verified",
+        registered: true
+      });
+    } catch (error) {
+      next(error);
     }
-
-    return res.status(200).json({
-      message: "Password reset successful"
-    });
-
-  } catch (error) {
-    next(error);
   }
-});
+);
+
+// STEP 2 - RESET PASSWORD
+router.post(
+  "/dev/reset-password",
+  allowLocalDemo,
+  async (req, res, next) => {
+    try {
+      const email = normalizeResetEmail(req.body?.email);
+      const role = String(req.body?.role || "")
+        .trim()
+        .toLowerCase();
+
+      const { newPassword } = req.body || {};
+
+      const resource = getResetCollection(role);
+
+      if (
+        !validEmail(email) ||
+        !resource ||
+        !validPassword(newPassword)
+      ) {
+        return res.status(400).json({
+          message:
+            "Valid email, role, and 8–72 character password required"
+        });
+      }
+
+      const passwordHash = await bcrypt.hash(
+        newPassword,
+        12
+      );
+
+      const result = await dbCollection(resource).updateOne(
+        {
+          email,
+          active: { $ne: false }
+        },
+        {
+          $set: { passwordHash },
+          $unset: { password: "" }
+        }
+      );
+
+      if (result.matchedCount !== 1) {
+        return res.status(404).json({
+          message: "Registered account not found"
+        });
+      }
+
+      return res.json({
+        message: "Password reset successfully"
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;

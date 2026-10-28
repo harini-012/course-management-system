@@ -1,0 +1,90 @@
+[{
+  "_id": {
+    "$oid": "6ae0b9af3becda3ef55ff921"
+  },
+  "id": "1aflrowmla0",
+  "active": true,
+  "adminId": "fpc213",
+  "adminName": "Face",
+  "createdCourses": [],
+  "designation": "Principal",
+  "email": "fpc@sdnb.com",
+  "lastLogin": "10/27/2026, 2:18:53 PM",
+  "managedEnrollments": [],
+  "managedStudents": [],
+  "password": "Harini.2006",
+  "passwordHash": "$2b$12$HrrKn26BfSZ5p0EcFJOiie1XionVjRpMxKQ5vS9QKqw7p7S14wSdW",
+  "passwordUpdatedAt": "2026-10-24T11:05:54.180Z",
+  "registrationDate": "9/28/2026",
+  "role": "Administrator"
+},
+{
+  "_id": {
+    "$oid": "6ae0b9af3becda3ef55ff922"
+  },
+  "id": "nqxexoDWm_4",
+  "active": true,
+  "adminId": "f233",
+  "adminName": "Fpc",
+  "createdCourses": [],
+  "designation": "Faculty",
+  "email": "fpc@gmail.com",
+  "lastLogin": "10/27/2026, 3:28:08 PM",
+  "managedEnrollments": [],
+  "managedStudents": [],
+  "passwordHash": "$2b$12$yRyEtOt5rt2XbRgOFZb3de6j3.SBnbl/GHlUCSzVG.qaJVxYI3CwW",
+  "passwordUpdatedAt": "2026-09-28T15:40:44.983Z",
+  "registrationDate": "9/28/2026",
+  "role": "Administrator"
+},
+{
+  "_id": {
+    "$oid": "6ae0b9af3becda3ef55ff923"
+  },
+  "id": "2Cng3ZxFkpw",
+  "active": true,
+  "adminId": "a124",
+  "adminName": "Harini",
+  "createdCourses": [],
+  "designation": "Principal",
+  "email": "admin@gmail.com",
+  "lastLogin": "10/27/2026, 2:48:12 PM",
+  "managedStudents": [],
+  "passwordHash": "$2b$12$nG0W5hq8nqDd.77LBLg5yud4hw7UlBwYU71yzeA6yutDX7Xt3YC0K",
+  "registrationDate": "24/10/2026",
+  "role": "Administrator"
+},
+{
+  "_id": {
+    "$oid": "6ae0b9af3becda3ef55ff924"
+  },
+  "id": "vxxXymt7ZHM",
+  "active": true,
+  "adminId": "ADMTEST001",
+  "adminName": "Test Admin",
+  "createdCourses": [],
+  "designation": "Course Administrator",
+  "email": "testadmin@example.com",
+  "lastLogin": "10/27/2026, 2:55:02 PM",
+  "managedStudents": [],
+  "passwordHash": "$2b$12$03mdIYwHzE.X.24XL9zVq.uFB8LDGw4Oz3bt0b69rR.970B/VoY3q",
+  "registrationDate": "26/10/2026",
+  "role": "Administrator"
+},
+{
+  "_id": {
+    "$oid": "6ae0b9af3becda3ef55ff925"
+  },
+  "id": "YiGbqmSGpCk",
+  "active": true,
+  "adminId": "ADMTEST006",
+  "adminName": "Test Admin",
+  "createdCourses": [],
+  "designation": "Course Administrator",
+  "email": "admin5@example.com",
+  "lastLogin": "10/27/2026, 10:27:17 AM",
+  "managedStudents": [],
+  "passwordHash": "$2b$12$Gn3ENWPYZiUWS7g.L86OfeIBLMV6UAlwtPj8hOROFGn8amTRbE9K.",
+  "registrationDate": "26/10/2026",
+  "role": "Administrator"
+}]

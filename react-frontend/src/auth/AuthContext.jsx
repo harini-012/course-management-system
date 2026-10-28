@@ -618,21 +618,20 @@ export function AuthProvider({
     // GENERAL LOGOUT
     //=================================================
 
-    async function logout(
-        role
-    ) {
-
-        if (
-            role === "admin"
-        ) {
-
+    async function logout(role) {
+    try {
+        if (role === "admin") {
             await logoutAdmin();
-
         } else {
-
             await logoutStudent();
         }
+    } finally {
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("courseManagementSession");
+        sessionStorage.removeItem("role");
+        clearAuthState();
     }
+}
 
 
     //=================================================

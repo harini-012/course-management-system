@@ -1,823 +1,465 @@
-//=====================================================
-// ADMIN REGISTRATION
-// MOCK API + REACT VERSION
-//=====================================================
 
-import {
-    queryData,
-    saveData,
-    getSession,
-    clearSessions
-} from "./api.js";
+/* =====================================================
+   STUDENT COURSE MANAGEMENT SYSTEM
+   ADMIN REGISTRATION - MONGODB VERSION
+   ===================================================== */
 
+const AUTH_URL = "http://localhost:3001/api/v1/auth";
 
-//=====================================================
+// =====================================================
 // REGISTER ADMIN
-//=====================================================
+// =====================================================
 
 async function registerAdmin(event) {
-
-    event.preventDefault();
-
-    const adminNameField =
-        document.getElementById("adminName");
-
-    const adminIdField =
-        document.getElementById("adminId");
-
-    const adminEmailField =
-        document.getElementById("adminEmail");
-
-    const designationField =
-        document.getElementById("designation");
-
-    const passwordField =
-        document.getElementById("adminPassword");
-
-    const confirmPasswordField =
-        document.getElementById(
-            "adminConfirmPassword"
-        );
-
-
-    if (
-        !adminNameField ||
-        !adminIdField ||
-        !adminEmailField ||
-        !designationField ||
-        !passwordField ||
-        !confirmPasswordField
-    ) {
-
-        console.error(
-            "Administrator registration fields not found."
-        );
-
-        return;
-    }
-
-
-    const adminName =
-        adminNameField.value.trim();
-
-    const adminId =
-        adminIdField.value.trim();
-
-    const adminEmail =
-        adminEmailField.value
-            .trim()
-            .toLowerCase();
-
-    const designation =
-        designationField.value;
-
-    const password =
-        passwordField.value;
-
-    const confirmPassword =
-        confirmPasswordField.value;
-
-
-    //=================================================
-    // VALIDATION
-    //=================================================
-
-    if (adminName === "") {
-
-        alert(
-            "Please enter Administrator Name."
-        );
-
-        adminNameField.focus();
-
-        return;
-    }
-
-
-    if (adminName.length < 3) {
-
-        alert(
-            "Administrator Name must contain at least 3 characters."
-        );
-
-        adminNameField.focus();
-
-        return;
-    }
-
-
-    if (adminId === "") {
-
-        alert(
-            "Please enter Administrator ID."
-        );
-
-        adminIdField.focus();
-
-        return;
-    }
-
-
-    if (adminId.length < 4) {
-
-        alert(
-            "Administrator ID is too short."
-        );
-
-        adminIdField.focus();
-
-        return;
-    }
-
-
-    if (adminEmail === "") {
-
-        alert(
-            "Please enter Email Address."
-        );
-
-        adminEmailField.focus();
-
-        return;
-    }
-
-
-    if (!validateEmail(adminEmail)) {
-
-        alert(
-            "Please enter a valid Email Address."
-        );
-
-        adminEmailField.focus();
-
-        return;
-    }
-
-
-    if (designation === "") {
-
-        alert(
-            "Please select Designation."
-        );
-
-        designationField.focus();
-
-        return;
-    }
-
-
-    if (password === "") {
-
-        alert(
-            "Please enter Password."
-        );
-
-        passwordField.focus();
-
-        return;
-    }
-
-
-    if (password.length < 6) {
-
-        alert(
-            "Password must contain at least 6 characters."
-        );
-
-        passwordField.focus();
-
-        return;
-    }
-
-
-    if (confirmPassword === "") {
-
-        alert(
-            "Please confirm your Password."
-        );
-
-        confirmPasswordField.focus();
-
-        return;
-    }
-
-
-    if (
-        password !==
-        confirmPassword
-    ) {
-
-        alert(
-            "Passwords do not match."
-        );
-
-        confirmPasswordField.focus();
-
-        return;
-    }
-
-
-    try {
-
-        //=================================================
-        // DUPLICATE EMAIL
-        //=================================================
-
-        const emailAdmins =
-            await queryData(
-                "admins",
-                {
-                    email:
-                        adminEmail
-                }
-            );
-
-
-        if (
-            Array.isArray(emailAdmins) &&
-            emailAdmins.length > 0
-        ) {
-
-            alert(
-                "Email already registered."
-            );
-
-            adminEmailField.focus();
-
-            return;
-        }
-
-
-        //=================================================
-        // DUPLICATE ADMIN ID
-        //=================================================
-
-        const idAdmins =
-            await queryData(
-                "admins",
-                {
-                    adminId:
-                        adminId
-                }
-            );
-
-
-        if (
-            Array.isArray(idAdmins) &&
-            idAdmins.length > 0
-        ) {
-
-            alert(
-                "Administrator ID already exists."
-            );
-
-            adminIdField.focus();
-
-            return;
-        }
-
-
-        //=================================================
-        // CREATE ADMIN
-        //=================================================
-
-        const newAdmin = {
-
-            adminName:
-                adminName,
-
-            adminId:
-                adminId,
-
-            email:
-                adminEmail,
-
-            designation:
-                designation,
-
-            password:
-                password,
-
-            role:
-                "Administrator",
-
-            createdCourses:
-                [],
-
-            managedStudents:
-                [],
-
-            managedEnrollments:
-                [],
-
-            registrationDate:
-                new Date()
-                    .toLocaleDateString(),
-
-            lastLogin:
-                "",
-
-            active:
-                true
-        };
-
-
-        //=================================================
-        // SAVE TO MOCK API
-        //=================================================
-
-       const response = await fetch(
-  "http://localhost:3001/api/v1/auth/admin/register",
-  {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      adminName,
-      adminId,
-      email: adminEmail,
-      designation,
-      password
-    })
+  event.preventDefault();
+
+  const form =
+    document.getElementById("adminRegisterForm");
+
+  const adminNameField =
+    document.getElementById("adminName");
+
+  const adminIdField =
+    document.getElementById("adminId");
+
+  const adminEmailField =
+    document.getElementById("adminEmail");
+
+  const designationField =
+    document.getElementById("designation");
+
+  const passwordField =
+    document.getElementById("adminPassword");
+
+  const confirmPasswordField =
+    document.getElementById("adminConfirmPassword");
+
+  if (
+    !form ||
+    !adminNameField ||
+    !adminIdField ||
+    !adminEmailField ||
+    !designationField ||
+    !passwordField ||
+    !confirmPasswordField
+  ) {
+    console.error("Administrator registration fields not found.");
+    alert("Administrator registration form is incomplete.");
+    return;
   }
-);
 
-const result = await response.json();
+  const adminName = adminNameField.value.trim();
+  const adminId = adminIdField.value.trim();
 
-if (!response.ok) {
-  throw new Error(result.message || "Admin registration failed");
-}
+  const adminEmail = adminEmailField.value
+    .trim()
+    .toLowerCase();
 
-        alert(
-            "Administrator Registration Successful!"
-        );
+  const designation = designationField.value;
+  const password = passwordField.value;
+  const confirmPassword = confirmPasswordField.value;
 
+  // ADMIN NAME
+  if (!adminName) {
+    alert("Please enter Administrator Name.");
+    adminNameField.focus();
+    return;
+  }
 
-        const form =
-            document.getElementById(
-                "adminRegisterForm"
-            );
+  if (adminName.length < 3) {
+    alert("Administrator Name must contain at least 3 characters.");
+    adminNameField.focus();
+    return;
+  }
 
+  // ADMIN ID
+  if (!adminId) {
+    alert("Please enter Administrator ID.");
+    adminIdField.focus();
+    return;
+  }
 
-        if (form) {
+  if (adminId.length < 4) {
+    alert("Administrator ID is too short.");
+    adminIdField.focus();
+    return;
+  }
 
-            form.reset();
-        }
+  // EMAIL
+  if (!adminEmail) {
+    alert("Please enter Email Address.");
+    adminEmailField.focus();
+    return;
+  }
 
+  if (!validateEmail(adminEmail)) {
+    alert("Please enter a valid Email Address.");
+    adminEmailField.focus();
+    return;
+  }
 
-        window.location.replace(
-            "/login"
-        );
+  // DESIGNATION
+  if (!designation) {
+    alert("Please select Designation.");
+    designationField.focus();
+    return;
+  }
 
+  // PASSWORD
+  if (!password) {
+    alert("Please enter Password.");
+    passwordField.focus();
+    return;
+  }
+
+  if (password.length < 8 || password.length > 72) {
+    alert("Password must contain 8 to 72 characters.");
+    passwordField.focus();
+    return;
+  }
+
+  // CONFIRM PASSWORD
+  if (!confirmPassword) {
+    alert("Please confirm your Password.");
+    confirmPasswordField.focus();
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    alert("Passwords do not match.");
+    confirmPasswordField.focus();
+    return;
+  }
+
+  const submitButton = form.querySelector(
+    'button[type="submit"], input[type="submit"]'
+  );
+
+  const originalButtonText = submitButton
+    ? submitButton.tagName === "INPUT"
+      ? submitButton.value
+      : submitButton.textContent
+    : "";
+
+  try {
+    if (submitButton) {
+      submitButton.disabled = true;
+
+      if (submitButton.tagName === "INPUT") {
+        submitButton.value = "Registering...";
+      } else {
+        submitButton.textContent = "Registering...";
+      }
     }
 
-    catch (error) {
+    // Backend checks duplicate admin email and ID.
 
-        console.error(
-            "Administrator Registration Error:",
-            error
-        );
+    const response = await fetch(
+      `${AUTH_URL}/admin/register`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          adminName,
+          adminId,
+          email: adminEmail,
+          designation,
+          password
+        })
+      }
+    );
 
+    const result = await response.json();
 
-        alert(
-            "Unable to register Administrator."
-        );
+    if (!response.ok) {
+      throw new Error(
+        result.message || "Admin registration failed."
+      );
     }
+
+    alert("Administrator Registration Successful!");
+
+    clearAdminForm();
+
+    window.location.replace("/login");
+
+  } catch (error) {
+    console.error("Administrator Registration Error:", error);
+
+    alert(
+      error.message || "Unable to register Administrator."
+    );
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+
+      if (submitButton.tagName === "INPUT") {
+        submitButton.value = originalButtonText;
+      } else {
+        submitButton.textContent = originalButtonText;
+      }
+    }
+  }
 }
 
-
-//=====================================================
+// =====================================================
 // EMAIL VALIDATION
-//=====================================================
+// =====================================================
 
 function validateEmail(email) {
-
-    const emailPattern =
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-
-    return emailPattern.test(
-        email
-    );
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-
-//=====================================================
-// INITIALIZE PAGE
-//=====================================================
+// =====================================================
+// INITIALIZE ADMIN REGISTRATION
+// =====================================================
 
 function initializeAdminRegistration() {
-
-    const form =
-        document.getElementById(
-            "adminRegisterForm"
-        );
-
-
-    if (!form) {
-
-        console.error(
-            "Admin Registration Form Not Found."
-        );
-
-        return;
-    }
-
-
-    // Prevent duplicate React bindings.
-
-    if (
-        form.dataset.initialized ===
-        "true"
-    ) {
-
-        return;
-    }
-
-
-    form.dataset.initialized =
-        "true";
-
-
-    form.addEventListener(
-        "submit",
-        registerAdmin
-    );
-
-
-    //=================================================
-    // PASSWORD STRENGTH
-    //=================================================
-
-    const passwordField =
-        document.getElementById(
-            "adminPassword"
-        );
-
-
-    if (passwordField) {
-
-        passwordField.addEventListener(
-            "keyup",
-            () => {
-
-                const password =
-                    passwordField.value;
-
-
-                if (
-                    password.length === 0
-                ) {
-
-                    passwordField.style.borderColor =
-                        "#ccc";
-
-                }
-
-                else if (
-                    password.length < 6
-                ) {
-
-                    passwordField.style.borderColor =
-                        "red";
-
-                }
-
-                else if (
-                    password.length < 8
-                ) {
-
-                    passwordField.style.borderColor =
-                        "orange";
-
-                }
-
-                else {
-
-                    passwordField.style.borderColor =
-                        "green";
-
-                }
-            }
-        );
-    }
-
-
-    //=================================================
-    // CONFIRM PASSWORD
-    //=================================================
-
-    const confirmPasswordField =
-        document.getElementById(
-            "adminConfirmPassword"
-        );
-
-
-    if (confirmPasswordField) {
-
-        confirmPasswordField.addEventListener(
-            "keyup",
-            () => {
-
-                const password =
-                    passwordField
-                        ? passwordField.value
-                        : "";
-
-
-                const confirmPassword =
-                    confirmPasswordField.value;
-
-
-                if (
-                    confirmPassword.length === 0
-                ) {
-
-                    confirmPasswordField
-                        .style
-                        .borderColor =
-                        "#ccc";
-
-                    return;
-                }
-
-
-                confirmPasswordField
-                    .style
-                    .borderColor =
-                    password === confirmPassword
-                        ? "green"
-                        : "red";
-            }
-        );
-    }
-
-
-    //=================================================
-    // ADMIN NAME
-    //=================================================
-
-    const adminNameField =
-        document.getElementById(
-            "adminName"
-        );
-
-
-    if (adminNameField) {
-
-        adminNameField.addEventListener(
-            "input",
-            () => {
-
-                adminNameField.value =
-                    adminNameField.value.replace(
-                        /[^a-zA-Z\s]/g,
-                        ""
-                    );
-            }
-        );
-
-
-        adminNameField.addEventListener(
-            "blur",
-            () => {
-
-                adminNameField.value =
-                    adminNameField.value
-                        .toLowerCase()
-                        .replace(
-                            /\b\w/g,
-                            letter =>
-                                letter.toUpperCase()
-                        );
-            }
-        );
-    }
-
-
-    //=================================================
-    // ADMIN ID
-    //=================================================
-
-    const adminIdField =
-        document.getElementById(
-            "adminId"
-        );
-
-
-    if (adminIdField) {
-
-        adminIdField.addEventListener(
-            "input",
-            () => {
-
-                adminIdField.value =
-                    adminIdField.value.replace(
-                        /\s/g,
-                        ""
-                    );
-            }
-        );
-    }
-
-
-    //=================================================
-    // EMAIL LOWERCASE
-    //=================================================
-
-    const emailField =
-        document.getElementById(
-            "adminEmail"
-        );
-
-
-    if (emailField) {
-
-        emailField.addEventListener(
-            "blur",
-            () => {
-
-                emailField.value =
-                    emailField.value
-                        .toLowerCase();
-            }
-        );
-    }
-
-
-    //=================================================
-    // ENTER KEY
-    //=================================================
-
-    form.addEventListener(
-        "keydown",
-        event => {
-
-            if (
-                event.key === "Enter" &&
-                event.target.tagName !==
-                    "TEXTAREA"
-            ) {
-
-                event.preventDefault();
-
-                form.requestSubmit();
-            }
-        }
-    );
-
-
-    //=================================================
-    // INITIAL FOCUS
-    //=================================================
-
-    if (adminNameField) {
-
-        adminNameField.focus();
-    }
+  const form =
+    document.getElementById("adminRegisterForm");
+
+  if (!form) {
+    console.error("Admin Registration Form Not Found.");
+    return;
+  }
+
+  if (form.dataset.initialized === "true") {
+    return;
+  }
+
+  form.dataset.initialized = "true";
+
+  form.addEventListener("submit", registerAdmin);
+
+  initializeAdminPasswordValidation();
+  initializeAdminConfirmPassword();
+  initializeAdminName();
+  initializeAdminId();
+  initializeAdminEmail();
+  initializeAdminEnterKey();
+
+  const adminNameField =
+    document.getElementById("adminName");
+
+  if (adminNameField) {
+    adminNameField.focus();
+  }
 }
 
+// =====================================================
+// PASSWORD STRENGTH
+// =====================================================
 
-//=====================================================
-// CLEAR FORM
-//=====================================================
+function initializeAdminPasswordValidation() {
+  const field =
+    document.getElementById("adminPassword");
+
+  if (
+    !field ||
+    field.dataset.passwordInitialized === "true"
+  ) {
+    return;
+  }
+
+  field.dataset.passwordInitialized = "true";
+
+  field.addEventListener("input", () => {
+    const password = field.value;
+
+    if (password.length === 0) {
+      field.style.borderColor = "#ccc";
+    } else if (password.length < 8) {
+      field.style.borderColor = "red";
+    } else if (password.length < 12) {
+      field.style.borderColor = "orange";
+    } else {
+      field.style.borderColor = "green";
+    }
+  });
+}
+
+// =====================================================
+// CONFIRM PASSWORD
+// =====================================================
+
+function initializeAdminConfirmPassword() {
+  const confirmField =
+    document.getElementById("adminConfirmPassword");
+
+  const passwordField =
+    document.getElementById("adminPassword");
+
+  if (
+    !confirmField ||
+    !passwordField ||
+    confirmField.dataset.confirmInitialized === "true"
+  ) {
+    return;
+  }
+
+  confirmField.dataset.confirmInitialized = "true";
+
+  confirmField.addEventListener("input", () => {
+    const password = passwordField.value;
+    const confirmPassword = confirmField.value;
+
+    if (!confirmPassword) {
+      confirmField.style.borderColor = "#ccc";
+    } else {
+      confirmField.style.borderColor =
+        password === confirmPassword
+          ? "green"
+          : "red";
+    }
+  });
+}
+
+// =====================================================
+// ADMIN NAME
+// =====================================================
+
+function initializeAdminName() {
+  const field = document.getElementById("adminName");
+
+  if (!field || field.dataset.nameInitialized === "true") {
+    return;
+  }
+
+  field.dataset.nameInitialized = "true";
+
+  field.addEventListener("input", () => {
+    field.value = field.value.replace(/[^a-zA-Z\s]/g, "");
+  });
+
+  field.addEventListener("blur", () => {
+    field.value = field.value
+      .toLowerCase()
+      .replace(/\b\w/g, letter => letter.toUpperCase());
+  });
+}
+
+// =====================================================
+// ADMIN ID
+// =====================================================
+
+function initializeAdminId() {
+  const field = document.getElementById("adminId");
+
+  if (!field || field.dataset.idInitialized === "true") {
+    return;
+  }
+
+  field.dataset.idInitialized = "true";
+
+  field.addEventListener("input", () => {
+    field.value = field.value.replace(/\s/g, "");
+  });
+}
+
+// =====================================================
+// EMAIL LOWERCASE
+// =====================================================
+
+function initializeAdminEmail() {
+  const field = document.getElementById("adminEmail");
+
+  if (
+    !field ||
+    field.dataset.emailInitialized === "true"
+  ) {
+    return;
+  }
+
+  field.dataset.emailInitialized = "true";
+
+  field.addEventListener("blur", () => {
+    field.value = field.value.trim().toLowerCase();
+  });
+}
+
+// =====================================================
+// ENTER KEY
+// =====================================================
+
+function initializeAdminEnterKey() {
+  const form =
+    document.getElementById("adminRegisterForm");
+
+  if (!form || form.dataset.enterInitialized === "true") {
+    return;
+  }
+
+  form.dataset.enterInitialized = "true";
+
+  form.addEventListener("keydown", event => {
+    if (
+      event.key === "Enter" &&
+      event.target.tagName !== "TEXTAREA" &&
+      event.target.tagName !== "BUTTON"
+    ) {
+      event.preventDefault();
+      form.requestSubmit();
+    }
+  });
+}
+
+// =====================================================
+// CLEAR ADMIN FORM
+// =====================================================
 
 function clearAdminForm() {
+  const form =
+    document.getElementById("adminRegisterForm");
 
-    const form =
-        document.getElementById(
-            "adminRegisterForm"
-        );
+  if (form) {
+    form.reset();
+  }
 
+  const passwordField =
+    document.getElementById("adminPassword");
 
-    if (form) {
+  const confirmPasswordField =
+    document.getElementById("adminConfirmPassword");
 
-        form.reset();
-    }
+  if (passwordField) {
+    passwordField.style.borderColor = "#ccc";
+  }
 
-
-    const passwordField =
-        document.getElementById(
-            "adminPassword"
-        );
-
-
-    const confirmPasswordField =
-        document.getElementById(
-            "adminConfirmPassword"
-        );
-
-
-    if (passwordField) {
-
-        passwordField.style.borderColor =
-            "#ccc";
-    }
-
-
-    if (confirmPasswordField) {
-
-        confirmPasswordField
-            .style
-            .borderColor =
-            "#ccc";
-    }
+  if (confirmPasswordField) {
+    confirmPasswordField.style.borderColor = "#ccc";
+  }
 }
 
-
-//=====================================================
+// =====================================================
 // LOGOUT ADMIN
-//=====================================================
+// =====================================================
 
 async function logoutAdmin() {
+  sessionStorage.removeItem("courseManagementSession");
+  sessionStorage.removeItem("token");
 
-    try {
-
-        await clearSessions();
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Logout Error:",
-            error
-        );
-    }
-
-
-    window.location.replace(
-        "/login"
-    );
+  window.location.replace("/login");
 }
 
+// =====================================================
+// START PAGE
+// =====================================================
 
-//=====================================================
-// REACT-COMPATIBLE PAGE INITIALIZATION
-//=====================================================
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeAdminRegistration,
-        {
-            once: true
-        }
-    );
-
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeAdminRegistration,
+    { once: true }
+  );
+} else {
+  initializeAdminRegistration();
 }
 
-else {
-
-    initializeAdminRegistration();
-}
-
-
-//=====================================================
-// CHECK EXISTING SESSION
-//=====================================================
-
-(async function checkExistingSession() {
-
-    try {
-
-        const session =
-            await getSession();
-
-
-        if (
-            session &&
-            session.role === "admin"
-        ) {
-
-            console.log(
-                "Administrator session available."
-            );
-        }
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Unable to check Administrator session:",
-            error
-        );
-    }
-})();
-
-
-//=====================================================
+// =====================================================
 // GLOBAL FUNCTIONS
-//=====================================================
+// =====================================================
 
-window.clearAdminForm =
-    clearAdminForm;
-
-window.logoutAdmin =
-    logoutAdmin;
+window.clearAdminForm = clearAdminForm;
+window.logoutAdmin = logoutAdmin;

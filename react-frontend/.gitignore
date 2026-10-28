@@ -1,41 +1,19 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-# Task 9 & 10 - JWT secrets
+# Environment variables
 .env
 .env.*
 !.env.example
 
-# Dependencies in all project folders
-**/node_modules/
+# Dependencies
+node_modules/
 
 # Build files
-**/dist/
+dist/
+build/
 
 # Database backups
-db-backup.json
-**/db-backup.json
+mongodb-backup/
+*.backup.json
+*.before-mongodb-migration.json
 
-# Local database containing user records
-mock-api/db.json
+# Logs
+*.log

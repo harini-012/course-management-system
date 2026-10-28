@@ -610,3 +610,40 @@ footer {
         white-space: nowrap;
     }
 }
+/* ========== CENTER MY COURSES & NOTIFICATIONS ========== */
+
+.main {
+    width: min(1200px, 92%);
+    margin: 30px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+}
+
+/* Both existing dashboard columns */
+.main > div {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Center My Courses and Recent Notifications */
+.main > div:first-child .section {
+    width: 100%;
+}
+
+/* Center headings */
+.main > div:first-child .section h2 {
+    text-align: center;
+}
+
+/* Center course table text */
+.main > div:first-child table th,
+.main > div:first-child table td {
+    text-align: center;
+}
+
+/* Center notification text */
+#notificationContainer > div {
+    text-align: center;
+}

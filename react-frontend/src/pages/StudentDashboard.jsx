@@ -180,7 +180,24 @@ export default function StudentDashboard() {
 
 
                 {/* ================= MAIN ================= */}
+                            {/* ================= REAL-TIME CHAT ================= */}
 
+<div style={{ margin: "20px 0", textAlign: "center" }}>
+    <a
+        href="/chat"
+        style={{
+            display: "inline-block",
+            padding: "12px 24px",
+            background: "#2563EB",
+            color: "white",
+            borderRadius: "8px",
+            textDecoration: "none",
+            fontWeight: "600"
+        }}
+    >
+        Open Student Chat
+    </a>
+</div>
                 <div className="main">
 
                     <div>
@@ -236,48 +253,12 @@ export default function StudentDashboard() {
 
                         {/* ================= LEARNING PROGRESS ================= */}
 
-                        <div className="section">
-
-                            <h2>
-                                Learning Progress
-                            </h2>
-
-
-                            <img
-                                src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=700&auto=format&fit=crop"
-                                width="100%"
-                                alt="Learning progress"
-                            />
-
-
-                            <p
-                                style={{
-                                    textAlign: "center",
-                                    color: "gray",
-                                    marginTop: "15px"
-                                }}
-                            >
-                                Progress analytics will be
-                                displayed here.
-                            </p>
-
-                        </div>
+                        
 
 
                         {/* ================= OVERVIEW ================= */}
 
-                        <div className="section">
-
-                            <h2>
-                                Quick Overview
-                            </h2>
-
-
-                            <div
-                                id="quickOverview"
-                            ></div>
-
-                        </div>
+                       
 
                     </div>
 

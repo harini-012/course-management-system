@@ -4,10 +4,10 @@ import {
     Navigate
 } from "react-router-dom";
 import NotFound from "./pages/NotFound";
-
+import SocketStatus from "./components/SocketStatus";
 import Home
     from "./pages/Home";
-
+import Chat from "./pages/Chat";
 import Login
     from "./pages/Login";
 
@@ -60,7 +60,8 @@ import ResetPassword
 function App() {
 
     return (
-
+    <>
+         <SocketStatus />
         <Routes>
 
             {/* =====================================
@@ -322,13 +323,14 @@ function App() {
                 element={<EditCourse />}
             />
 
-
+            <Route path="/chat" element={<Chat />} />
             {/* =====================================
                 UNKNOWN ROUTE
             ====================================== */}
 
             <Route path="*" element={<NotFound />} />
         </Routes>
+    </>
     );
 }
 

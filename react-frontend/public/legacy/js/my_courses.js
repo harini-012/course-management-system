@@ -1,7 +1,3 @@
-//=====================================================
-// MY COURSES
-// MOCK API + REACT VERSION
-//=====================================================
 
 import {
     getData,
@@ -12,767 +8,535 @@ import {
     clearSessions
 } from "./api.js";
 
+// =============================================
+// MY COURSES - STUDENT DASHBOARD
+// =============================================
 
 let student = null;
-
 let enrolledCourses = [];
-
 let courses = [];
-
 let progressRecords = [];
 
+// =============================================
+// HELPERS
+// =============================================
 
-//=====================================================
+function normalize(value) {
+    return String(value ?? "").trim().toLowerCase();
+}
+
+function escapeHTML(value) {
+    return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+function setText(id, value) {
+    const element = document.getElementById(id);
+
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function isRejected(enrollment) {
+    return normalize(enrollment.status) === "rejected";
+}
+
+// Rejected enrollments remain visible but do not
+// contribute to the Enrolled Courses count.
+function getActiveEnrollmentCount() {
+    return enrolledCourses.filter(
+        enrollment => !isRejected(enrollment)
+    ).length;
+}
+
+function belongsToStudent(record) {
+    if (record.studentId != null && student?.id != null) {
+        return String(record.studentId) === String(student.id);
+    }
+
+    return normalize(record.studentEmail) ===
+        normalize(student?.email);
+}
+
+// =============================================
+// FIND COURSE
+// =============================================
+
+function findCourseForEnrollment(enrollment) {
+    const enrollmentIds = [
+        enrollment.courseId,
+        enrollment.courseKey
+    ]
+        .filter(value => value != null)
+        .map(normalize);
+
+    if (enrollmentIds.length > 0) {
+        return courses.find(course => {
+            const courseIds = [
+                course.id,
+                course.courseKey,
+                course.key
+            ]
+                .filter(value => value != null)
+                .map(normalize);
+
+            return enrollmentIds.some(id =>
+                courseIds.includes(id)
+            );
+        }) || null;
+    }
+
+    const title = normalize(
+        enrollment.title ||
+        enrollment.course ||
+        enrollment.courseTitle
+    );
+
+    return courses.find(course =>
+        title && normalize(course.title) === title
+    ) || null;
+}
+
+// =============================================
+// FIND PROGRESS
+// =============================================
+
+function findProgressForEnrollment(enrollment) {
+    const identifiers = [
+        enrollment.courseId,
+        enrollment.courseKey
+    ]
+        .filter(value => value != null)
+        .map(normalize);
+
+    const matchingRecords = progressRecords.filter(progress => {
+        const progressIds = [
+            progress.courseId,
+            progress.courseKey
+        ]
+            .filter(value => value != null)
+            .map(normalize);
+
+        if (identifiers.length > 0) {
+            return identifiers.some(id =>
+                progressIds.includes(id)
+            );
+        }
+
+        const title = normalize(
+            enrollment.title ||
+            enrollment.course ||
+            enrollment.courseTitle
+        );
+
+        return title &&
+            normalize(progress.courseTitle) === title;
+    });
+
+    matchingRecords.sort((a, b) => {
+        const aCount = Array.isArray(a.completedVideos)
+            ? new Set(a.completedVideos.map(String)).size
+            : 0;
+
+        const bCount = Array.isArray(b.completedVideos)
+            ? new Set(b.completedVideos.map(String)).size
+            : 0;
+
+        if (bCount !== aCount) {
+            return bCount - aCount;
+        }
+
+        const percentageDifference =
+            Number(b.percentage || 0) -
+            Number(a.percentage || 0);
+
+        if (percentageDifference !== 0) {
+            return percentageDifference;
+        }
+
+        if (a.completed !== b.completed) {
+            return b.completed === true ? 1 : -1;
+        }
+
+        return (
+            (new Date(
+                b.updatedAt || b.startedAt || 0
+            ).getTime() || 0) -
+            (new Date(
+                a.updatedAt || a.startedAt || 0
+            ).getTime() || 0)
+        );
+    });
+
+    return matchingRecords[0] || null;
+}
+
+// =============================================
 // INITIALIZE
-//=====================================================
+// =============================================
 
 async function initializeMyCourses() {
-
     try {
+        const session = await getSession();
 
-        //=================================================
-        // SESSION
-        //=================================================
-
-        const session =
-            await getSession();
-
-
-        if (
-            !session ||
-            session.role !== "student"
-        ) {
-
-            window.location.replace(
-                "/login"
-            );
-
+        if (!session || session.role !== "student") {
+            window.location.replace("/login");
             return;
         }
 
+        student = await getById(
+            "students",
+            session.userId
+        );
 
-        //=================================================
-        // STUDENT
-        //=================================================
-
-        student =
-            await getById(
-                "students",
-                session.userId
-            );
-
-
-        if (
-            !student ||
-            student.active === false
-        ) {
-
+        if (!student || student.active === false) {
             await clearSessions();
-
-
-            window.location.replace(
-                "/login"
-            );
-
+            window.location.replace("/login");
             return;
         }
-
-
-        //=================================================
-        // LOAD DATA
-        //=================================================
 
         const [
             enrollmentData,
             courseData,
             progressData
-        ] =
-            await Promise.all([
+        ] = await Promise.all([
+            queryData("enrollments", {
+                studentEmail: student.email
+            }),
+            getData("courses"),
+            queryData("progress", {
+                studentEmail: student.email
+            })
+        ]);
 
-                queryData(
-                    "enrollments",
-                    {
-                        studentEmail:
-                            student.email
-                    }
-                ),
+        // Keep rejected and deleted-course enrollment
+        // records for display in My Courses.
+        enrolledCourses = Array.isArray(enrollmentData)
+            ? enrollmentData.filter(belongsToStudent)
+            : [];
 
-                getData(
-                    "courses"
-                ),
+        courses = Array.isArray(courseData)
+            ? courseData
+            : [];
 
-                queryData(
-                    "progress",
-                    {
-                        studentEmail:
-                            student.email
-                    }
-                )
-
-            ]);
-
-
-        enrolledCourses =
-            Array.isArray(
-                enrollmentData
-            )
-                ? enrollmentData
-                : [];
-
-
-        courses =
-            Array.isArray(
-                courseData
-            )
-                ? courseData
-                : [];
-
-
-        progressRecords =
-            Array.isArray(
-                progressData
-            )
-                ? progressData
-                : [];
-
+        progressRecords = Array.isArray(progressData)
+            ? progressData.filter(belongsToStudent)
+            : [];
 
         renderMyCourses();
-
-
         initializeLogoutButton();
 
-    }
-
-    catch (error) {
-
-        console.error(
-            "My Courses Error:",
-            error
-        );
+    } catch (error) {
+        console.error("My Courses Error:", error);
     }
 }
 
-
-//=====================================================
-// FIND COURSE
-//=====================================================
-
-function findCourseForEnrollment(
-    enrollment
-) {
-
-    return courses.find(
-        course =>
-
-            (
-                enrollment.courseId !== undefined &&
-                String(course.id) ===
-                String(enrollment.courseId)
-            )
-
-            ||
-
-            (
-                enrollment.courseKey &&
-                (
-                    String(course.courseKey) ===
-                        String(enrollment.courseKey)
-
-                    ||
-
-                    String(course.key) ===
-                        String(enrollment.courseKey)
-
-                    ||
-
-                    String(course.id) ===
-                        String(enrollment.courseKey)
-                )
-            )
-
-            ||
-
-            (
-                enrollment.title &&
-                course.title ===
-                    enrollment.title
-            )
-
-            ||
-
-            (
-                enrollment.course &&
-                course.title ===
-                    enrollment.course
-            )
-
-    ) || null;
-}
-
-
-//=====================================================
-// FIND PROGRESS
-//=====================================================
-
-function findProgressForEnrollment(
-    enrollment
-) {
-
-    const matchingRecords =
-        progressRecords.filter(
-            progress =>
-
-                (
-                    enrollment.courseId !== undefined &&
-                    progress.courseId !== undefined &&
-                    String(
-                        progress.courseId
-                    ) ===
-                    String(
-                        enrollment.courseId
-                    )
-                )
-
-                ||
-
-                (
-                    enrollment.courseKey &&
-                    progress.courseKey &&
-                    String(
-                        progress.courseKey
-                    ) ===
-                    String(
-                        enrollment.courseKey
-                    )
-                )
-
-                ||
-
-                (
-                    progress.courseTitle &&
-                    (
-                        progress.courseTitle ===
-                            enrollment.title
-
-                        ||
-
-                        progress.courseTitle ===
-                            enrollment.course
-                    )
-                )
-        );
-
-
-    if (
-        matchingRecords.length === 0
-    ) {
-
-        return null;
-    }
-
-
-    //=================================================
-    // CHOOSE BEST PROGRESS RECORD
-    //=================================================
-
-    matchingRecords.sort(
-        (a, b) => {
-
-            const aVideos =
-                Array.isArray(
-                    a.completedVideos
-                )
-                    ? a.completedVideos.length
-                    : 0;
-
-
-            const bVideos =
-                Array.isArray(
-                    b.completedVideos
-                )
-                    ? b.completedVideos.length
-                    : 0;
-
-
-            if (
-                bVideos !== aVideos
-            ) {
-
-                return (
-                    bVideos -
-                    aVideos
-                );
-            }
-
-
-            const aPercentage =
-                Number(
-                    a.percentage || 0
-                );
-
-
-            const bPercentage =
-                Number(
-                    b.percentage || 0
-                );
-
-
-            if (
-                bPercentage !==
-                aPercentage
-            ) {
-
-                return (
-                    bPercentage -
-                    aPercentage
-                );
-            }
-
-
-            if (
-                b.completed === true &&
-                a.completed !== true
-            ) {
-
-                return 1;
-            }
-
-
-            if (
-                a.completed === true &&
-                b.completed !== true
-            ) {
-
-                return -1;
-            }
-
-
-            return (
-                new Date(
-                    b.updatedAt ||
-                    b.startedAt ||
-                    0
-                ).getTime()
-                -
-                new Date(
-                    a.updatedAt ||
-                    a.startedAt ||
-                    0
-                ).getTime()
-            );
-        }
-    );
-
-
-    return matchingRecords[0];
-}
-
-
-//=====================================================
-// RENDER
-//=====================================================
+// =============================================
+// RENDER MY COURSES
+// =============================================
 
 function renderMyCourses() {
-
     const container =
-        document.getElementById(
-            "courseContainer"
-        );
+        document.getElementById("courseContainer");
 
+    if (!container) return;
 
-    if (!container) {
-
-        return;
-    }
-
-
-    //=================================================
-    // EMPTY
-    //=================================================
-
-    if (
-        enrolledCourses.length === 0
-    ) {
-
+    if (enrolledCourses.length === 0) {
         container.innerHTML = `
-
             <div class="empty">
-
-                <h3>
-                    No Courses Enrolled Yet
-                </h3>
-
+                <h3>No Courses Enrolled Yet</h3>
                 <p>
-                    Browse courses and enroll
-                    to start learning.
+                    Browse courses and enroll to start learning.
                 </p>
-
-                <a
-                    href="/courses"
-                    class="browse"
-                >
+                <a href="/courses" class="browse">
                     Browse Courses
                 </a>
-
             </div>
         `;
 
+        updateStatistics(0, 0, 0, 0, 0);
 
-        updateStatistics(
-            0,
-            0,
-            0,
-            0,
-            0
-        );
+        const activity =
+            document.getElementById("activityContainer");
 
-
-        const activityContainer =
-            document.getElementById(
-                "activityContainer"
-            );
-
-
-        if (activityContainer) {
-
-            activityContainer.innerHTML = `
-
+        if (activity) {
+            activity.innerHTML = `
                 <div class="empty">
-
-                    <h3>
-                        No Recent Activity
-                    </h3>
-
+                    <h3>No Recent Activity</h3>
                     <p>
-                        Start a course to see
-                        your learning activity.
+                        Start a course to see your learning activity.
                     </p>
-
                 </div>
             `;
         }
-
 
         return;
     }
 
+    let html = "";
+    let completedCourses = 0;
+    let inProgressCourses = 0;
+    let totalProgress = 0;
+    let totalVideos = 0;
+    let watchedVideosCount = 0;
+    let rejectedCourses = 0;
+    let unavailableCourses = 0;
 
-    let html =
-        "";
+    enrolledCourses.forEach(enrollment => {
+        const course =
+            findCourseForEnrollment(enrollment);
 
+        const progressRecord =
+            findProgressForEnrollment(enrollment);
 
-    let completedCourses =
-        0;
+        const rejected = isRejected(enrollment);
+        const deleted = !course;
 
-
-    let inProgressCourses =
-        0;
-
-
-    let totalProgress =
-        0;
-
-
-    let totalVideos =
-        0;
-
-
-    let watchedVideosCount =
-        0;
-
-
-    //=================================================
-    // COURSE CARDS
-    //=================================================
-
-    enrolledCourses.forEach(
-        enrollment => {
-
-            const course =
-                findCourseForEnrollment(
-                    enrollment
-                );
-
-
-            const progressRecord =
-                findProgressForEnrollment(
-                    enrollment
-                );
-
-
-            const progress =
-                Math.min(
-                    100,
-                    Math.max(
-                        0,
-                        Number(
-                            progressRecord
-                                ?.percentage ||
-                            0
-                        )
-                    )
-                );
-
-
-            totalProgress +=
-                progress;
-
-
-            const watchedVideos =
-                Array.isArray(
-                    progressRecord
-                        ?.completedVideos
+        const watchedVideos = Array.isArray(
+            progressRecord?.completedVideos
+        )
+            ? [
+                ...new Set(
+                    progressRecord.completedVideos.map(String)
                 )
-                    ? progressRecord
-                        .completedVideos
-                    : [];
+            ]
+            : [];
 
+        const courseVideos =
+            Number(progressRecord?.totalVideos) > 0
+                ? Number(progressRecord.totalVideos)
+                : Array.isArray(course?.videos)
+                    ? course.videos.length
+                    : 0;
 
-            let courseVideos =
-                0;
+        const completed =
+            progressRecord?.completed === true ||
+            enrollment.completed === true ||
+            normalize(enrollment.status) === "completed";
 
+        let progress = Math.min(
+            100,
+            Math.max(
+                0,
+                Number(progressRecord?.percentage || 0)
+            )
+        );
 
-            if (
-                Number(
-                    progressRecord
-                        ?.totalVideos
-                ) > 0
-            ) {
+        if (completed) {
+            progress = 100;
+        }
 
-                courseVideos =
-                    Number(
-                        progressRecord
-                            .totalVideos
-                    );
+        // Exclude rejected courses from statistics.
+        if (rejected) {
+            rejectedCourses++;
+        } else {
+            totalProgress += progress;
+            totalVideos += courseVideos;
+            watchedVideosCount += watchedVideos.length;
 
-            }
-
-            else if (
-                course &&
-                Array.isArray(
-                    course.videos
-                )
-            ) {
-
-                courseVideos =
-                    course.videos.length;
-            }
-
-
-            watchedVideosCount +=
-                watchedVideos.length;
-
-
-            totalVideos +=
-                courseVideos;
-
-
-            let status =
-                "Enrolled";
-
-
-            if (
-                progress > 0 &&
-                progress < 100
-            ) {
-
-                status =
-                    "In Progress";
-
-
+            if (completed || progress === 100) {
+                completedCourses++;
+            } else if (progress > 0) {
                 inProgressCourses++;
             }
+        }
 
+        if (deleted) {
+            unavailableCourses++;
+        }
 
-            if (
-                progress === 100 ||
-                progressRecord
-                    ?.completed === true
-            ) {
+        let status = "Enrolled";
 
-                status =
-                    "Completed";
+        if (completed || progress === 100) {
+            status = "Completed";
+        } else if (progress > 0) {
+            status = "In Progress";
+        }
 
+        if (rejected) {
+            status = "Rejected";
+        } else if (deleted) {
+            status = "Course Unavailable";
+        }
 
-                completedCourses++;
-            }
+        const title =
+            enrollment.title ||
+            enrollment.course ||
+            enrollment.courseTitle ||
+            course?.title ||
+            progressRecord?.courseTitle ||
+            "Deleted Course";
 
+        const enrollmentId =
+            String(enrollment.id ?? "");
 
-            const title =
-                enrollment.title ||
-                enrollment.course ||
-                course?.title ||
-                "Course";
+        const canLearn = !rejected && !deleted;
 
+        const buttonText =
+            completed || progress === 100
+                ? "Review Course"
+                : progress > 0
+                    ? "Continue Learning"
+                    : "Start Course";
 
-            const enrollmentId =
-                String(
-                    enrollment.id
-                );
+        let message = "";
 
+        if (rejected) {
+            message = `
+                <p style="
+                    color:#b91c1c;
+                    margin-top:12px;
+                ">
+                    Your enrollment for this course
+                    was rejected.
+                </p>
+            `;
+        } else if (deleted) {
+            message = `
+                <p style="
+                    color:#b45309;
+                    margin-top:12px;
+                ">
+                    This course is no longer available.
+                    Your previous learning progress
+                    is preserved.
+                </p>
+            `;
+        }
 
-            html += `
+        html += `
+            <div class="course-card">
 
-                <div class="course-card">
+                <div class="course-header">
+                    <h3>${escapeHTML(title)}</h3>
 
-                    <div class="course-header">
+                    <div class="status">
+                        ${escapeHTML(status)}
+                    </div>
+                </div>
 
-                        <h3>
-                            ${escapeHTML(title)}
-                        </h3>
+                <div class="course-info">
 
-                        <div class="status">
-                            ${status}
-                        </div>
-
+                    <div class="info-box">
+                        <h4>Status</h4>
+                        <p>${escapeHTML(status)}</p>
                     </div>
 
-
-                    <div class="course-info">
-
-                        <div class="info-box">
-
-                            <h4>
-                                Status
-                            </h4>
-
-                            <p>
-                                ${status}
-                            </p>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <h4>
-                                Progress
-                            </h4>
-
-                            <p>
-                                ${progress}%
-                            </p>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <h4>
-                                Videos
-                            </h4>
-
-                            <p>
-
-                                ${watchedVideos.length}/${courseVideos}
-
-                                Watched
-
-                            </p>
-
-                        </div>
-
-
-                        <div class="info-box">
-
-                            <h4>
-                                Materials
-                            </h4>
-
-                            <p>
-                                ${
-                                    course &&
-                                    Array.isArray(
-                                        course.materials
-                                    )
-                                        ? course.materials.length
-                                        : 0
-                                } Available
-                            </p>
-
-                        </div>
-
+                    <div class="info-box">
+                        <h4>Progress</h4>
+                        <p>${progress}%</p>
                     </div>
 
-
-                    <div class="progress-title">
-                        Learning Progress
+                    <div class="info-box">
+                        <h4>Videos</h4>
+                        <p>
+                            ${watchedVideos.length}/${courseVideos}
+                            Watched
+                        </p>
                     </div>
 
-
-                    <div class="progress">
-
-                        <div
-                            class="progress-fill"
-                            style="width:${progress}%;"
-                        >
-                        </div>
-
-                    </div>
-
-
-                    <div class="progress-text">
-
-                        ${progress}% Completed
-
-                    </div>
-
-
-                    <div class="buttons">
-
-                        <button
-                            class="btn start"
-                            onclick="startCourse('${escapeAttribute(
-                                enrollmentId
-                            )}')"
-                        >
-
+                    <div class="info-box">
+                        <h4>Materials</h4>
+                        <p>
                             ${
-                                progress === 100
-                                    ? "Review Course"
-                                    : progress > 0
-                                        ? "Continue Learning"
-                                        : "Start Course"
-                            }
-
-                        </button>
-
-
-                        <button
-                            class="btn details"
-                            onclick="viewCourse('${escapeAttribute(
-                                enrollmentId
-                            )}')"
-                        >
-
-                            View Details
-
-                        </button>
-
+                                Array.isArray(course?.materials)
+                                    ? course.materials.length
+                                    : 0
+                            } Available
+                        </p>
                     </div>
 
                 </div>
-            `;
-        }
-    );
 
+                <div class="progress-title">
+                    Learning Progress
+                </div>
 
-    container.innerHTML =
-        html;
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        style="width:${progress}%;"
+                    ></div>
+                </div>
 
+                <div class="progress-text">
+                    ${progress}% Completed
+                </div>
 
-    //=================================================
-    // OVERALL
-    //=================================================
+                ${message}
 
-    const overall =
-        enrolledCourses.length > 0
-            ? Math.round(
-                totalProgress /
-                enrolledCourses.length
-            )
-            : 0;
+                <div class="buttons">
 
+                    <button
+                        class="btn start"
+                        data-enrollment-id="${escapeHTML(enrollmentId)}"
+                        data-action="start"
+                        ${canLearn ? "" : "disabled"}
+                        style="${
+                            canLearn
+                                ? ""
+                                : "opacity:0.5;cursor:not-allowed;"
+                        }"
+                    >
+                        ${
+                            canLearn
+                                ? buttonText
+                                : rejected
+                                    ? "Enrollment Rejected"
+                                    : "Course Unavailable"
+                        }
+                    </button>
+
+                    <button
+                        class="btn details"
+                        data-enrollment-id="${escapeHTML(enrollmentId)}"
+                        data-action="details"
+                        ${canLearn ? "" : "disabled"}
+                        style="${
+                            canLearn
+                                ? ""
+                                : "opacity:0.5;cursor:not-allowed;"
+                        }"
+                    >
+                        View Details
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+
+    // Attach events to enabled course buttons.
+    container.querySelectorAll("[data-action]").forEach(button => {
+        button.addEventListener("click", () => {
+            const enrollmentId =
+                button.dataset.enrollmentId;
+
+            if (button.dataset.action === "start") {
+                startCourse(enrollmentId);
+            } else {
+                viewCourse(enrollmentId);
+            }
+        });
+    });
+
+    // Rejected courses do not affect overall progress.
+    const activeEnrollmentCount =
+        getActiveEnrollmentCount();
+
+    const overall = activeEnrollmentCount > 0
+        ? Math.round(
+            totalProgress / activeEnrollmentCount
+        )
+        : 0;
 
     updateStatistics(
         completedCourses,
@@ -782,70 +546,54 @@ function renderMyCourses() {
         totalVideos
     );
 
+    // =========================================
+    // RECENT ACTIVITY
+    // =========================================
 
-    //=================================================
-    // ACTIVITY
-    //=================================================
+    const activity =
+        document.getElementById("activityContainer");
 
-    const activityContainer =
-        document.getElementById(
-            "activityContainer"
-        );
-
-
-    if (activityContainer) {
-
-        activityContainer.innerHTML = `
-
+    if (activity) {
+        activity.innerHTML = `
             <div class="course-card">
 
                 <div class="course-header">
-
-                    <h3>
-                        Recent Activity
-                    </h3>
-
-                    <div class="status">
-                        Today
-                    </div>
-
+                    <h3>Recent Activity</h3>
+                    <div class="status">Overview</div>
                 </div>
 
-
-                <p
-                    style="
-                        font-size:17px;
-                        line-height:30px;
-                        color:#555;
-                    "
-                >
-
-                    Enrolled Courses :
-                    <b>
-                        ${enrolledCourses.length}
-                    </b>
+                <p style="
+                    font-size:17px;
+                    line-height:30px;
+                    color:#555;
+                ">
+                    Enrolled Courses:
+                    <b>${activeEnrollmentCount}</b>
 
                     <br><br>
 
-                    Completed Courses :
-                    <b>
-                        ${completedCourses}
-                    </b>
+                    Completed Courses:
+                    <b>${completedCourses}</b>
 
                     <br><br>
 
-                    Videos Watched :
-                    <b>
-                        ${watchedVideosCount}/${totalVideos}
-                    </b>
+                    Rejected Enrollments:
+                    <b>${rejectedCourses}</b>
 
                     <br><br>
 
-                    Overall Progress :
-                    <b>
-                        ${overall}%
-                    </b>
+                    Unavailable Courses:
+                    <b>${unavailableCourses}</b>
 
+                    <br><br>
+
+                    Videos Watched:
+                    <b>${watchedVideosCount}/${totalVideos}</b>
+
+                    <br><br>
+
+                    Overall Progress:
+                    <b>${overall}%</b>
                 </p>
 
             </div>
@@ -853,10 +601,9 @@ function renderMyCourses() {
     }
 }
 
-
-//=====================================================
-// STATISTICS
-//=====================================================
+// =============================================
+// UPDATE STATISTICS
+// =============================================
 
 function updateStatistics(
     completedCourses,
@@ -865,61 +612,51 @@ function updateStatistics(
     watchedVideos,
     totalVideos
 ) {
+    const activeEnrollmentCount =
+        getActiveEnrollmentCount();
 
     setText(
         "totalCourses",
-        enrolledCourses.length
+        activeEnrollmentCount
     );
-
 
     setText(
         "enrolledCount",
-        enrolledCourses.length
+        activeEnrollmentCount
     );
-
 
     setText(
         "progressCount",
         inProgressCourses
     );
 
-
     setText(
         "completedCount",
         completedCourses
     );
 
-
+    // Keep the existing certificate counter logic.
     setText(
         "certificateCount",
         completedCourses
     );
-
 
     setText(
         "lessonCount",
         watchedVideos
     );
 
-
     setText(
         "videoCount",
         totalVideos
     );
 
-
     const overallProgress =
-        document.getElementById(
-            "overallProgress"
-        );
-
+        document.getElementById("overallProgress");
 
     if (overallProgress) {
-
-        overallProgress.style.width =
-            `${overall}%`;
+        overallProgress.style.width = `${overall}%`;
     }
-
 
     setText(
         "overallProgressText",
@@ -927,217 +664,141 @@ function updateStatistics(
     );
 }
 
-
-//=====================================================
+// =============================================
 // FIND ENROLLMENT
-//=====================================================
+// =============================================
 
-function findEnrollment(
-    enrollmentId
-) {
-
-    return enrolledCourses.find(
-        enrollment =>
-            String(enrollment.id) ===
-            String(enrollmentId)
+function findEnrollment(enrollmentId) {
+    return enrolledCourses.find(enrollment =>
+        String(enrollment.id) === String(enrollmentId)
     ) || null;
 }
 
+// =============================================
+// CHECK COURSE ACCESS
+// =============================================
 
-//=====================================================
+function canAccessCourse(enrollment) {
+    if (!enrollment) {
+        alert("Course enrollment not found.");
+        return false;
+    }
+
+    if (isRejected(enrollment)) {
+        alert("Your enrollment has been rejected.");
+        return false;
+    }
+
+    if (!findCourseForEnrollment(enrollment)) {
+        alert("This course is no longer available.");
+        return false;
+    }
+
+    return true;
+}
+
+// =============================================
 // VIEW COURSE
-//=====================================================
+// =============================================
 
-async function viewCourse(
-    enrollmentId
-) {
-
+async function viewCourse(enrollmentId) {
     try {
-
         const enrollment =
-            findEnrollment(
-                enrollmentId
-            );
+            findEnrollment(enrollmentId);
 
-
-        if (!enrollment) {
-
-            alert(
-                "Course enrollment not found."
-            );
-
+        if (!canAccessCourse(enrollment)) {
             return;
         }
-
 
         const course =
-            findCourseForEnrollment(
-                enrollment
-            );
-
+            findCourseForEnrollment(enrollment);
 
         const selectedCourseKey =
-            course
-                ? (
-                    course.courseKey ||
-                    course.key ||
-                    course.id
-                )
-                : (
-                    enrollment.courseKey ||
-                    enrollment.courseId
-                );
-
+            course.courseKey ||
+            course.key ||
+            course.id;
 
         if (!selectedCourseKey) {
-
-            alert(
-                "Course information not found."
-            );
-
+            alert("Course information not found.");
             return;
         }
-
 
         await patchData(
             "appState",
             "current",
             {
-                selectedCourseKey:
-                    selectedCourseKey
+                selectedCourseKey
             }
         );
-
 
         window.location.href =
             "/course-details";
 
-    }
-
-    catch (error) {
-
-        console.error(
-            "View Course Error:",
-            error
-        );
-
-
-        alert(
-            "Unable to open course details."
-        );
+    } catch (error) {
+        console.error("View Course Error:", error);
+        alert("Unable to open course details.");
     }
 }
 
-
-//=====================================================
+// =============================================
 // START COURSE
-//=====================================================
+// =============================================
 
-async function startCourse(
-    enrollmentId
-) {
-
+async function startCourse(enrollmentId) {
     try {
-
         const enrollment =
-            findEnrollment(
-                enrollmentId
-            );
+            findEnrollment(enrollmentId);
 
-
-        if (!enrollment) {
-
-            alert(
-                "Course enrollment not found."
-            );
-
+        if (!canAccessCourse(enrollment)) {
             return;
         }
-
 
         const course =
-            findCourseForEnrollment(
-                enrollment
-            );
-
+            findCourseForEnrollment(enrollment);
 
         const selectedCourseKey =
-            course
-                ? (
-                    course.courseKey ||
-                    course.key ||
-                    course.id
-                )
-                : (
-                    enrollment.courseKey ||
-                    enrollment.courseId
-                );
-
+            course.courseKey ||
+            course.key ||
+            course.id;
 
         if (!selectedCourseKey) {
-
-            alert(
-                "Course information not found."
-            );
-
+            alert("Course information not found.");
             return;
         }
-
 
         await patchData(
             "appState",
             "current",
             {
-                selectedCourseKey:
-                    selectedCourseKey
+                selectedCourseKey
             }
         );
-
 
         window.location.href =
             "/start-course";
 
-    }
-
-    catch (error) {
-
-        console.error(
-            "Start Course Error:",
-            error
-        );
-
-
-        alert(
-            "Unable to start course."
-        );
+    } catch (error) {
+        console.error("Start Course Error:", error);
+        alert("Unable to start course.");
     }
 }
 
-
-//=====================================================
-// LOGOUT BUTTON
-//=====================================================
+// =============================================
+// LOGOUT
+// =============================================
 
 function initializeLogoutButton() {
-
     const logoutBtn =
-        document.getElementById(
-            "logoutBtn"
-        );
-
+        document.getElementById("logoutBtn");
 
     if (
         !logoutBtn ||
         logoutBtn.dataset.initialized === "true"
     ) {
-
         return;
     }
 
-
-    logoutBtn.dataset.initialized =
-        "true";
-
+    logoutBtn.dataset.initialized = "true";
 
     logoutBtn.addEventListener(
         "click",
@@ -1145,135 +806,36 @@ function initializeLogoutButton() {
     );
 }
 
-
-//=====================================================
-// LOGOUT
-//=====================================================
-
 async function logout() {
-
     try {
-
         await clearSessions();
-
+    } catch (error) {
+        console.error("Logout Error:", error);
     }
 
-    catch (error) {
+    alert("Logged Out Successfully.");
 
-        console.error(
-            "Logout Error:",
-            error
-        );
-    }
-
-
-    alert(
-        "Logged Out Successfully."
-    );
-
-
-    window.location.replace(
-        "/login"
-    );
+    window.location.replace("/login");
 }
 
-
-//=====================================================
-// HELPERS
-//=====================================================
-
-function setText(
-    id,
-    value
-) {
-
-    const element =
-        document.getElementById(
-            id
-        );
-
-
-    if (element) {
-
-        element.textContent =
-            value;
-    }
-}
-
-
-function escapeHTML(
-    value
-) {
-
-    return String(
-        value ?? ""
-    )
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-}
-
-
-function escapeAttribute(
-    value
-) {
-
-    return escapeHTML(
-        value
-    );
-}
-
-
-//=====================================================
+// =============================================
 // REACT-SAFE INITIALIZATION
-//=====================================================
+// =============================================
 
-if (
-    document.readyState === "loading"
-) {
-
+if (document.readyState === "loading") {
     document.addEventListener(
         "DOMContentLoaded",
         initializeMyCourses,
-        {
-            once: true
-        }
+        { once: true }
     );
-
-}
-
-else {
-
+} else {
     initializeMyCourses();
 }
 
-
-//=====================================================
+// =============================================
 // GLOBAL FUNCTIONS
-//=====================================================
+// =============================================
 
-window.startCourse =
-    startCourse;
-
-window.viewCourse =
-    viewCourse;
-
-window.logout =
-    logout;
+window.startCourse = startCourse;
+window.viewCourse = viewCourse;
+window.logout = logout;

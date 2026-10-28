@@ -902,7 +902,7 @@ async function enrollCourse() {
 
 
         await saveData(
-            "enrollments",
+            "v1/enrollments",
             enrollmentRecord
         );
 

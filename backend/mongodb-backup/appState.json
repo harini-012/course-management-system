@@ -1,0 +1,10 @@
+[{
+  "_id": {
+    "$oid": "6ae0b9af3becda3ef55ff9b0"
+  },
+  "id": "current",
+  "editCourseId": null,
+  "resetEmail": null,
+  "resetRole": null,
+  "selectedCourseKey": "py2"
+}]

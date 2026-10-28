@@ -11,7 +11,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/26/2026, 2:35:27 PM",
+      "lastLogin": "10/27/2026, 8:34:55 PM",
       "active": true,
       "id": "2ktXrV4EtDs",
       "passwordUpdatedAt": "2026-10-26T09:02:58.932Z",
@@ -44,7 +44,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/27/2026, 9:12:00 AM",
+      "lastLogin": "10/27/2026, 2:43:22 PM",
       "active": true,
       "id": "faDPPfA_RCQ",
       "passwordHash": "$2b$12$rkZBO6hhC2ANY9RB5yKELeMvjZNJMDVppeTA7hSB2FCcLsGmhLOrm",
@@ -78,7 +78,7 @@
       "certificates": [],
       "progress": {},
       "registrationDate": "24/10/2026",
-      "lastLogin": "10/26/2026, 2:21:21 PM",
+      "lastLogin": "10/27/2026, 2:32:36 PM",
       "active": true,
       "id": "Pf2eCYOT_aA"
     },
@@ -126,7 +126,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/24/2026, 5:00:38 PM",
+      "lastLogin": "10/27/2026, 2:18:53 PM",
       "active": true,
       "id": "1aflrowmla0",
       "passwordUpdatedAt": "2026-10-24T11:05:54.180Z",
@@ -143,7 +143,7 @@
       "managedStudents": [],
       "managedEnrollments": [],
       "registrationDate": "9/28/2026",
-      "lastLogin": "10/26/2026, 2:21:12 PM",
+      "lastLogin": "10/27/2026, 3:28:08 PM",
       "active": true,
       "id": "nqxexoDWm_4",
       "passwordUpdatedAt": "2026-09-28T15:40:44.983Z",
@@ -159,7 +159,7 @@
       "createdCourses": [],
       "managedStudents": [],
       "registrationDate": "24/10/2026",
-      "lastLogin": "10/26/2026, 2:35:00 PM",
+      "lastLogin": "10/27/2026, 8:46:19 PM",
       "active": true,
       "id": "2Cng3ZxFkpw"
     },
@@ -173,7 +173,7 @@
       "createdCourses": [],
       "managedStudents": [],
       "registrationDate": "26/10/2026",
-      "lastLogin": "10/26/2026, 1:12:31 PM",
+      "lastLogin": "10/27/2026, 2:55:02 PM",
       "active": true,
       "id": "vxxXymt7ZHM"
     },
@@ -187,7 +187,7 @@
       "createdCourses": [],
       "managedStudents": [],
       "registrationDate": "26/10/2026",
-      "lastLogin": "10/27/2026, 9:09:41 AM",
+      "lastLogin": "10/27/2026, 10:27:17 AM",
       "active": true,
       "id": "YiGbqmSGpCk"
     }
@@ -1297,52 +1297,6 @@
       "createdAt": "2026-10-05T08:37:46.211Z"
     },
     {
-      "id": "Xq79p8Zr07c",
-      "key": "oops",
-      "courseKey": "oops",
-      "title": "OOps Concept-1",
-      "instructor": "Harini",
-      "duration": "4 weeks",
-      "level": "Intermediate",
-      "mode": "Online",
-      "status": "Active",
-      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRc97t-VO0Kye3Vrw2AWEhI9RD_c4hUJ9cXS6jik17DPcIDA5XV",
-      "overview": "OOPs",
-      "description": "Course",
-      "instructorInfo": "phd",
-      "modules": [
-        "Java"
-      ],
-      "syllabus": [
-        "Variables"
-      ],
-      "skills": [
-        "Java"
-      ],
-      "outcomes": [
-        "Application"
-      ],
-      "prerequisites": [
-        "nil"
-      ],
-      "videos": [
-        {
-          "id": "video-1",
-          "title": "oops",
-          "url": "https://youtu.be/BSVKUk58K6U?si=_nkIJ4I5aSFKw1GZ"
-        }
-      ],
-      "materials": [
-        {
-          "id": "material-1",
-          "title": "notes",
-          "url": "https://www.geeksforgeeks.org/java/object-oriented-programming-oops-concept-in-java/"
-        }
-      ],
-      "createdBy": "fpc@sdnb.com",
-      "createdAt": "2026-10-06T09:04:22.997Z"
-    },
-    {
       "id": "rA_MN_slaVY",
       "key": "fsd1",
       "courseKey": "fsd1",
@@ -1394,52 +1348,6 @@
       ],
       "createdBy": "fpc@sdnb.com",
       "createdAt": "2026-10-09T10:15:17.483Z"
-    },
-    {
-      "id": "0jbsXxkLg0Q",
-      "key": "oops-4",
-      "courseKey": "oops-4",
-      "title": "OOps Concept4",
-      "instructor": "Harini",
-      "duration": "2",
-      "level": "Beginner",
-      "mode": "Offline",
-      "status": "Active",
-      "image": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1280px-Python-logo-notext.svg.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=thumbnail",
-      "overview": "opps",
-      "description": "oops",
-      "instructorInfo": "phd",
-      "modules": [
-        "opps"
-      ],
-      "syllabus": [
-        "module 1"
-      ],
-      "skills": [
-        "python"
-      ],
-      "outcomes": [
-        "none"
-      ],
-      "prerequisites": [
-        "computer"
-      ],
-      "videos": [
-        {
-          "id": "video-1",
-          "title": "oops1",
-          "url": "https://youtu.be/Ga54kLJDfB0?si=ZDPfGsPZ-8Q__vNH"
-        }
-      ],
-      "materials": [
-        {
-          "id": "material-1",
-          "title": "notes",
-          "url": "https://www.w3schools.com/whatis/whatis_fullstack.asp"
-        }
-      ],
-      "createdBy": "fpc@sdnb.com",
-      "createdAt": "2026-10-09T10:23:27.741Z"
     },
     {
       "id": "6W-Ki3YUJdA",
@@ -1548,6 +1456,131 @@
       ],
       "createdBy": "fpc@sdnb.com",
       "createdAt": "2026-10-24T11:31:52.838Z"
+    },
+    {
+      "id": "LQy7XCHoYMY",
+      "key": "py2",
+      "courseKey": "py2",
+      "title": "Python Programming 2",
+      "instructor": "Harini",
+      "duration": "4",
+      "level": "Beginner",
+      "mode": "Online",
+      "status": "Active",
+      "image": "https://miro.medium.com/1*3IcLSFuT8PQg4cUBaRXH1A.png",
+      "overview": "This intensive program focuses on practical, hands-on learning. By the end of 4 weeks, you will understand core programming concepts, write clean and efficient code, and know how to work with data and external files.",
+      "description": "By the conclusion of this 4-week curriculum, your overarching capability shifts from a consumer of code to an independent script builder. You will possess the structural programming logic required to pick up advanced frameworks (like Django for web or Pandas for data science) and effectively troubleshoot errors using standard documentation.",
+      "instructorInfo": "Dr. Harini holds a Ph.D. in Computer Science (Specializing in Software Engineering and Machine Learning) and brings years of academic research and industry consulting experience into the classroom. Her teaching philosophy bridges theoretical programming concepts with practical, industry-standard development patterns.",
+      "modules": [
+        "🧱 Week 1: Python Fundamentals & Essentials",
+        "🔀 Week 2: Control Flow & Data Structures",
+        "⚙️ Week 3: Functions, Modules & Error Handling",
+        "💾 Week 4: File I/O & Capstone Project"
+      ],
+      "syllabus": [
+        "Variables & Memory Assignment",
+        "Control Flow & Data Structures",
+        "Functions, Modules & Error Handling",
+        "File I/O & Capstone Project"
+      ],
+      "skills": [
+        "Python"
+      ],
+      "outcomes": [
+        "Python Fundamentals & Essentials",
+        "Control Flow & Data Structures",
+        "Functions, Modules & Error Handling",
+        "File I/O & Capstone Project"
+      ],
+      "prerequisites": [
+        "A computer (Windows, Mac, or Linux)",
+        "An internet connection for initial setups",
+        "• 4–6 hours per week for study and practice"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "Python Fundamentals & Essentials",
+          "url": "https://youtu.be/7wnove7K-ZQ?si=LJq4xaSU62x8du9D"
+        },
+        {
+          "id": "video-2",
+          "title": "Control Flow & Data Structures",
+          "url": "https://youtu.be/rfscVS0vtbw?si=COceGK8kRJnHKnyY"
+        },
+        {
+          "id": "video-3",
+          "title": "Functions, Modules & Error Handling",
+          "url": "https://youtu.be/kqtD5dpn9C8?si=cdwby4i7PoD9zFQI"
+        },
+        {
+          "id": "video-4",
+          "title": "File I/O & Capstone Project",
+          "url": "https://youtu.be/yVl_G-F7m8c?si=0NWbNhrkFk8jgmmC"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "Notes",
+          "url": "https://www.w3schools.com/python/"
+        }
+      ],
+      "createdBy": "admin5@example.com",
+      "createdAt": "2026-10-27T05:07:50.849Z"
+    },
+    {
+      "id": "u68AZxbwhGM",
+      "key": "rl",
+      "courseKey": "rl",
+      "title": "Reinforcement Learning",
+      "instructor": "NiviSri",
+      "duration": "2",
+      "level": "Beginner",
+      "mode": "Online",
+      "status": "Active",
+      "image": "https://upload.wikimedia.org/wikipedia/commons/1/1b/Reinforcement_learning_diagram.svg?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+      "overview": "Reinforcement Learning (RL) is a branch of machine learning where an agent learns to make optimal decisions by interacting with an environment through trial and error. Unlike supervised learning, it does not rely on labeled training data; instead, the model improves its behavior based on rewards and penalties received from its actions.",
+      "description": "You can read more about core principles on the Stanford HAI AI Definitions page",
+      "instructorInfo": "PHD Scholar",
+      "modules": [
+        "Agent:",
+        "Environment"
+      ],
+      "syllabus": [
+        "RL Basics",
+        "Project"
+      ],
+      "skills": [
+        "AI"
+      ],
+      "outcomes": [
+        "Build RL Models"
+      ],
+      "prerequisites": [
+        "Basic AI knowledge"
+      ],
+      "videos": [
+        {
+          "id": "video-1",
+          "title": "V1",
+          "url": "https://youtu.be/VnpRp7ZglfA?si=JKJXoAEZhYjntlWq"
+        },
+        {
+          "id": "video-2",
+          "title": "Lesson 2",
+          "url": "https://youtu.be/0MNVhXEX9to?si=EKAeEyc1RyUMTZW3"
+        }
+      ],
+      "materials": [
+        {
+          "id": "material-1",
+          "title": "Notes",
+          "url": "https://www.geeksforgeeks.org/machine-learning/what-is-reinforcement-learning/"
+        }
+      ],
+      "createdBy": "admin@gmail.com",
+      "createdAt": "2026-10-27T15:19:25.437Z"
     }
   ],
   "enrollments": [
@@ -1576,12 +1609,14 @@
       "title": "Web Development",
       "course": "Web Development",
       "enrollDate": "9/28/2026",
-      "status": "Approved",
+      "status": "Rejected",
       "completed": false,
       "id": "QHVmFASA098",
-      "approved": true,
+      "approved": false,
       "approvedDate": "10/9/2026",
-      "approvedBy": "Fpc"
+      "approvedBy": "Fpc",
+      "rejectedDate": "10/27/2026",
+      "rejectedBy": "Harini"
     },
     {
       "studentId": "2ktXrV4EtDs",
@@ -2061,7 +2096,7 @@
       "student": "Hafeesha",
       "studentName": "Hafeesha",
       "studentEmail": "hafeesha@gmail.com",
-      "courseId": "0jbsXxkLg0Q",
+      "courseId": null,
       "courseKey": "oops-4",
       "title": "OOps Concept4",
       "course": "OOps Concept4",
@@ -2160,6 +2195,130 @@
       "completed": true,
       "id": "bHLIujjO9pg",
       "completionDate": "10/26/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "LQy7XCHoYMY",
+      "courseKey": "py2",
+      "title": "Python Programming 2",
+      "course": "Python Programming 2",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "ZzQ1epf57Mw",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "student": "Rajesh",
+      "studentName": "Rajesh",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "python",
+      "courseKey": "python",
+      "title": "Python Programming",
+      "course": "Python Programming",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "ZCKJUKl-Wes",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "student": "Rajesh",
+      "studentName": "Rajesh",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "machinelearning",
+      "courseKey": "machinelearning",
+      "title": "Machine Learning",
+      "course": "Machine Learning",
+      "enrollDate": "27/10/2026",
+      "enrolledAt": "2026-10-27T09:00:03.003Z",
+      "status": "Completed",
+      "completed": true,
+      "id": "s9RaZDrHCAo",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "student": "Harini Rajesh",
+      "studentName": "Harini Rajesh",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": null,
+      "courseKey": "oops-4",
+      "title": "OOps Concept4",
+      "course": "OOps Concept4",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "fZ8oJrtitsk",
+      "approved": true,
+      "approvedDate": "10/27/2026",
+      "approvedBy": "Harini",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "student": "Harini Rajesh",
+      "studentName": "Harini Rajesh",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": "LQy7XCHoYMY",
+      "courseKey": "py2",
+      "title": "Python Programming 2",
+      "course": "Python Programming 2",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "XPdyJ9DDy2I",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "21cd4a86-bec3-499e-a3ea-9d7924c5e92c",
+      "student": "Sivakarthikeyan",
+      "studentName": "Sivakarthikeyan",
+      "studentEmail": "sk@gmail.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "title": "Java Programming",
+      "course": "Java Programming",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "HLJz-fpcBd4",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "machinelearning",
+      "courseKey": "machinelearning",
+      "title": "Machine Learning",
+      "course": "Machine Learning",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "AFhyGUAmnJA",
+      "completionDate": "10/27/2026"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "student": "Hafeesha",
+      "studentName": "Hafeesha",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "u68AZxbwhGM",
+      "courseKey": "rl",
+      "title": "Reinforcement Learning",
+      "course": "Reinforcement Learning",
+      "enrollDate": "10/27/2026",
+      "status": "Completed",
+      "completed": true,
+      "id": "WuskYvqipKA",
+      "completionDate": "10/27/2026"
     }
   ],
   "progress": [
@@ -3165,7 +3324,7 @@
     {
       "studentId": "faDPPfA_RCQ",
       "studentEmail": "hafeesha@gmail.com",
-      "courseId": "0jbsXxkLg0Q",
+      "courseId": null,
       "courseKey": "oops-4",
       "courseTitle": "OOps Concept4",
       "completedVideos": [],
@@ -3180,7 +3339,7 @@
     {
       "studentId": "faDPPfA_RCQ",
       "studentEmail": "hafeesha@gmail.com",
-      "courseId": "0jbsXxkLg0Q",
+      "courseId": null,
       "courseKey": "oops-4",
       "courseTitle": "OOps Concept4",
       "completedVideos": [
@@ -3371,13 +3530,320 @@
       "updatedAt": "2026-10-26T09:05:57.391Z",
       "id": "O4gr4-Daw1Y",
       "completedAt": "2026-10-26T09:05:57.343Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "LQy7XCHoYMY",
+      "courseKey": "py2",
+      "courseTitle": "Python Programming 2",
+      "completedVideos": [],
+      "totalVideos": 4,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T05:08:28.595Z",
+      "updatedAt": "2026-10-27T05:08:28.595Z",
+      "id": "6Xp5yVm--Q0"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "LQy7XCHoYMY",
+      "courseKey": "py2",
+      "courseTitle": "Python Programming 2",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3",
+        "video-4"
+      ],
+      "totalVideos": 4,
+      "currentVideoIndex": 3,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T05:08:28.603Z",
+      "updatedAt": "2026-10-27T05:08:39.241Z",
+      "id": "Bg6ygmrWG-U",
+      "completedAt": "2026-10-27T05:08:39.211Z"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T08:32:18.208Z",
+      "updatedAt": "2026-10-27T08:32:18.208Z",
+      "id": "191Usk262jY"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [
+        "video-1",
+        "video-2"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 67,
+      "completed": false,
+      "startedAt": "2026-10-27T08:32:18.216Z",
+      "updatedAt": "2026-10-27T08:32:21.406Z",
+      "id": "SBgCpc9tnx8",
+      "completedAt": null
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "python",
+      "courseKey": "python",
+      "courseTitle": "Python Programming",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T08:48:37.813Z",
+      "updatedAt": "2026-10-27T08:48:37.813Z",
+      "id": "vQiuOv-8O_M"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "python",
+      "courseKey": "python",
+      "courseTitle": "Python Programming",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T08:48:37.820Z",
+      "updatedAt": "2026-10-27T08:48:42.537Z",
+      "id": "sfb_QCFKkgQ",
+      "completedAt": "2026-10-27T08:48:42.506Z"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "machinelearning",
+      "courseKey": "machinelearning",
+      "courseTitle": "Machine Learning",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T09:00:39.517Z",
+      "updatedAt": "2026-10-27T09:00:39.517Z",
+      "id": "B0c0tLRdYXs"
+    },
+    {
+      "studentId": "Pf2eCYOT_aA",
+      "studentEmail": "rajesh@gmail.com",
+      "courseId": "machinelearning",
+      "courseKey": "machinelearning",
+      "courseTitle": "Machine Learning",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T09:00:39.528Z",
+      "updatedAt": "2026-10-27T09:00:43.576Z",
+      "id": "nadaNo2ykiU",
+      "completedAt": "2026-10-27T09:00:43.536Z"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": null,
+      "courseKey": "oops-4",
+      "courseTitle": "OOps Concept4",
+      "completedVideos": [],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T09:24:04.014Z",
+      "updatedAt": "2026-10-27T09:24:04.014Z",
+      "id": "z_4Vd455VZQ"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": null,
+      "courseKey": "oops-4",
+      "courseTitle": "OOps Concept4",
+      "completedVideos": [
+        "video-1"
+      ],
+      "totalVideos": 1,
+      "currentVideoIndex": 0,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T09:24:04.018Z",
+      "updatedAt": "2026-10-27T09:24:06.358Z",
+      "id": "9-EmBEhbsIA",
+      "completedAt": "2026-10-27T09:24:06.323Z"
+    },
+    {
+      "studentId": "2ktXrV4EtDs",
+      "studentEmail": "harinirajesh0519@gmail.com",
+      "courseId": "LQy7XCHoYMY",
+      "courseKey": "py2",
+      "courseTitle": "Python Programming 2",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3",
+        "video-4"
+      ],
+      "totalVideos": 4,
+      "currentVideoIndex": 3,
+      "percentage": 100,
+      "completed": true,
+      "updatedAt": "2026-10-27T09:31:31.241Z",
+      "completedAt": "2026-10-27T09:31:31.202Z",
+      "startedAt": "2026-10-27T09:31:00.218Z",
+      "id": "Prua4UEUDRg"
+    },
+    {
+      "studentId": "21cd4a86-bec3-499e-a3ea-9d7924c5e92c",
+      "studentEmail": "sk@gmail.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T15:11:27.412Z",
+      "updatedAt": "2026-10-27T15:11:27.412Z",
+      "id": "S14P2BEP_E4"
+    },
+    {
+      "studentId": "21cd4a86-bec3-499e-a3ea-9d7924c5e92c",
+      "studentEmail": "sk@gmail.com",
+      "courseId": "java",
+      "courseKey": "java",
+      "courseTitle": "Java Programming",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T15:11:27.419Z",
+      "updatedAt": "2026-10-27T15:11:32.218Z",
+      "id": "2g9OfEdk-TY",
+      "completedAt": "2026-10-27T15:11:32.093Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "machinelearning",
+      "courseKey": "machinelearning",
+      "courseTitle": "Machine Learning",
+      "completedVideos": [
+        "video-1",
+        "video-2",
+        "video-3"
+      ],
+      "totalVideos": 3,
+      "currentVideoIndex": 2,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T15:15:50.857Z",
+      "updatedAt": "2026-10-27T15:15:54.525Z",
+      "id": "XH6ekJ37XoY",
+      "completedAt": "2026-10-27T15:15:54.492Z"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "machinelearning",
+      "courseKey": "machinelearning",
+      "courseTitle": "Machine Learning",
+      "completedVideos": [],
+      "totalVideos": 3,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T15:15:50.861Z",
+      "updatedAt": "2026-10-27T15:15:50.861Z",
+      "id": "w1Ns-u2I00w"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "u68AZxbwhGM",
+      "courseKey": "rl",
+      "courseTitle": "Reinforcement Learning",
+      "completedVideos": [],
+      "totalVideos": 2,
+      "currentVideoIndex": 0,
+      "percentage": 0,
+      "completed": false,
+      "startedAt": "2026-10-27T15:19:54.284Z",
+      "updatedAt": "2026-10-27T15:19:54.284Z",
+      "id": "EnRk7T1K5QU"
+    },
+    {
+      "studentId": "faDPPfA_RCQ",
+      "studentEmail": "hafeesha@gmail.com",
+      "courseId": "u68AZxbwhGM",
+      "courseKey": "rl",
+      "courseTitle": "Reinforcement Learning",
+      "completedVideos": [
+        "video-1",
+        "video-2"
+      ],
+      "totalVideos": 2,
+      "currentVideoIndex": 1,
+      "percentage": 100,
+      "completed": true,
+      "startedAt": "2026-10-27T15:19:54.288Z",
+      "updatedAt": "2026-10-27T15:19:57.530Z",
+      "id": "B7o3B8-0CVk",
+      "completedAt": "2026-10-27T15:19:57.508Z"
     }
   ],
-  "sessions": [],
+  "sessions": [
+    {
+      "role": "student",
+      "userId": "faDPPfA_RCQ",
+      "email": "hafeesha@gmail.com",
+      "name": "Hafeesha",
+      "loginTime": "2026-10-27T15:19:40.061Z",
+      "id": "xoTQ-yTn2VQ"
+    }
+  ],
   "appState": [
     {
       "id": "current",
-      "selectedCourseKey": "java",
+      "selectedCourseKey": "rl",
       "editCourseId": null,
       "resetEmail": null,
       "resetRole": null

@@ -1,14 +1,20 @@
-//=====================================================
-// API
-// api.js
-// JSON SERVER API HELPERS
-//=====================================================
 
-const API_URL =
-    "http://localhost:3001/api";
+/* =====================================================
+   STUDENT COURSE MANAGEMENT SYSTEM
+   API.JS - MONGODB BACKEND VERSION
+   ===================================================== */
+
+const API_URL = "http://localhost:3001/api";
+
+const SESSION_KEY = "courseManagementSession";
+const TOKEN_KEY = "token";
+
+// =====================================================
+// AUTHENTICATION HEADERS
+// =====================================================
 
 function getAuthHeaders() {
-  const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem(TOKEN_KEY);
 
   return {
     "Content-Type": "application/json",
@@ -17,678 +23,438 @@ function getAuthHeaders() {
       : {})
   };
 }
-//=====================================================
-// GET ALL DATA
-//=====================================================
 
-export async function getData(
-    resource
+// =====================================================
+// COMMON API REQUEST
+// =====================================================
+
+async function apiRequest(
+  resource,
+  {
+    method = "GET",
+    data,
+    params
+  } = {}
 ) {
+  let url = `${API_URL}/${resource}`;
 
-    const response =
-        await fetch(
-            `${API_URL}/${resource}`
-        );
+  if (params) {
+    const query = new URLSearchParams();
 
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Unable to load ${resource}`
-        );
-
+    for (const [key, value] of Object.entries(params)) {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== ""
+      ) {
+        query.append(key, String(value));
+      }
     }
 
+    const queryString = query.toString();
 
-    return await response.json();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+  }
+
+  const options = {
+    method,
+    headers: getAuthHeaders()
+  };
+
+  if (data !== undefined) {
+    options.body = JSON.stringify(data);
+  }
+
+  let response;
+
+  try {
+    response = await fetch(url, options);
+  } catch (error) {
+    console.error("API connection error:", error);
+
+    throw new Error(
+      "Unable to connect to backend. Check that Express is running on port 3001."
+    );
+  }
+
+  let result = null;
+
+  if (response.status !== 204) {
+    const contentType =
+      response.headers.get("content-type") || "";
+
+    if (contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      result = await response.text();
+    }
+  }
+
+  if (!response.ok) {
+    const message =
+      result &&
+      typeof result === "object" &&
+      result.message
+        ? result.message
+        : `API request failed (${response.status})`;
+
+    const error = new Error(message);
+    error.status = response.status;
+
+    throw error;
+  }
+
+  return result;
 }
 
+// =====================================================
+// GET ALL RECORDS
+// =====================================================
 
-//=====================================================
-// GET BY ID
-//=====================================================
-
-export async function getById(
-    resource,
-    id
-) {
-
-    if (
-        id === undefined ||
-        id === null ||
-        id === ""
-    ) {
-
-        return null;
-    }
-
-
-    const response =
-        await fetch(
-            `${API_URL}/${resource}/${encodeURIComponent(id)}`
-        );
-
-
-    if (
-        response.status === 404
-    ) {
-
-        return null;
-    }
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Unable to load ${resource}/${id}`
-        );
-
-    }
-
-
-    return await response.json();
+export async function getData(resource) {
+  return apiRequest(resource);
 }
 
+// =====================================================
+// GET RECORD BY ID
+// =====================================================
 
-//=====================================================
-// QUERY DATA
-//=====================================================
+export async function getById(resource, id) {
+  if (
+    id === undefined ||
+    id === null ||
+    id === ""
+  ) {
+    return null;
+  }
+
+  try {
+    return await apiRequest(
+      `${resource}/${encodeURIComponent(id)}`
+    );
+  } catch (error) {
+    if (error.status === 404) {
+      return null;
+    }
+
+    throw error;
+  }
+}
+
+// =====================================================
+// QUERY RECORDS
+// =====================================================
 
 export async function queryData(
-    resource,
-    params = {}
+  resource,
+  params = {}
 ) {
-
-    const query =
-        new URLSearchParams();
-
-
-    Object.entries(params)
-        .forEach(
-            ([key, value]) => {
-
-                if (
-                    value !== undefined &&
-                    value !== null &&
-                    value !== ""
-                ) {
-
-                    query.append(
-                        key,
-                        value
-                    );
-
-                }
-
-            }
-        );
-
-
-    const queryString =
-        query.toString();
-
-
-    const url =
-        queryString
-            ? `${API_URL}/${resource}?${queryString}`
-            : `${API_URL}/${resource}`;
-
-
-    const response =
-        await fetch(url);
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Unable to query ${resource}`
-        );
-
-    }
-
-
-    return await response.json();
+  return apiRequest(resource, { params });
 }
 
+// =====================================================
+// CREATE RECORD
+// =====================================================
 
-//=====================================================
-// POST DATA
-//=====================================================
-
-export async function saveData(
-    resource,
+export async function saveData(resource, data) {
+  return apiRequest(resource, {
+    method: "POST",
     data
-) {
-
-    const response =
-        await fetch(
-            `${API_URL}/${resource}`,
-            {
-                method:
-                    "POST",
-
-               headers: getAuthHeaders(),
-                body:
-                    JSON.stringify(data)
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Unable to save ${resource}`
-        );
-
-    }
-
-
-    return await response.json();
+  });
 }
 
-
-//=====================================================
-// PUT DATA
-//=====================================================
+// =====================================================
+// REPLACE RECORD
+// =====================================================
 
 export async function updateData(
-    resource,
-    id,
-    data
+  resource,
+  id,
+  data
 ) {
+  if (
+    id === undefined ||
+    id === null ||
+    id === ""
+  ) {
+    throw new Error(`Invalid ${resource} id`);
+  }
 
-    if (
-        id === undefined ||
-        id === null ||
-        id === ""
-    ) {
-
-        throw new Error(
-            `Invalid ${resource} id`
-        );
-
+  return apiRequest(
+    `${resource}/${encodeURIComponent(id)}`,
+    {
+      method: "PUT",
+      data
     }
-
-
-    const response =
-        await fetch(
-            `${API_URL}/${resource}/${encodeURIComponent(id)}`,
-            {
-                method:
-                    "PUT",
-
-                headers: {
-                    "Content-Type":
-                        "application/json"
-                },
-
-                body:
-                    JSON.stringify(data)
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Unable to update ${resource}`
-        );
-
-    }
-
-
-    return await response.json();
+  );
 }
 
-
-//=====================================================
-// PATCH DATA
-//=====================================================
+// =====================================================
+// PARTIALLY UPDATE RECORD
+// =====================================================
 
 export async function patchData(
-    resource,
-    id,
-    data
+  resource,
+  id,
+  data
 ) {
+  if (
+    id === undefined ||
+    id === null ||
+    id === ""
+  ) {
+    throw new Error(`Invalid ${resource} id`);
+  }
 
-    if (
-        id === undefined ||
-        id === null ||
-        id === ""
-    ) {
-
-        throw new Error(
-            `Invalid ${resource} id`
-        );
-
+  return apiRequest(
+    `${resource}/${encodeURIComponent(id)}`,
+    {
+      method: "PATCH",
+      data
     }
-
-
-    const response =
-        await fetch(
-            `${API_URL}/${resource}/${encodeURIComponent(id)}`,
-            {
-                method:
-                    "PATCH",
-
-              headers: getAuthHeaders(),
-
-                body:
-                    JSON.stringify(data)
-            }
-        );
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            `Unable to patch ${resource}`
-        );
-
-    }
-
-
-    return await response.json();
+  );
 }
 
+// =====================================================
+// DELETE RECORD
+// =====================================================
 
-//=====================================================
-// DELETE DATA
-//=====================================================
+export async function removeData(resource, id) {
+  if (
+    id === undefined ||
+    id === null ||
+    id === ""
+  ) {
+    return false;
+  }
 
-export async function removeData(
-    resource,
-    id
-) {
-
-    if (
-        id === undefined ||
-        id === null ||
-        id === ""
-    ) {
-
-        return false;
-    }
-
-
-    const response =
-        await fetch(
-            `${API_URL}/${resource}/${encodeURIComponent(id)}`,
-            {
-                method: "DELETE",
-headers: getAuthHeaders()
-            }
-        );
-
-
-    if (
-        !response.ok &&
-        response.status !== 404
-    ) {
-
-        throw new Error(
-            `Unable to delete ${resource}`
-        );
-
-    }
-
+  try {
+    await apiRequest(
+      `${resource}/${encodeURIComponent(id)}`,
+      {
+        method: "DELETE"
+      }
+    );
 
     return true;
+  } catch (error) {
+    // A missing record is already effectively deleted.
+    if (error.status === 404) {
+      return true;
+    }
+
+    throw error;
+  }
 }
 
-
-//=====================================================
+// =====================================================
 // GET CURRENT SESSION
-//=====================================================
+// =====================================================
 
 export async function getSession() {
+  try {
+    const saved = sessionStorage.getItem(SESSION_KEY);
 
-    try {
-
-        /*
-         * IMPORTANT:
-         *
-         * Do NOT search using:
-         *
-         * /sessions?id=current
-         *
-         * JSON Server can generate its own ID.
-         *
-         * Our application keeps only one active
-         * session, so read the sessions collection
-         * and return the newest/last session.
-         */
-
-        const sessions =
-            await getData(
-                "sessions"
-            );
-
-
-        if (
-            !Array.isArray(sessions) ||
-            sessions.length === 0
-        ) {
-
-            return null;
-        }
-
-
-        return sessions[
-            sessions.length - 1
-        ];
-
+    if (!saved) {
+      return null;
     }
 
-    catch (error) {
+    const session = JSON.parse(saved);
 
-        console.error(
-            "Unable to get current session:",
-            error
-        );
-
-
-        return null;
+    if (
+      !session ||
+      !session.userId ||
+      !session.role
+    ) {
+      return null;
     }
+
+    return session;
+  } catch (error) {
+    console.error(
+      "Unable to get current session:",
+      error
+    );
+
+    return null;
+  }
 }
 
-
-//=====================================================
-// CLEAR ALL SESSIONS
-//=====================================================
+// =====================================================
+// CLEAR CURRENT SESSION
+// =====================================================
 
 export async function clearSessions() {
+  try {
+    sessionStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TOKEN_KEY);
 
-    try {
-
-        const sessions =
-            await getData(
-                "sessions"
-            );
-
-
-        if (
-            !Array.isArray(sessions) ||
-            sessions.length === 0
-        ) {
-
-            return true;
-        }
-
-
-        for (
-            const session of sessions
-        ) {
-
-            if (
-                !session ||
-                session.id === undefined ||
-                session.id === null ||
-                session.id === ""
-            ) {
-
-                continue;
-            }
-
-
-            await removeData(
-                "sessions",
-                session.id
-            );
-
-        }
-
-
-        return true;
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Unable to clear sessions:",
-            error
-        );
-
-
-        return false;
-    }
-}
-
-
-//=====================================================
-// CREATE CURRENT SESSION
-//=====================================================
-
-export async function createSession(
-    sessionData
-) {
-
-    /*
-     * Only one user should be logged in.
-     */
-
-    await clearSessions();
-
-
-    /*
-     * Do NOT manually send id:"current".
-     * Allow JSON Server to create the ID.
-     */
-
-    const session = {
-
-        role:
-            sessionData.role,
-
-        userId:
-            sessionData.userId,
-
-        email:
-            sessionData.email,
-
-        name:
-            sessionData.name || "",
-
-        loginTime:
-            new Date().toISOString()
-
-    };
-
-
-    return await saveData(
-        "sessions",
-        session
+    return true;
+  } catch (error) {
+    console.error(
+      "Unable to clear session:",
+      error
     );
+
+    return false;
+  }
 }
 
+// =====================================================
+// CREATE CURRENT SESSION
+// =====================================================
 
-//=====================================================
+export async function createSession(sessionData) {
+  if (
+    !sessionData ||
+    !sessionData.userId ||
+    !sessionData.role
+  ) {
+    throw new Error("Invalid session data");
+  }
+
+  const session = {
+    id: crypto.randomUUID(),
+    role: String(sessionData.role).toLowerCase(),
+    userId: String(sessionData.userId),
+    email: sessionData.email || "",
+    name: sessionData.name || "",
+    loginTime: new Date().toISOString()
+  };
+
+  sessionStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify(session)
+  );
+
+  return session;
+}
+
+// =====================================================
 // GET CURRENT STUDENT
-//=====================================================
+// =====================================================
 
 export async function getCurrentStudent() {
+  try {
+    const session = await getSession();
 
-    try {
-
-        const session =
-            await getSession();
-
-
-        if (
-            !session ||
-            session.role !== "student"
-        ) {
-
-            return null;
-        }
-
-
-        if (
-            session.userId === undefined ||
-            session.userId === null
-        ) {
-
-            return null;
-        }
-
-
-        return await getById(
-            "students",
-            session.userId
-        );
-
+    if (
+      !session ||
+      session.role !== "student" ||
+      !session.userId
+    ) {
+      return null;
     }
-
-    catch (error) {
-
-        console.error(
-            "Unable to get current student:",
-            error
-        );
-
-
-        return null;
-    }
-}
-
-
-//=====================================================
-// GET CURRENT ADMIN
-//=====================================================
-
-export async function getCurrentAdmin() {
-
-    try {
-
-        const session =
-            await getSession();
-
-
-        if (
-            !session ||
-            session.role !== "admin"
-        ) {
-
-            return null;
-        }
-
-
-        if (
-            session.userId === undefined ||
-            session.userId === null
-        ) {
-
-            return null;
-        }
-
-
-        return await getById(
-            "admins",
-            session.userId
-        );
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Unable to get current administrator:",
-            error
-        );
-
-
-        return null;
-    }
-}
-
-
-//=====================================================
-// GET SELECTED COURSE KEY
-//=====================================================
-
-export async function getSelectedCourseKey() {
-
-    try {
-
-        const state =
-            await getById(
-                "appState",
-                "current"
-            );
-
-
-        return state
-            ? state.selectedCourseKey
-            : null;
-
-    }
-
-    catch (error) {
-
-        console.error(
-            "Unable to get selected course:",
-            error
-        );
-
-
-        return null;
-    }
-}
-
-
-//=====================================================
-// SET SELECTED COURSE KEY
-//=====================================================
-
-export async function setSelectedCourseKey(
-    courseKey
-) {
-
-    return await patchData(
-        "appState",
-        "current",
-        {
-            selectedCourseKey:
-                courseKey
-        }
-    );
-}
-
-
-//=====================================================
-// GET APPLICATION STATE
-//=====================================================
-
-export async function getAppState() {
 
     return await getById(
-        "appState",
-        "current"
+      "students",
+      session.userId
     );
+  } catch (error) {
+    console.error(
+      "Unable to get current student:",
+      error
+    );
+
+    return null;
+  }
 }
 
+// =====================================================
+// GET CURRENT ADMIN
+// =====================================================
 
-//=====================================================
+export async function getCurrentAdmin() {
+  try {
+    const session = await getSession();
+
+    if (
+      !session ||
+      session.role !== "admin" ||
+      !session.userId
+    ) {
+      return null;
+    }
+
+    return await getById(
+      "admins",
+      session.userId
+    );
+  } catch (error) {
+    console.error(
+      "Unable to get current administrator:",
+      error
+    );
+
+    return null;
+  }
+}
+
+// =====================================================
+// GET SELECTED COURSE KEY
+// =====================================================
+
+export async function getSelectedCourseKey() {
+  try {
+    const state = await getById(
+      "appState",
+      "current"
+    );
+
+    return state
+      ? state.selectedCourseKey ?? null
+      : null;
+  } catch (error) {
+    console.error(
+      "Unable to get selected course:",
+      error
+    );
+
+    return null;
+  }
+}
+
+// =====================================================
+// SET SELECTED COURSE KEY
+// =====================================================
+
+export async function setSelectedCourseKey(courseKey) {
+  return patchData(
+    "appState",
+    "current",
+    {
+      selectedCourseKey: courseKey
+    }
+  );
+}
+
+// =====================================================
+// GET APPLICATION STATE
+// =====================================================
+
+export async function getAppState() {
+  return getById(
+    "appState",
+    "current"
+  );
+}
+
+// =====================================================
 // UPDATE APPLICATION STATE
-//=====================================================
+// =====================================================
 
-export async function updateAppState(
+export async function updateAppState(data) {
+  return patchData(
+    "appState",
+    "current",
     data
-) {
-
-    return await patchData(
-        "appState",
-        "current",
-        data
-    );
+  );
 }
 
-
-//=====================================================
+// =====================================================
 // EXPORT API URL
-//=====================================================
+// =====================================================
 
-export {
-    API_URL
-};
+export { API_URL };
