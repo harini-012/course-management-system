@@ -18,7 +18,14 @@ function initializeForgotPassword() {
 
 async function handleForgotPassword(event) {
   event.preventDefault();
+  function handleForgotPassword(event) {
+  event.preventDefault();
 
+  showMessage(
+    "Forgot Password is currently unavailable. Please contact your administrator to reset your password.",
+    "error"
+  );
+}
   const emailField = document.getElementById("email");
   const roleField = document.querySelector(
     'input[name="role"]:checked'
