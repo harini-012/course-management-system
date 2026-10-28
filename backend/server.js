@@ -27,12 +27,15 @@ const app = express();
 const PORT = Number(process.env.PORT) || 3001;
 const httpServer = http.createServer(app);
 initializeSocket(httpServer);
+const allowedOrigins = [
+  ...(process.env.CLIENT_URL || "")
+    .split(",")
+    .map(origin => origin.trim().replace(/\/$/, ""))
+    .filter(Boolean),
 
-const allowedOrigins = (
-  process.env.CLIENT_URL || "http://localhost:5173"
-)
-  .split(",")
-  .map((origin) => origin.trim());
+  "http://localhost:5173",
+  "https://course-management-system-r57b2y6dr-harini-r-s-projects.vercel.app"
+];
 
 app.use(
   cors({
