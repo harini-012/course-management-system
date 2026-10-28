@@ -4,7 +4,8 @@
    API.JS - MONGODB BACKEND VERSION
    ===================================================== */
 
-const API_URL = "https://course-management-system-backend-pbbz.onrender.com";
+const API_URL =
+  "https://course-management-system-backend-pbbz.onrender.com/api";
 const SESSION_KEY = "courseManagementSession";
 const TOKEN_KEY = "token";
 

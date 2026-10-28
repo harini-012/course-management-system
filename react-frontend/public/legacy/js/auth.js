@@ -61,7 +61,7 @@ export async function loginUser(
         //---------------------------------------------
 
         const response = await fetch(
-  "http://localhost:3001/api/v1/auth/login",
+  "https://course-management-system-backend-pbbz.onrender.com/api/v1/auth/login",
   {
     method: "POST",
     headers: {

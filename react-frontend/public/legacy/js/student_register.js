@@ -4,8 +4,8 @@
    STUDENT REGISTRATION - MONGODB VERSION
    ===================================================== */
 
-const AUTH_URL = "http://localhost:3001/api/v1/auth";
-
+const AUTH_URL =
+  "https://course-management-system-backend-pbbz.onrender.com/api/v1/auth";
 // =====================================================
 // INITIALIZE REGISTRATION
 // =====================================================

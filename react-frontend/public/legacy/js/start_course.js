@@ -150,7 +150,7 @@ async function updateMongoProgress(
   }
 
   const response = await fetch(
-    "http://localhost:3001/api/v1/progress",
+    "https://course-management-system-backend-pbbz.onrender.com/api/v1/progress",
     {
       method: "PUT",
       headers: {
