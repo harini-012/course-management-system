@@ -11,9 +11,13 @@ function initializeSocket(httpServer) {
 
   const io = new Server(httpServer, {
     cors: {
-      origin: allowedOrigins,
-      methods: ["GET", "POST"]
-    }
+  origin: [
+    "https://course-management-system-wine-nine.vercel.app",
+    "http://localhost:5173"
+  ],
+  methods: ["GET", "POST"],
+  credentials: true
+}
   });
 
   io.use(async (socket, next) => {
