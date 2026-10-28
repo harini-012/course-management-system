@@ -26,9 +26,9 @@ export default function Chat() {
   const bottomRef = useRef(null);
   const historyRequestRef = useRef(0);
 
-  const API_URL =
-    import.meta.env.VITE_API_URL ||
-    "http://localhost:3001";
+ const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:3001"
+).replace(/\/+$/, "");
 
   // ================= LOAD STUDENTS =================
 

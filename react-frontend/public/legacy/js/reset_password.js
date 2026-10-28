@@ -3,8 +3,8 @@
    RESET PASSWORD - LOCAL MONGODB DEMO
    ===================================================== */
 
-const AUTH_API = "http://localhost:3001/api/v1/auth";
-
+const AUTH_API =
+  "https://course-management-system-backend-pbbz.onrender.com/api/v1/auth";
 let resetEmail = null;
 let resetRole = null;
 
