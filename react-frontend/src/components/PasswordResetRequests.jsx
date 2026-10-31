@@ -1,6 +1,5 @@
 
 import { useCallback, useEffect, useState } from "react";
-import "./PasswordResetRequests.css";
 
 const API_URL = (
   import.meta.env.VITE_API_URL ||
