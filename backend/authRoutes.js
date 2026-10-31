@@ -1082,4 +1082,100 @@ router.post(
   }
 );
 
+/* =====================================================
+   EXISTING ADMIN CREATES ANOTHER ADMIN
+   ===================================================== */
+
+router.post(
+  "/admin/create",
+  verifyAdmin,
+  async (req, res, next) => {
+    try {
+      const currentAdmin =
+        await findAuthenticatedAdmin(req);
+
+      if (!currentAdmin) {
+        return res.status(403).json({
+          message: "Administrator access required"
+        });
+      }
+
+      const {
+        adminName,
+        adminId,
+        email,
+        designation,
+        password
+      } = req.body || {};
+
+      if (
+        [adminName, adminId, email, designation]
+          .some(
+            value =>
+              typeof value !== "string" ||
+              !value.trim()
+          ) ||
+        !validEmail(email) ||
+        !validPassword(password)
+      ) {
+        return res.status(400).json({
+          message:
+            "Enter all fields, a valid email and an 8–72 character password"
+        });
+      }
+
+      const normalizedEmail =
+        email.trim().toLowerCase();
+
+      const normalizedId = adminId.trim();
+
+      const existing = await dbCollection("admins")
+        .findOne({
+          $or: [
+            { email: normalizedEmail },
+            { adminId: normalizedId }
+          ]
+        });
+
+      if (existing) {
+        return res.status(409).json({
+          message:
+            "Administrator email or ID already exists"
+        });
+      }
+
+      const admin = {
+        id: crypto.randomUUID(),
+        adminName: adminName.trim(),
+        adminId: normalizedId,
+        email: normalizedEmail,
+        designation: designation.trim(),
+        passwordHash: await bcrypt.hash(
+          password,
+          12
+        ),
+        role: "Administrator",
+        createdCourses: [],
+        managedStudents: [],
+        registrationDate:
+          new Date().toLocaleDateString(),
+        lastLogin: "",
+        active: true,
+        createdBy: currentAdmin.id,
+        createdAt: new Date()
+      };
+
+      await dbCollection("admins").insertOne(admin);
+
+      return res.status(201).json({
+        message:
+          "New administrator created successfully",
+        admin: safeUser(admin)
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;

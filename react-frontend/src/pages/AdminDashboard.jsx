@@ -3,6 +3,7 @@ import {
 } from "react-router-dom";
 import PageShell
     from "../components/PageShell";
+import AddAdmin from "../components/AddAdmin";
 
 import PageCss
     from "../components/PageCss";
@@ -27,6 +28,8 @@ export default function AdminDashboard() {
             <PageCss
     href="/css/password_reset_requests.css"
 />
+<PageCss href="/css/add_admin.css" />
+<AddAdmin />
 
 
             <PageShell

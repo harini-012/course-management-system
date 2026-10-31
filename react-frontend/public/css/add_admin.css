@@ -1,0 +1,58 @@
+
+.add-admin {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+.add-admin h2 {
+  margin-bottom: 10px;
+}
+
+.add-admin p {
+  margin-bottom: 20px;
+  color: #64748b;
+}
+
+.aa-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.aa-grid input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.aa-grid input:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+.add-admin button {
+  padding: 12px 22px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-admin button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .aa-grid {
+    grid-template-columns: 1fr;
+  }
+}
