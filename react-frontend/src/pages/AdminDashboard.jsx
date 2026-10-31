@@ -1,7 +1,6 @@
 import {
     useNavigate
 } from "react-router-dom";
-import PasswordResetRequests from "../components/PasswordResetRequests";
 import PageShell
     from "../components/PageShell";
 
@@ -11,7 +10,7 @@ import PageCss
 import LegacyScript
     from "../components/LegacyScript";
 
-
+import PasswordResetRequests from "../components/PasswordResetRequests";
 export default function AdminDashboard() {
 
     const navigate =
