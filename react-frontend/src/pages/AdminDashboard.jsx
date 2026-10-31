@@ -4,7 +4,7 @@ import {
 import PageShell
     from "../components/PageShell";
 import AddAdmin from "../components/AddAdmin";
-
+import { useState } from "react";
 import PageCss
     from "../components/PageCss";
 
@@ -17,7 +17,7 @@ export default function AdminDashboard() {
     const navigate =
         useNavigate();
 
-
+const [showAddAdmin, setShowAddAdmin] = useState(false);
     return (
 
         <>
@@ -29,7 +29,7 @@ export default function AdminDashboard() {
     href="/css/password_reset_requests.css"
 />
 <PageCss href="/css/add_admin.css" />
-<AddAdmin />
+
 
 
             <PageShell
@@ -263,6 +263,8 @@ export default function AdminDashboard() {
                                 </table>
 
                             </div>
+                            
+
 
 
                             {/* ================= REPORTS ================= */}
@@ -359,6 +361,23 @@ export default function AdminDashboard() {
                                     </button>
 
                                 </div>
+                                
+{/* ADD ADMINISTRATOR BUTTON */}
+<div className="feature-card">
+  <button
+    type="button"
+    className="action-btn"
+    onClick={() =>
+      setShowAddAdmin(previous => !previous)
+    }
+  >
+    {showAddAdmin
+      ? "✖ Close Add Administrator"
+      : "👨‍💼 Add Administrator"}
+  </button>
+</div>
+{/* ADD ADMINISTRATOR FORM */}
+{showAddAdmin && <AddAdmin />}
 
                             </div>
 
