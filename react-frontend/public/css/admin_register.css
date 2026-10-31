@@ -405,3 +405,79 @@ button[type="submit"]:hover,
         width: 100%;
     }
 }
+
+/* Administrator Registration Information */
+
+.admin-registration-info {
+  margin-top: 25px;
+  padding: 28px;
+  background: #f8fafc;
+  border: 1px solid #dbeafe;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.admin-info-icon {
+  font-size: 45px;
+  margin-bottom: 15px;
+}
+
+.admin-registration-info h3 {
+  color: #1e3a8a;
+  font-size: 22px;
+  margin-bottom: 15px;
+}
+
+.admin-registration-info p {
+  color: #475569;
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 15px;
+}
+
+.admin-registration-steps {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.admin-registration-steps h4 {
+  color: #1e40af;
+  font-size: 17px;
+  margin-bottom: 15px;
+}
+
+.admin-registration-steps ol {
+  padding-left: 22px;
+  margin: 0;
+}
+
+.admin-registration-steps li {
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-bottom: 10px;
+}
+
+.admin-security-note {
+  margin-top: 20px;
+  font-weight: 600;
+  color: #1e40af !important;
+}
+
+@media (max-width: 600px) {
+  .admin-registration-info {
+    padding: 18px;
+  }
+
+  .admin-registration-info h3 {
+    font-size: 19px;
+  }
+
+  .admin-registration-steps {
+    padding: 15px;
+  }
+}
