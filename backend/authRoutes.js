@@ -422,83 +422,288 @@ router.post(
     }
   }
 );
-// ADMIN RESET STUDENT PASSWORD
-router.post("/admin/reset-student-password", async (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization || "";
 
-    if (!authHeader.startsWith("Bearer ")) {
+/* ==========================================
+   STUDENT PASSWORD RESET REQUESTS
+   ========================================== */
+
+const resetRequests = () =>
+  dbCollection("passwordResetRequests");
+
+function verifyAdmin(req, res, next) {
+  try {
+    const header = req.headers.authorization || "";
+
+    if (!header.startsWith("Bearer ")) {
       return res.status(401).json({
         message: "Admin login required"
       });
     }
 
-    let decoded;
-
-    try {
-      decoded = jwt.verify(
-        authHeader.slice(7).trim(),
-        process.env.JWT_SECRET
-      );
-    } catch {
-      return res.status(401).json({
-        message: "Invalid or expired login"
-      });
-    }
+    const decoded = jwt.verify(
+      header.slice(7),
+      process.env.JWT_SECRET
+    );
 
     if (decoded.role !== "admin") {
       return res.status(403).json({
-        message: "Only administrators can reset student passwords"
+        message: "Administrator access required"
       });
     }
 
-    const admin = await dbCollection("admins").findOne({
-      id: decoded.sub,
-      email: decoded.email,
+    req.adminIdentity = decoded;
+    next();
+  } catch {
+    res.status(401).json({
+      message: "Invalid or expired admin session"
+    });
+  }
+}
+
+async function findAuthenticatedAdmin(req) {
+  return dbCollection("admins").findOne({
+    id: req.adminIdentity.sub,
+    email: req.adminIdentity.email,
+    active: { $ne: false }
+  });
+}
+
+function requestObjectId(id) {
+  if (!mongoose.isValidObjectId(id)) return null;
+  return new mongoose.Types.ObjectId(id);
+}
+
+// STUDENT SUBMITS FORGOT PASSWORD REQUEST
+router.post("/password-reset/request", async (req, res, next) => {
+  try {
+    const email = String(req.body?.email || "")
+      .trim().toLowerCase();
+
+    if (!validEmail(email)) {
+      return res.status(400).json({
+        message: "Enter a valid email address"
+      });
+    }
+
+    const student = await dbCollection("students").findOne({
+      email,
       active: { $ne: false }
     });
 
-    if (!admin) {
-      return res.status(403).json({
-        message: "Administrator not found"
+    if (student) {
+      const existing = await resetRequests().findOne({
+        studentId: student.id,
+        status: "pending"
       });
-    }
 
-    const { studentEmail, newPassword } = req.body || {};
-
-    if (!validEmail(studentEmail) || !validPassword(newPassword)) {
-      return res.status(400).json({
-        message: "Enter a valid student email and password (8–72 characters)"
-      });
-    }
-
-    const result = await dbCollection("students").updateOne(
-      {
-        email: studentEmail.trim().toLowerCase(),
-        active: { $ne: false }
-      },
-      {
-        $set: {
-          passwordHash: await bcrypt.hash(newPassword, 12)
-        },
-        $unset: {
-          password: ""
-        }
+      if (!existing) {
+        await resetRequests().insertOne({
+          studentId: student.id,
+          studentName: student.studentName,
+          studentEmail: student.email,
+          status: "pending",
+          createdAt: new Date()
+        });
       }
-    );
-
-    if (result.matchedCount === 0) {
-      return res.status(404).json({
-        message: "Student email not found"
-      });
     }
 
-    return res.json({
-      message: "Student password reset successfully"
+    res.json({
+      message:
+        "If your email is registered, your password reset request has been sent to the administrator."
     });
-
   } catch (error) {
     next(error);
   }
 });
+
+// ADMIN VIEWS REQUESTS
+router.get(
+  "/admin/password-reset-requests",
+  verifyAdmin,
+  async (req, res, next) => {
+    try {
+      const admin = await findAuthenticatedAdmin(req);
+
+      if (!admin) {
+        return res.status(403).json({
+          message: "Administrator not found"
+        });
+      }
+
+      const requests = await resetRequests()
+        .find({ status: "pending" })
+        .sort({ createdAt: -1 })
+        .limit(100)
+        .toArray();
+
+      res.json(requests.map(item => ({
+        id: String(item._id),
+        studentName: item.studentName,
+        studentEmail: item.studentEmail,
+        createdAt: item.createdAt,
+        status: item.status
+      })));
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// ADMIN APPROVES AND CHANGES PASSWORD
+router.post(
+  "/admin/password-reset-requests/:id/approve",
+  verifyAdmin,
+  async (req, res, next) => {
+    try {
+      const admin = await findAuthenticatedAdmin(req);
+
+      if (!admin) {
+        return res.status(403).json({
+          message: "Administrator not found"
+        });
+      }
+
+      const requestId = requestObjectId(req.params.id);
+      const { newPassword } = req.body || {};
+
+      if (!requestId || !validPassword(newPassword)) {
+        return res.status(400).json({
+          message: "Valid request and 8–72 character password required"
+        });
+      }
+
+      const request = await resetRequests().findOne({
+        _id: requestId,
+        status: "pending"
+      });
+
+      if (!request) {
+        return res.status(404).json({
+          message: "Pending request not found"
+        });
+      }
+
+      const student = await dbCollection("students").findOne({
+        id: request.studentId,
+        email: request.studentEmail,
+        active: { $ne: false }
+      });
+
+      if (!student) {
+        return res.status(404).json({
+          message: "Student not found"
+        });
+      }
+
+      const claim = await resetRequests().updateOne(
+        { _id: requestId, status: "pending" },
+        {
+          $set: {
+            status: "processing",
+            processedBy: admin.id
+          }
+        }
+      );
+
+      if (claim.modifiedCount !== 1) {
+        return res.status(409).json({
+          message: "Request already being processed"
+        });
+      }
+
+      try {
+        const passwordHash = await bcrypt.hash(
+          newPassword, 12
+        );
+
+        const updated = await dbCollection("students").updateOne(
+          { _id: student._id, active: { $ne: false } },
+          {
+            $set: {
+              passwordHash,
+              mustChangePassword: true
+            },
+            $unset: { password: "" }
+          }
+        );
+
+        if (updated.matchedCount !== 1) {
+          throw new Error("Student update failed");
+        }
+
+        await resetRequests().updateOne(
+          { _id: requestId },
+          {
+            $set: {
+              status: "approved",
+              processedAt: new Date()
+            }
+          }
+        );
+      } catch (error) {
+        await resetRequests().updateOne(
+          { _id: requestId, status: "processing" },
+          { $set: { status: "pending" } }
+        );
+        throw error;
+      }
+
+      res.json({
+        message:
+          "Password reset successfully. Give the temporary password privately to the verified student."
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// ADMIN REJECTS REQUEST
+router.post(
+  "/admin/password-reset-requests/:id/reject",
+  verifyAdmin,
+  async (req, res, next) => {
+    try {
+      const admin = await findAuthenticatedAdmin(req);
+
+      if (!admin) {
+        return res.status(403).json({
+          message: "Administrator not found"
+        });
+      }
+
+      const requestId = requestObjectId(req.params.id);
+
+      if (!requestId) {
+        return res.status(400).json({
+          message: "Invalid request ID"
+        });
+      }
+
+      const result = await resetRequests().updateOne(
+        { _id: requestId, status: "pending" },
+        {
+          $set: {
+            status: "rejected",
+            processedBy: admin.id,
+            processedAt: new Date()
+          }
+        }
+      );
+
+      if (!result.modifiedCount) {
+        return res.status(404).json({
+          message: "Pending request not found"
+        });
+      }
+
+      res.json({
+        message: "Request rejected"
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
 module.exports = router;

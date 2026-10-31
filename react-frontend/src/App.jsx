@@ -56,7 +56,7 @@ import ForgotPassword
 import ResetPassword
     from "./pages/ResetPassword";
 
-import AdminResetPassword from "./pages/AdminResetPassword";
+
 function App() {
 
     return (
@@ -327,10 +327,7 @@ function App() {
             {/* =====================================
                 UNKNOWN ROUTE
             ====================================== */}
-            <Route
-  path="/admin-reset-password"
-  element={<AdminResetPassword />}
-/>
+     
             <Route path="*" element={<NotFound />} />
         </Routes>
     </>

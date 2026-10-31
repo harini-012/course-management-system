@@ -1,7 +1,7 @@
 import {
     useNavigate
 } from "react-router-dom";
-
+import PasswordResetRequests from "../components/PasswordResetRequests";
 import PageShell
     from "../components/PageShell";
 
@@ -25,6 +25,9 @@ export default function AdminDashboard() {
             <PageCss
                 href="/css/admin_dashboard.css"
             />
+            <PageCss
+    href="/css/password_reset_requests.css"
+/>
 
 
             <PageShell
@@ -54,21 +57,7 @@ export default function AdminDashboard() {
                         </div>
 
                     </div>
-                    <button
-  type="button"
-  onClick={() => navigate("/admin-reset-password")}
-  style={{
-    padding: "12px 20px",
-    background: "#2563eb",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    margin: "15px 0"
-  }}
->
-  Reset Student Password
-</button>
+                   
 
                     {/* ================= STATISTICS ================= */}
 
@@ -217,8 +206,10 @@ export default function AdminDashboard() {
                                 </table>
 
                             </div>
+                            {/* ================= PASSWORD RESET REQUESTS ================= */}
 
-
+                            <PasswordResetRequests />
+                            
                             {/* ================= ENROLLMENTS ================= */}
 
                             <div className="section">
