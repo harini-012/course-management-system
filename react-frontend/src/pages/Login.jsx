@@ -118,18 +118,28 @@ export default function Login() {
                         }}
                     >
 
-                        <Link
-                            to="/forgot-password"
-                            style={{
-                                color: "#2563EB",
-                                textDecoration: "none",
-                                fontSize: "14px",
-                                fontWeight: "bold"
-                            }}
-                        >
-                            Forgot Password?
-                        </Link>
+                       <Link
+  to="/forgot-password"
+  onClick={(e) => {
+    e.preventDefault();
 
+    const isAdmin = document
+      .getElementById("adminBtn")
+      ?.classList.contains("active");
+
+    window.location.href = isAdmin
+      ? "/forgot-password?role=admin"
+      : "/forgot-password?role=student";
+  }}
+  style={{
+    color: "#2563EB",
+    textDecoration: "none",
+    fontSize: "14px",
+    fontWeight: "bold"
+  }}
+>
+  Forgot Password?
+</Link>
                     </div>
 
 

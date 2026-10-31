@@ -48,7 +48,7 @@ async function handleAction(id, action) {
   if (action === "approve") {
     if (
       !window.confirm(
-        "Have you verified the student's identity and approved this request?"
+        "Have you verified the account holder's  identity and approved this request?"
       )
     ) {
       return;
@@ -100,7 +100,7 @@ async function handleAction(id, action) {
       <div className="pr-header">
         <div>
           <h2>Password Reset Requests</h2>
-          <p>Review requests submitted by students</p>
+          <p>Review requests submitted by students and administrators</p>
         </div>
 
         <span className="pr-badge">
@@ -131,8 +131,17 @@ async function handleAction(id, action) {
           {requests.map(request => (
             <div className="pr-card" key={request.id}>
               <div className="pr-student">
-                <h3>{request.studentName}</h3>
-                <p>{request.studentEmail}</p>
+               <h3>
+  {request.accountName || request.studentName}
+</h3>
+
+<p>
+  {request.accountEmail || request.studentEmail}
+</p>
+
+<small>
+  {request.role === "admin" ? "Administrator" : "Student"}
+</small>
                 <small>
                   Requested:{" "}
                   {new Date(
@@ -146,7 +155,7 @@ async function handleAction(id, action) {
   <button
     type="button"
     className="pr-approve"
-    disabled={loading}
+  disabled={loading || request.isOwnRequest}
     onClick={() =>
       handleAction(request.id, "approve")
     }
@@ -157,7 +166,7 @@ async function handleAction(id, action) {
   <button
     type="button"
     className="pr-reject"
-    disabled={loading}
+   disabled={loading || request.isOwnRequest}
     onClick={() =>
       handleAction(request.id, "reject")
     }

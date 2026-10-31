@@ -423,28 +423,66 @@ router.post(
   }
 );
 
-/* ==========================================
-   STUDENT PASSWORD RESET REQUESTS
-   ========================================== */
 
-/* ==========================================
-   STUDENT PASSWORD RESET REQUESTS
-   ========================================== */
+
+
+/* =====================================================
+   STUDENT + ADMIN PASSWORD RESET REQUESTS
+   DEMONSTRATION WORKFLOW
+   ===================================================== */
 
 const resetRequests = () =>
   dbCollection("passwordResetRequests");
 
-// Use the existing rate limiter to limit reset attempts.
 const resetStatusLimiter = loginLimiter;
 
-// Verify administrator JWT.
+function getPasswordResetRole(body) {
+  return body?.role === "admin" ? "admin" : "student";
+}
+
+function getPasswordResetCollection(role) {
+  return role === "admin" ? "admins" : "students";
+}
+
+function getPasswordResetEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function hashTrackingCode(code) {
+  return crypto
+    .createHash("sha256")
+    .update(code)
+    .digest("hex");
+}
+
+function validTrackingCode(code) {
+  return /^[a-f0-9]{48}$/.test(code);
+}
+
+function getRequestRole(request) {
+  return request.role === "admin" ? "admin" : "student";
+}
+
+function getRequestAccountId(request) {
+  return request.accountId || request.studentId;
+}
+
+function getRequestAccountEmail(request) {
+  return request.accountEmail || request.studentEmail;
+}
+
+function getRequestAccountName(request) {
+  return request.accountName || request.studentName;
+}
+
+// Authenticate the administrator making an approval decision.
 function verifyAdmin(req, res, next) {
   try {
     const header = req.headers.authorization || "";
 
     if (!header.startsWith("Bearer ")) {
       return res.status(401).json({
-        message: "Admin login required"
+        message: "Administrator login required"
       });
     }
 
@@ -463,7 +501,7 @@ function verifyAdmin(req, res, next) {
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "Invalid or expired admin session"
+      message: "Invalid or expired administrator session"
     });
   }
 }
@@ -484,25 +522,20 @@ function requestObjectId(id) {
   return new mongoose.Types.ObjectId(id);
 }
 
-function hashTrackingCode(code) {
-  return crypto
-    .createHash("sha256")
-    .update(code)
-    .digest("hex");
-}
-
-/* ==========================================
-   1. STUDENT SUBMITS RESET REQUEST
-   ========================================== */
+/* =====================================================
+   STEP 1 - STUDENT OR ADMIN SUBMITS REQUEST
+   ===================================================== */
 
 router.post(
   "/password-reset/request",
   resetStatusLimiter,
   async (req, res, next) => {
     try {
-      const email = String(req.body?.email || "")
-        .trim()
-        .toLowerCase();
+      const email = getPasswordResetEmail(
+        req.body?.email
+      );
+
+      const role = getPasswordResetRole(req.body);
 
       if (!validEmail(email)) {
         return res.status(400).json({
@@ -517,59 +550,68 @@ router.post(
       const trackingHash =
         hashTrackingCode(trackingCode);
 
-      const student = await dbCollection("students")
-        .findOne({
-          email,
-          active: { $ne: false }
+      const collectionName =
+        getPasswordResetCollection(role);
+
+      const account = await dbCollection(
+        collectionName
+      ).findOne({
+        email,
+        active: { $ne: false }
+      });
+
+      if (account) {
+        const existing = await resetRequests().findOne({
+          status: "pending",
+          $or: [
+            {
+              role,
+              accountId: account.id
+            },
+            ...(role === "student"
+              ? [
+                  {
+                    studentId: account.id,
+                    role: { $exists: false }
+                  }
+                ]
+              : [])
+          ]
         });
 
-      if (student) {
-        const existing = await resetRequests().findOne({
-          studentId: student.id,
-          status: "pending"
-        });
+        const requestDetails = {
+          role,
+          accountId: account.id,
+          accountName:
+            role === "admin"
+              ? account.adminName
+              : account.studentName,
+          accountEmail: account.email,
+          trackingHash,
+          createdAt: new Date()
+        };
 
         if (existing) {
-          const updated = await resetRequests().updateOne(
+          await resetRequests().updateOne(
             {
               _id: existing._id,
               status: "pending"
             },
             {
-              $set: {
-                trackingHash
-              }
+              $set: requestDetails
             }
           );
-
-          // If the request was approved concurrently,
-          // create a fresh pending request.
-          if (!updated.matchedCount) {
-            await resetRequests().insertOne({
-              studentId: student.id,
-              studentName: student.studentName,
-              studentEmail: student.email,
-              trackingHash,
-              status: "pending",
-              createdAt: new Date()
-            });
-          }
         } else {
           await resetRequests().insertOne({
-            studentId: student.id,
-            studentName: student.studentName,
-            studentEmail: student.email,
-            trackingHash,
-            status: "pending",
-            createdAt: new Date()
+            ...requestDetails,
+            status: "pending"
           });
         }
       }
 
-      // Same response for registered and unknown emails.
       return res.json({
         message:
-          "If your email is registered, your password reset request has been submitted. Save your tracking code.",
+          "If this email is registered, your password reset request has been submitted. Save your tracking code.",
         trackingCode
       });
     } catch (error) {
@@ -578,18 +620,20 @@ router.post(
   }
 );
 
-/* ==========================================
-   2. STUDENT CHECKS RESET STATUS
-   ========================================== */
+/* =====================================================
+   STEP 2 - CHECK PASSWORD RESET STATUS
+   ===================================================== */
 
 router.post(
   "/password-reset/status",
   resetStatusLimiter,
   async (req, res, next) => {
     try {
-      const email = String(req.body?.email || "")
-        .trim()
-        .toLowerCase();
+      const email = getPasswordResetEmail(
+        req.body?.email
+      );
+
+      const role = getPasswordResetRole(req.body);
 
       const trackingCode = String(
         req.body?.trackingCode || ""
@@ -597,7 +641,7 @@ router.post(
 
       if (
         !validEmail(email) ||
-        !/^[a-f0-9]{48}$/.test(trackingCode)
+        !validTrackingCode(trackingCode)
       ) {
         return res.status(400).json({
           message:
@@ -605,12 +649,22 @@ router.post(
         });
       }
 
-      const trackingHash =
-        hashTrackingCode(trackingCode);
-
       const request = await resetRequests().findOne({
-        studentEmail: email,
-        trackingHash
+        trackingHash: hashTrackingCode(trackingCode),
+        $or: [
+          {
+            role,
+            accountEmail: email
+          },
+          ...(role === "student"
+            ? [
+                {
+                  role: { $exists: false },
+                  studentEmail: email
+                }
+              ]
+            : [])
+        ]
       });
 
       if (!request) {
@@ -623,14 +677,12 @@ router.post(
       const messages = {
         pending:
           "Your request is waiting for administrator approval.",
-        processing:
-          "Your request is being processed.",
         approved:
           "Your request is approved. You can now create a new password.",
         rejected:
-          "Your request was rejected. Contact your administrator for assistance.",
+          "Your request was rejected. Contact an administrator.",
         completing:
-          "Your password reset is being completed.",
+          "Your password reset is being processed.",
         completed:
           "Your password has been changed successfully."
       };
@@ -639,7 +691,7 @@ router.post(
         status: request.status,
         message:
           messages[request.status] ||
-          "Please contact your administrator."
+          "Please contact an administrator."
       });
     } catch (error) {
       next(error);
@@ -647,17 +699,16 @@ router.post(
   }
 );
 
-/* ==========================================
-   3. ADMIN VIEWS PENDING REQUESTS
-   ========================================== */
+/* =====================================================
+   STEP 3 - ADMIN VIEWS ALL PENDING REQUESTS
+   ===================================================== */
 
 router.get(
   "/admin/password-reset-requests",
   verifyAdmin,
   async (req, res, next) => {
     try {
-      const admin =
-        await findAuthenticatedAdmin(req);
+      const admin = await findAuthenticatedAdmin(req);
 
       if (!admin) {
         return res.status(403).json({
@@ -672,12 +723,18 @@ router.get(
         .toArray();
 
       return res.json(
-        requests.map(item => ({
-          id: String(item._id),
-          studentName: item.studentName,
-          studentEmail: item.studentEmail,
-          createdAt: item.createdAt,
-          status: item.status
+        requests.map(request => ({
+          id: String(request._id),
+          role: getRequestRole(request),
+          accountName: getRequestAccountName(request),
+          accountEmail: getRequestAccountEmail(request),
+          studentName: request.studentName,
+          studentEmail: request.studentEmail,
+          createdAt: request.createdAt,
+          status: request.status,
+          isOwnRequest:
+            getRequestRole(request) === "admin" &&
+            getRequestAccountId(request) === admin.id
         }))
       );
     } catch (error) {
@@ -686,17 +743,16 @@ router.get(
   }
 );
 
-/* ==========================================
-   4. ADMIN APPROVES RESET REQUEST
-   ========================================== */
+/* =====================================================
+   STEP 4 - ADMIN APPROVES PASSWORD RESET
+   ===================================================== */
 
 router.post(
   "/admin/password-reset-requests/:id/approve",
   verifyAdmin,
   async (req, res, next) => {
     try {
-      const admin =
-        await findAuthenticatedAdmin(req);
+      const admin = await findAuthenticatedAdmin(req);
 
       if (!admin) {
         return res.status(403).json({
@@ -704,8 +760,9 @@ router.post(
         });
       }
 
-      const requestId =
-        requestObjectId(req.params.id);
+      const requestId = requestObjectId(
+        req.params.id
+      );
 
       if (!requestId) {
         return res.status(400).json({
@@ -724,23 +781,31 @@ router.post(
         });
       }
 
-      const student = await dbCollection("students")
-        .findOne({
-          id: request.studentId,
-          email: request.studentEmail,
-          active: { $ne: false }
-        });
+      const role = getRequestRole(request);
 
-      if (!student) {
-        return res.status(404).json({
-          message: "Student not found"
+      // An administrator cannot approve their own reset.
+      if (
+        role === "admin" &&
+        getRequestAccountId(request) === admin.id
+      ) {
+        return res.status(403).json({
+          message:
+            "You cannot approve your own password reset request"
         });
       }
 
-      if (!request.trackingHash) {
+      const account = await dbCollection(
+        getPasswordResetCollection(role)
+      ).findOne({
+        id: getRequestAccountId(request),
+        email: getRequestAccountEmail(request),
+        active: { $ne: false }
+      });
+
+      if (!account || !request.trackingHash) {
         return res.status(400).json({
           message:
-            "This request has no tracking code. Ask the student to submit a new request."
+            "Account or tracking code unavailable. Submit a new request."
         });
       }
 
@@ -766,7 +831,7 @@ router.post(
 
       return res.json({
         message:
-          "Request approved. The student can now create a new password using their tracking code."
+          "Request approved. The account holder can now create a new password."
       });
     } catch (error) {
       next(error);
@@ -774,17 +839,16 @@ router.post(
   }
 );
 
-/* ==========================================
-   5. ADMIN REJECTS RESET REQUEST
-   ========================================== */
+/* =====================================================
+   STEP 5 - ADMIN REJECTS PASSWORD RESET
+   ===================================================== */
 
 router.post(
   "/admin/password-reset-requests/:id/reject",
   verifyAdmin,
   async (req, res, next) => {
     try {
-      const admin =
-        await findAuthenticatedAdmin(req);
+      const admin = await findAuthenticatedAdmin(req);
 
       if (!admin) {
         return res.status(403).json({
@@ -792,12 +856,34 @@ router.post(
         });
       }
 
-      const requestId =
-        requestObjectId(req.params.id);
+      const requestId = requestObjectId(
+        req.params.id
+      );
 
       if (!requestId) {
         return res.status(400).json({
           message: "Invalid request ID"
+        });
+      }
+
+      const request = await resetRequests().findOne({
+        _id: requestId,
+        status: "pending"
+      });
+
+      if (!request) {
+        return res.status(404).json({
+          message: "Pending request not found"
+        });
+      }
+
+      if (
+        getRequestRole(request) === "admin" &&
+        getRequestAccountId(request) === admin.id
+      ) {
+        return res.status(403).json({
+          message:
+            "You cannot process your own password reset request"
         });
       }
 
@@ -816,8 +902,8 @@ router.post(
       );
 
       if (result.modifiedCount !== 1) {
-        return res.status(404).json({
-          message: "Pending request not found"
+        return res.status(409).json({
+          message: "Request already processed"
         });
       }
 
@@ -831,18 +917,20 @@ router.post(
   }
 );
 
-/* ==========================================
-   6. STUDENT CREATES NEW PASSWORD
-   ========================================== */
+/* =====================================================
+   STEP 6 - STUDENT OR ADMIN SETS NEW PASSWORD
+   ===================================================== */
 
 router.post(
   "/password-reset/complete",
   resetStatusLimiter,
   async (req, res, next) => {
     try {
-      const email = String(req.body?.email || "")
-        .trim()
-        .toLowerCase();
+      const email = getPasswordResetEmail(
+        req.body?.email
+      );
+
+      const role = getPasswordResetRole(req.body);
 
       const trackingCode = String(
         req.body?.trackingCode || ""
@@ -852,7 +940,7 @@ router.post(
 
       if (
         !validEmail(email) ||
-        !/^[a-f0-9]{48}$/.test(trackingCode) ||
+        !validTrackingCode(trackingCode) ||
         !validPassword(newPassword)
       ) {
         return res.status(400).json({
@@ -865,9 +953,22 @@ router.post(
         hashTrackingCode(trackingCode);
 
       const request = await resetRequests().findOne({
-        studentEmail: email,
         trackingHash,
-        status: "approved"
+        status: "approved",
+        $or: [
+          {
+            role,
+            accountEmail: email
+          },
+          ...(role === "student"
+            ? [
+                {
+                  role: { $exists: false },
+                  studentEmail: email
+                }
+              ]
+            : [])
+        ]
       });
 
       if (!request) {
@@ -877,27 +978,28 @@ router.post(
         });
       }
 
-      const student = await dbCollection("students")
-        .findOne({
-          id: request.studentId,
-          email,
-          active: { $ne: false }
-        });
+      const collection = dbCollection(
+        getPasswordResetCollection(role)
+      );
 
-      if (!student) {
+      const account = await collection.findOne({
+        id: getRequestAccountId(request),
+        email,
+        active: { $ne: false }
+      });
+
+      if (!account) {
         return res.status(400).json({
-          message:
-            "Unable to complete password reset"
+          message: "Account not found"
         });
       }
 
-      // Hash before claiming the request.
       const passwordHash = await bcrypt.hash(
         newPassword,
         12
       );
 
-      // Claim this request so it cannot be used twice.
+      // Claim the request so it cannot be used twice.
       const claim = await resetRequests().updateOne(
         {
           _id: request._id,
@@ -914,33 +1016,32 @@ router.post(
       if (claim.modifiedCount !== 1) {
         return res.status(409).json({
           message:
-            "This reset request is already being processed."
+            "This request is already being processed"
         });
       }
 
       try {
-        const updated =
-          await dbCollection("students").updateOne(
-            {
-              _id: student._id,
-              active: { $ne: false }
+        const updated = await collection.updateOne(
+          {
+            _id: account._id,
+            active: { $ne: false }
+          },
+          {
+            $set: {
+              passwordHash,
+              mustChangePassword: false
             },
-            {
-              $set: {
-                passwordHash,
-                mustChangePassword: false
-              },
-              $unset: {
-                password: ""
-              }
+            $unset: {
+              password: ""
             }
-          );
+          }
+        );
 
         if (updated.matchedCount !== 1) {
-          throw new Error("Student update failed");
+          throw new Error("Account update failed");
         }
 
-        const completed = await resetRequests().updateOne(
+        await resetRequests().updateOne(
           {
             _id: request._id,
             status: "completing"
@@ -955,15 +1056,7 @@ router.post(
             }
           }
         );
-
-        if (completed.modifiedCount !== 1) {
-          throw new Error(
-            "Reset completion record could not be updated"
-          );
-        }
       } catch (error) {
-        // Recovery for errors. For production, use
-        // a MongoDB transaction for both updates.
         await resetRequests().updateOne(
           {
             _id: request._id,
@@ -988,8 +1081,5 @@ router.post(
     }
   }
 );
-
-
- 
 
 module.exports = router;

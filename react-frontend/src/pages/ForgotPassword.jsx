@@ -9,6 +9,18 @@ const API_URL = (
 ).replace(/\/+$/, "");
 
 export default function ForgotPassword() {
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
+  const role =
+    params.get("role") === "admin"
+      ? "admin"
+      : "student";
+
+  const accountLabel =
+    role === "admin" ? "Administrator" : "Student";
+
   const [email, setEmail] = useState("");
   const [statusEmail, setStatusEmail] = useState("");
   const [trackingCode, setTrackingCode] = useState("");
@@ -19,15 +31,17 @@ export default function ForgotPassword() {
   const [resetMessage, setResetMessage] = useState("");
 
   const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
 
   const [loading, setLoading] = useState(false);
   const [checking, setChecking] = useState(false);
   const [resetting, setResetting] = useState(false);
 
-  // STEP 1: Student submits password reset request
+  // STEP 1 - Request password reset
   async function handleSubmit(e) {
     e.preventDefault();
+
     setLoading(true);
     setMessage("");
     setStatus("");
@@ -43,7 +57,10 @@ export default function ForgotPassword() {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ email })
+          body: JSON.stringify({
+            email,
+            role
+          })
         }
       );
 
@@ -65,9 +82,10 @@ export default function ForgotPassword() {
     }
   }
 
-  // STEP 2: Student checks request status
+  // STEP 2 - Check request status
   async function checkStatus(e) {
     e.preventDefault();
+
     setChecking(true);
     setStatus("");
     setStatusMessage("");
@@ -83,7 +101,8 @@ export default function ForgotPassword() {
           },
           body: JSON.stringify({
             email: statusEmail,
-            trackingCode
+            trackingCode,
+            role
           })
         }
       );
@@ -92,7 +111,8 @@ export default function ForgotPassword() {
 
       if (!response.ok) {
         throw new Error(
-          result.message || "Unable to check status"
+          result.message ||
+            "Unable to check request status"
         );
       }
 
@@ -105,7 +125,7 @@ export default function ForgotPassword() {
     }
   }
 
-  // STEP 3: Student creates new password after approval
+  // STEP 3 - Set new password
   async function completeReset(e) {
     e.preventDefault();
     setResetMessage("");
@@ -138,7 +158,8 @@ export default function ForgotPassword() {
           body: JSON.stringify({
             email: statusEmail,
             trackingCode,
-            newPassword
+            newPassword,
+            role
           })
         }
       );
@@ -147,7 +168,8 @@ export default function ForgotPassword() {
 
       if (!response.ok) {
         throw new Error(
-          result.message || "Unable to reset password"
+          result.message ||
+            "Unable to reset password"
         );
       }
 
@@ -178,18 +200,19 @@ export default function ForgotPassword() {
         </div>
 
         <div className="right">
-          <h2>Forgot Password</h2>
+          <h2>{accountLabel} Forgot Password</h2>
 
           <p>
-            Enter your registered student email to
+            Enter your registered{" "}
+            {accountLabel.toLowerCase()} email to
             request a password reset.
           </p>
 
-          {/* STEP 1: REQUEST RESET */}
+          {/* STEP 1 - REQUEST PASSWORD RESET */}
           <form onSubmit={handleSubmit}>
             <div className="input-box">
               <label htmlFor="email">
-                Registered Student Email
+                Registered {accountLabel} Email
               </label>
 
               <input
@@ -197,12 +220,18 @@ export default function ForgotPassword() {
                 type="email"
                 placeholder="Enter your email"
                 value={email}
-                onChange={e => setEmail(e.target.value)}
+                onChange={e =>
+                  setEmail(e.target.value)
+                }
+                autoComplete="email"
                 required
               />
             </div>
 
-            <button type="submit" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+            >
               {loading
                 ? "Submitting..."
                 : "Request Password Reset"}
@@ -221,8 +250,9 @@ export default function ForgotPassword() {
               <h3>Your Tracking Code</h3>
 
               <p>
-                Save this code securely. You will need
-                it to check your request status.
+                Save this code securely. You will
+                need it to check your request
+                status.
               </p>
 
               <code>{trackingCode}</code>
@@ -245,20 +275,20 @@ export default function ForgotPassword() {
             </div>
           )}
 
-          {/* STEP 2: CHECK STATUS */}
+          {/* STEP 2 - CHECK STATUS */}
           <div className="prs-status-section">
             <h3>Check Request Status</h3>
 
             <p>
-              Enter your email and tracking code to
-              check whether your administrator has
-              approved the request.
+              Enter your email and tracking code
+              to check whether another administrator
+              has approved your request.
             </p>
 
             <form onSubmit={checkStatus}>
               <div className="input-box">
                 <label htmlFor="status-email">
-                  Student Email
+                  {accountLabel} Email
                 </label>
 
                 <input
@@ -285,7 +315,9 @@ export default function ForgotPassword() {
                   placeholder="Enter tracking code"
                   value={trackingCode}
                   onChange={e => {
-                    setTrackingCode(e.target.value.trim());
+                    setTrackingCode(
+                      e.target.value.trim()
+                    );
                     setStatus("");
                   }}
                   autoComplete="off"
@@ -303,7 +335,7 @@ export default function ForgotPassword() {
               </button>
             </form>
 
-            {/* DISPLAY STATUS */}
+            {/* STATUS RESULT */}
             {statusMessage && (
               <div
                 className="prs-result"
@@ -321,14 +353,14 @@ export default function ForgotPassword() {
               </div>
             )}
 
-            {/* STEP 3: SET NEW PASSWORD */}
+            {/* STEP 3 - NEW PASSWORD */}
             {status === "approved" && (
               <div className="prs-new-password">
                 <h3>Create New Password</h3>
 
                 <p>
-                  Your administrator has approved
-                  your request. Enter a new password
+                  Your password reset request has
+                  been approved. Enter a new password
                   to complete the reset.
                 </p>
 
@@ -344,7 +376,9 @@ export default function ForgotPassword() {
                       placeholder="Enter new password"
                       value={newPassword}
                       onChange={e =>
-                        setNewPassword(e.target.value)
+                        setNewPassword(
+                          e.target.value
+                        )
                       }
                       minLength={8}
                       maxLength={72}
@@ -364,7 +398,9 @@ export default function ForgotPassword() {
                       placeholder="Confirm password"
                       value={confirmPassword}
                       onChange={e =>
-                        setConfirmPassword(e.target.value)
+                        setConfirmPassword(
+                          e.target.value
+                        )
                       }
                       autoComplete="new-password"
                       required
