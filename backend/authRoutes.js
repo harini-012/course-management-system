@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const crypto = require("node:crypto");
 const mongoose = require("mongoose");
-
+const loginLimiter = require("./middleware/loginLimiter");
 const router = express.Router();
 
 function dbCollection(name) {
@@ -144,7 +144,7 @@ router.post("/register", async (req, res, next) => {
 });
 
 // STUDENT AND ADMIN LOGIN
-router.post("/login", async (req, res, next) => {
+router.post("/login", loginLimiter, async (req, res, next) => {
   try {
     const {
       email,
@@ -422,5 +422,83 @@ router.post(
     }
   }
 );
+// ADMIN RESET STUDENT PASSWORD
+router.post("/admin/reset-student-password", async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization || "";
 
+    if (!authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        message: "Admin login required"
+      });
+    }
+
+    let decoded;
+
+    try {
+      decoded = jwt.verify(
+        authHeader.slice(7).trim(),
+        process.env.JWT_SECRET
+      );
+    } catch {
+      return res.status(401).json({
+        message: "Invalid or expired login"
+      });
+    }
+
+    if (decoded.role !== "admin") {
+      return res.status(403).json({
+        message: "Only administrators can reset student passwords"
+      });
+    }
+
+    const admin = await dbCollection("admins").findOne({
+      id: decoded.sub,
+      email: decoded.email,
+      active: { $ne: false }
+    });
+
+    if (!admin) {
+      return res.status(403).json({
+        message: "Administrator not found"
+      });
+    }
+
+    const { studentEmail, newPassword } = req.body || {};
+
+    if (!validEmail(studentEmail) || !validPassword(newPassword)) {
+      return res.status(400).json({
+        message: "Enter a valid student email and password (8–72 characters)"
+      });
+    }
+
+    const result = await dbCollection("students").updateOne(
+      {
+        email: studentEmail.trim().toLowerCase(),
+        active: { $ne: false }
+      },
+      {
+        $set: {
+          passwordHash: await bcrypt.hash(newPassword, 12)
+        },
+        $unset: {
+          password: ""
+        }
+      }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({
+        message: "Student email not found"
+      });
+    }
+
+    return res.json({
+      message: "Student password reset successfully"
+    });
+
+  } catch (error) {
+    next(error);
+  }
+});
 module.exports = router;

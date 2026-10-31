@@ -54,7 +54,21 @@ export default function AdminDashboard() {
                         </div>
 
                     </div>
-
+                    <button
+  type="button"
+  onClick={() => navigate("/admin-reset-password")}
+  style={{
+    padding: "12px 20px",
+    background: "#2563eb",
+    color: "white",
+    border: "none",
+    borderRadius: "8px",
+    cursor: "pointer",
+    margin: "15px 0"
+  }}
+>
+  Reset Student Password
+</button>
 
                     {/* ================= STATISTICS ================= */}
 

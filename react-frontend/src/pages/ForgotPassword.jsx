@@ -5,8 +5,6 @@ import {
 import PageCss
     from "../components/PageCss";
 
-import LegacyScript
-    from "../components/LegacyScript";
 
 
 export default function ForgotPassword() {
@@ -43,106 +41,33 @@ export default function ForgotPassword() {
                     </h2>
 
 
-                    <p>
-                        Select your account type and enter
-                        your registered email address.
-                    </p>
+                   <p>
+    Forgot your password? Please contact your
+    college administrator to reset your password.
+</p>
 
+<div
+    className="input-box"
+    style={{
+        padding: "20px",
+        backgroundColor: "#eff6ff",
+        borderRadius: "10px",
+        textAlign: "center",
+        marginTop: "20px"
+    }}
+>
+    <h3>Password Reset Assistance</h3>
 
-                    {/* ================= MESSAGE ================= */}
+    <p>
+        Students who have forgotten their password
+        should contact their college administrator.
+    </p>
 
-                    <div
-                        id="message"
-                        role="status"
-                        aria-live="polite"
-                        style={{
-                            display: "none",
-                            marginBottom: "15px",
-                            fontWeight: "600"
-                        }}
-                    />
-
-
-                    <form
-                        id="forgotPasswordForm"
-                    >
-
-                        {/* ================= ROLE ================= */}
-
-                        <div className="input-box">
-
-                            <label>
-                                Account Type
-                            </label>
-
-
-                            <div className="role-selector">
-
-                                <label className="role-option">
-
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="student"
-                                        defaultChecked
-                                    />
-
-                                    <span>
-                                        Student
-                                    </span>
-
-                                </label>
-
-
-                                <label className="role-option">
-
-                                    <input
-                                        type="radio"
-                                        name="role"
-                                        value="admin"
-                                    />
-
-                                    <span>
-                                        Admin
-                                    </span>
-
-                                </label>
-
-                            </div>
-
-                        </div>
-
-
-                        {/* ================= EMAIL ================= */}
-
-                        <div className="input-box">
-
-                            <label htmlFor="email">
-                                Email Address
-                            </label>
-
-
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder="Enter Registered Email"
-                                autoComplete="email"
-                                required
-                            />
-
-                        </div>
-
-
-                        {/* ================= BUTTON ================= */}
-
-                        <button
-                            type="submit"
-                            id="resetBtn"
-                        >
-                            Reset Password
-                        </button>
-
-                    </form>
+    <p>
+        The administrator will verify your account
+        and provide a temporary password.
+    </p>
+</div>
 
 
                     <div className="back">
@@ -158,10 +83,7 @@ export default function ForgotPassword() {
             </div>
 
 
-            <LegacyScript
-                src="/legacy/js/forgot_password.js"
-            />
-
+            
         </>
     );
 }
